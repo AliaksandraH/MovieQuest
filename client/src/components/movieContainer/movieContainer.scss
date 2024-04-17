@@ -1,0 +1,39 @@
+@import "../../style/variables.scss";
+
+.movie {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    height: 370px;
+    background-color: $dark-grey;
+    border: 1px rgb(36, 36, 36) solid;
+    margin: 20px 30px;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+    &_wasViewed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(39, 39, 39, 0.5);
+    }
+    img {
+        width: 100%;
+        height: 280px;
+    }
+    p {
+        text-align: center;
+        color: white;
+    }
+    &_information {
+        height: calc(370px - 280px);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+}

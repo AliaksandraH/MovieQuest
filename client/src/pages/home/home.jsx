@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import MovieContainer from "../../components/movieContainer/movieContainer";
+import Calendar from "../../components/calendar/calendar";
 import "./home.scss";
 
 // eslint-disable-next-line no-undef
@@ -111,7 +112,7 @@ const Home = () => {
                         voluptate ducimus quasi laborum placeat omnis hic
                         distinctio ullam. Rerum facere eius inventore.
                     </span>
-                    <div className="calendar"></div>
+                    <Calendar />
                 </div>
             </div>
             <div className="main">

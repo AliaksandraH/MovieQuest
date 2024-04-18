@@ -36,4 +36,9 @@
         justify-content: center;
         overflow: hidden;
     }
+    &_rating-stars {
+        position: absolute;
+        left: calc(100% / 2 - 54px);
+        top: 259px;
+    }
 }

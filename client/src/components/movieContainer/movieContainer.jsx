@@ -1,9 +1,7 @@
 import ReactStars from "react-rating-stars-component";
 import "./movieContainer.scss";
 
-// eslint-disable-next-line react/prop-types
 const MovieContainer = ({ movieInformation }) => {
-    // eslint-disable-next-line react/prop-types
     const { wasViewed, poster_path, title, rating } = movieInformation;
     const img_path = "https://image.tmdb.org/t/p/original";
 

@@ -4,11 +4,10 @@ import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import "./home.scss";
 
-// eslint-disable-next-line no-undef
 const _key = process.env.REACT_APP_API_KEY;
 
-const Home = () => {
-    const img_path = "https://image.tmdb.org/t/p/original";
+const Home = ({ openModalFilters }) => {
+    const imgPath = "https://image.tmdb.org/t/p/original";
     const { request } = useHttp();
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
@@ -20,12 +19,8 @@ const Home = () => {
             if (movies.length < 1) {
                 try {
                     const moviesData = await getMovies(type, numPage);
-                    if (backgroundImg === null) {
-                        setBackgroundImg(
-                            `${img_path}${findFirstBackdropPath(moviesData)}`
-                        );
-                    }
                     setMovies(moviesData);
+                    setBackground(moviesData);
                 } catch (error) {
                     console.log(error);
                 }
@@ -33,21 +28,11 @@ const Home = () => {
         };
 
         fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
-    const updteMovies = async (newType, newPage) => {
-        if (newPage !== numPage) {
-            const newData = await getMovies(newType, newPage);
-            setNumPage(newPage);
-            setMovies([...movies, ...newData]);
-        } else if (newType !== type) {
-            const newData = await getMovies(newType, 1);
-            setNumPage(1);
-            setType(newType);
-            setMovies(newData);
-        }
-    };
+        return () => {
+            setBackground(null);
+        };
+    }, []);
 
     const getMovies = async (type, numPage) => {
         try {
@@ -71,14 +56,47 @@ const Home = () => {
         };
     };
 
-    const findFirstBackdropPath = (array) => {
-        for (let i = 0; i < array.length; i++) {
-            // eslint-disable-next-line no-prototype-builtins
-            if (array[i].hasOwnProperty("backdrop_path")) {
-                return array[i].backdrop_path;
+    const updteMovies = async (newType, newPage) => {
+        if (newPage !== numPage) {
+            const newData = await getMovies(newType, newPage);
+            setNumPage(newPage);
+            setMovies([...movies, ...newData]);
+        } else if (newType !== type) {
+            const newData = await getMovies(newType, 1);
+            setNumPage(1);
+            setType(newType);
+            setMovies(newData);
+        }
+    };
+
+    const setBackground = (movies) => {
+        let interval = null;
+        if (!movies) return clearInterval(interval);
+        const imgList = getBackgroundImgPath(movies);
+        if (backgroundImg === null && imgList.length > 0) {
+            changeBackgroundImg(imgList[0]);
+            if (imgList.length > 1) {
+                let count = 1;
+                interval = setInterval(() => {
+                    changeBackgroundImg(imgList[count]);
+                    count = (count + 1) % imgList.length;
+                }, 30000);
             }
         }
-        return null;
+    };
+
+    const getBackgroundImgPath = (array) => {
+        const arrBackdrop = [];
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].hasOwnProperty("backdrop_path")) {
+                arrBackdrop.push(array[i].backdrop_path);
+            }
+        }
+        return arrBackdrop;
+    };
+
+    const changeBackgroundImg = (img) => {
+        setBackgroundImg(`${imgPath}${img}`);
     };
 
     const nextPage = () => {
@@ -134,7 +152,7 @@ const Home = () => {
                             TV Series
                         </button>
                     </div>
-                    <button>Filters</button>
+                    <button onClick={openModalFilters}>Filters</button>
                 </div>
                 <div className="main_movies">
                     {movies &&

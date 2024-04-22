@@ -1,3 +1,5 @@
+@import "./variables.scss";
+
 * {
     font-family: "Roboto Condensed", sans-serif;
     margin: 0;
@@ -22,13 +24,18 @@ h6 {
     margin: 0;
 }
 
+button {
+    background: none;
+    border: none;
+}
+
 a {
     text-decoration: none;
-    color: white;
+    color: $white;
     display: inline-block;
     &:hover {
         text-decoration: none;
-        color: white;
+        color: $white;
     }
 }
 
@@ -46,9 +53,9 @@ input:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgb(50, 50, 50);
+    background-color: $dark-grey;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: rgb(124, 124, 124);
+    background-color: $grey;
 }

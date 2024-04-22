@@ -8,6 +8,7 @@
         height: 70vh;
         position: relative;
         img {
+            object-fit: cover;
             @extend %wh-100;
             -webkit-mask-image: linear-gradient(
                 rgba(0, 0, 0, 0),
@@ -31,7 +32,7 @@
             span {
                 overflow: hidden;
                 width: 50%;
-                color: white;
+                color: $white;
                 max-height: 400px;
             }
         }
@@ -52,9 +53,8 @@
             width: 150px;
             height: 30px;
             background: $dark-grey;
-            color: white;
+            color: $white;
             border-radius: 6px;
-            border: none;
             cursor: pointer;
         }
     }
@@ -77,9 +77,8 @@
         width: 150px;
         height: 30px;
         background: $dark-grey;
-        color: white;
+        color: $white;
         border-radius: 6px;
-        border: none;
         cursor: pointer;
     }
 }

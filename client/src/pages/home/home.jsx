@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrentType } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import "./home.scss";
@@ -9,9 +11,10 @@ const _key = process.env.REACT_APP_API_KEY;
 const Home = ({ openModalFilters }) => {
     const imgPath = "https://image.tmdb.org/t/p/original";
     const { request } = useHttp();
+    const dispatch = useDispatch();
+    const { currentType: type } = useSelector((state) => state);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
-    const [type, setType] = useState("movie");
     const [numPage, setNumPage] = useState(1);
 
     useEffect(() => {
@@ -64,7 +67,7 @@ const Home = ({ openModalFilters }) => {
         } else if (newType !== type) {
             const newData = await getMovies(newType, 1);
             setNumPage(1);
-            setType(newType);
+            dispatch(setCurrentType(newType));
             setMovies(newData);
         }
     };
@@ -160,6 +163,7 @@ const Home = ({ openModalFilters }) => {
                             <MovieContainer
                                 key={movie.id}
                                 movieInformation={movie}
+                                type={type}
                             />
                         ))}
                 </div>

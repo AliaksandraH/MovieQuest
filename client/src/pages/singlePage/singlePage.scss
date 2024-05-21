@@ -1,0 +1,97 @@
+@import "../../style/helpers.scss";
+@import "../../style/variables.scss";
+
+.single-page {
+    width: 100%;
+    height: calc(100vh - 55px - 90px);
+    position: relative;
+    &_background {
+        object-fit: cover;
+        @extend %wh-100;
+        -webkit-mask-image: linear-gradient(
+            rgba(0, 0, 0, 0),
+            rgba(0, 0, 0, 1) 40%,
+            rgba(0, 0, 0, 1) 60%,
+            rgba(0, 0, 0, 0)
+        );
+        mask-image: linear-gradient(
+            rgba(0, 0, 0, 0),
+            rgba(0, 0, 0, 1) 40%,
+            rgba(0, 0, 0, 1) 60%,
+            rgba(0, 0, 0, 0)
+        );
+    }
+    &_information {
+        @extend %display-row, %wh-100;
+        position: absolute;
+        top: 0;
+        left: 0;
+        justify-content: space-around;
+        &_container {
+            width: 500px;
+            max-height: calc(100% - 40px);
+            color: $white;
+            min-width: 200px;
+            margin-left: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            &_transparent {
+                width: 100%;
+                color: $white;
+                background: rgba(39, 39, 39, 0.4);
+                border-radius: 10px;
+                margin-top: 15px;
+                p {
+                    padding: 8px 10px 0 10px;
+                }
+            }
+        }
+        &_title {
+            color: $main-color;
+            font-size: 23px;
+        }
+        &_tagline {
+            color: $white;
+            font-size: 20px;
+            text-align: center;
+        }
+        &_label {
+            color: $main-color;
+        }
+        &_overview {
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: underline;
+        }
+        &_buttons {
+            @extend %display-row;
+            justify-content: space-between;
+            width: 100%;
+            height: 33px;
+            background: $main-color;
+            margin-top: 20px;
+            padding: 5px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            button {
+                cursor: pointer;
+                color: $white;
+                width: 50%;
+                height: 100%;
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+.poster {
+    width: 300px;
+    min-width: 200px;
+}
+
+.button_border {
+    border-left: 1px solid $white;
+}

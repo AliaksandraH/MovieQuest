@@ -5,6 +5,7 @@ import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
 import LogIn from "./pages/login/login";
 import Registration from "./pages/registration/registration";
+import SinglePage from "./pages/singlePage/singlePage";
 import ModalFilters from "./components/modalFilters/modalFilters";
 import "./App.scss";
 
@@ -24,6 +25,7 @@ function App() {
                         path="/"
                         element={<Home openModalFilters={openModal} />}
                     />
+                    <Route path="/:type/:id" element={<SinglePage />} />
                     <Route path="/login" element={<LogIn />} />
                     <Route path="/registration" element={<Registration />} />
                 </Routes>

@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
 import "./movieContainer.scss";
 
-const MovieContainer = ({ movieInformation }) => {
-    const { wasViewed, poster_path, title, rating } = movieInformation;
+const MovieContainer = ({ movieInformation, type }) => {
+    const { id, wasViewed, poster_path, title, rating } = movieInformation;
     const img_path = "https://image.tmdb.org/t/p/original";
 
     const firstExample = {
@@ -13,7 +14,7 @@ const MovieContainer = ({ movieInformation }) => {
     };
 
     return (
-        <div className="movie">
+        <Link to={`/${type}/${id}`} className="movie">
             <div className={wasViewed ? "movie_wasViewed" : null}></div>
             <img src={`${img_path}${poster_path}`} alt="" />
             <div className="movie_information">
@@ -22,7 +23,7 @@ const MovieContainer = ({ movieInformation }) => {
             <div className="movie_rating-stars">
                 <ReactStars {...firstExample} />
             </div>
-        </div>
+        </Link>
     );
 };
 

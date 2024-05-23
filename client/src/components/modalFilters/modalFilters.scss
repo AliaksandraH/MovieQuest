@@ -14,10 +14,10 @@
     justify-content: center;
     &_container {
         background-color: $dark-grey;
-        width: 50%;
-        height: 50%;
         border-radius: 10px;
-        padding: 20px;
+    }
+    &_filters {
+        padding: 0 20px 20px 20px;
     }
     &_header {
         @extend %display-row;
@@ -25,6 +25,8 @@
         color: $white;
         justify-content: center;
         position: relative;
+        margin-bottom: 20px;
+        padding: 20px 20px 0 20px;
         h2 {
             width: 100%;
             text-align: center;
@@ -32,12 +34,53 @@
         button {
             cursor: pointer;
             position: absolute;
-            right: 0;
-            top: 0;
+            right: 20px;
+            top: 20px;
             img {
                 width: 25px;
                 height: 25px;
             }
+        }
+    }
+}
+
+.filters_container {
+    @extend %display-row;
+    width: 100%;
+    margin: 10px;
+    .label {
+        color: $main-color;
+    }
+    .input-label {
+        color: $white;
+        margin-left: 5px;
+    }
+    &_value-type {
+        margin-left: 20px;
+    }
+    &_values-genres {
+        margin-left: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+    }
+    input {
+        cursor: pointer;
+    }
+}
+
+@media only screen and (max-width: 950px) {
+    .genres_container {
+        &_values {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .genres_container {
+        &_values {
+            grid-template-columns: repeat(1, 1fr);
         }
     }
 }

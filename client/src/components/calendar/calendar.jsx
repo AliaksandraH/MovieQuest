@@ -28,11 +28,7 @@ const Calendar = () => {
 
         const days = [];
         for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-            days.push(
-                <div key={i} className="calendar_day">
-                    <p>{i}</p>
-                </div>
-            );
+            days.push(<div key={i} className="calendar_day"></div>);
         }
 
         for (let i = 0; i < firstDayOfMonth.getDay(); i++) {

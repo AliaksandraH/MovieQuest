@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentType } from "../../actions";
+import { setCurrentType, setGenres } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import "./home.scss";
@@ -22,6 +22,7 @@ const Home = ({ openModalFilters }) => {
             if (movies.length < 1) {
                 try {
                     const moviesData = await getMovies(type, numPage);
+                    getGenres();
                     setMovies(moviesData);
                     setBackground(moviesData);
                 } catch (error) {
@@ -57,6 +58,24 @@ const Home = ({ openModalFilters }) => {
             backdrop_path: movie.backdrop_path ? movie.backdrop_path : null,
             wasViewed: false,
         };
+    };
+
+    const getGenres = async () => {
+        try {
+            const movieGenres = await request(
+                `https://api.themoviedb.org/3/genre/movie/list?language=en-US&api_key=${_key}&page=${numPage}`
+            );
+            const tvGenres = await request(
+                `https://api.themoviedb.org/3/genre/tv/list?language=en-US&api_key=${_key}&page=${numPage}`
+            );
+            const transformGenresMovies = movieGenres.genres.map(
+                (el) => el.name
+            );
+            const transformGenresTv = tvGenres.genres.map((el) => el.name);
+            dispatch(setGenres(transformGenresMovies, transformGenresTv));
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const updteMovies = async (newType, newPage) => {

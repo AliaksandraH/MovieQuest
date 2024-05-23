@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
+import { changeFormatText, createLineFromArray } from "../../helpers/functions";
 import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
@@ -11,6 +12,21 @@ const SinglePage = () => {
     const [information, setInformation] = useState({});
     const [sortedInformation, setSortedInformation] = useState({});
     const imgPath = "https://image.tmdb.org/t/p/original";
+    const movieInformation = [
+        "release_date",
+        "production_countries",
+        "production_companies",
+        "genres",
+    ];
+    const tvInformation = [
+        "first_air_date",
+        "last_air_date",
+        "number_of_seasons",
+        "created_by",
+        "production_countries",
+        "production_companies",
+        "genres",
+    ];
 
     useEffect(() => {
         getInformation(id);
@@ -22,56 +38,23 @@ const SinglePage = () => {
         );
         setInformation(data);
         const needInformation =
-            type === "movie"
-                ? [
-                      "release_date",
-                      "production_countries",
-                      "production_companies",
-                      "genres",
-                  ]
-                : [
-                      "first_air_date",
-                      "last_air_date",
-                      "number_of_seasons",
-                      "created_by",
-                      "production_countries",
-                      "production_companies",
-                      "genres",
-                  ];
+            type === "movie" ? movieInformation : tvInformation;
         generateInformation(needInformation, data);
-    };
-
-    const createLineFromArray = (array) => {
-        return array.map((el, i) =>
-            i === array.length - 1 ? `${el.name}` : `${el.name}, `
-        );
-    };
-
-    const formatText = (text) => {
-        return (text.charAt(0).toUpperCase() + text.slice(1))
-            .split("_")
-            .join(" ");
     };
 
     const generateInformation = (needInformation, obj) => {
         const data = needInformation.map((el) => {
             return (
-                obj[el] &&
-                (Array.isArray(obj[el]) ? (
+                obj[el] && (
                     <p>
                         <span className="single-page_information_label">
-                            {formatText(el)}:{" "}
+                            {changeFormatText(el)}:{" "}
                         </span>
-                        {createLineFromArray(obj[el])}
+                        {Array.isArray(obj[el])
+                            ? createLineFromArray(obj[el])
+                            : obj[el]}
                     </p>
-                ) : (
-                    <p>
-                        <span className="single-page_information_label">
-                            {formatText(el)}:{" "}
-                        </span>
-                        {obj[el]}
-                    </p>
-                ))
+                )
             );
         });
         setSortedInformation(data);
@@ -109,7 +92,7 @@ const SinglePage = () => {
                                     {information.overview}
                                 </p>
                             )}
-                            <div className="single-page_information_buttons">
+                            <div className="buttons-wide">
                                 <button>Save</button>
                                 <button className="button_border">
                                     Watched

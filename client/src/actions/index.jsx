@@ -4,3 +4,11 @@ export const setCurrentType = (type) => {
         payload: type,
     };
 };
+
+export const setGenres = (genresMovie, genresTv) => {
+    return {
+        type: "CHANGE_GENRES",
+        genresMovie,
+        genresTv,
+    };
+};

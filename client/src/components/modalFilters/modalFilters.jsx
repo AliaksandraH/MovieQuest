@@ -1,29 +1,25 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import ReactStars from "react-rating-stars-component";
-import { useHttp } from "../../hooks/http.hook";
+import { useSelector, useDispatch } from "react-redux";
 import { changeFormatText } from "../../helpers/functions";
+import { minDate, maxDate } from "../../helpers/constants";
+import { setFilters } from "../../actions";
+import ReactStars from "react-rating-stars-component";
 import SliderDate from "../sliderDate/sliderDate";
 import SelectDropdown from "../selectDropdown/selectDropdown";
 import IconClase from "../../assets/icons8-close-26.png";
 import "./modalFilters.scss";
 
-const _key = process.env.REACT_APP_API_KEY;
-
 const ModalFilters = ({ closeModalFilters }) => {
-    const { request } = useHttp();
-    const minDate = 1895;
-    const maxDate = new Date().getFullYear();
+    const dispatch = useDispatch();
     const { genres, countries } = useSelector((store) => store);
     const [styleGenres, setStyleGenres] = useState("");
     const [checkedType, setCheckedType] = useState("movie");
+    const [minRating, setMinRating] = useState(0);
     const [date, setDate] = useState({ minDate, maxDate });
     const [checkedGenres, setCheckedGenres] = useState([]);
     const [checkedСountries, setCheckedСountries] = useState([]);
-    const [minRating, setMinRating] = useState(0);
     const types = ["movie", "tv"];
-
-    const styleRating = {
+    const styleRatingStars = {
         size: 27,
         value: minRating,
         edit: true,
@@ -31,15 +27,12 @@ const ModalFilters = ({ closeModalFilters }) => {
     };
 
     useEffect(() => {
+        createStyleGenres(checkedType);
         document.body.style.overflow = "hidden";
         return () => {
             document.body.style.overflow = "auto";
         };
     }, []);
-
-    useEffect(() => {
-        createStyleGenres(checkedType);
-    }, [checkedType]);
 
     const closeModalHandler = (value) => {
         if (value.target.className === "modal") {
@@ -47,23 +40,25 @@ const ModalFilters = ({ closeModalFilters }) => {
         }
     };
 
+    const closeModal = () => {
+        closeModalFilters();
+    };
+
     const createStyleTypes = () => {
-        return types.map((type, id) => {
+        return types.map((el, id) => {
             return (
                 <div
                     className="filters_container_value-type"
-                    key={`${type}_${id}`}
+                    key={`${el}_${id}`}
                 >
                     <input
                         type="radio"
-                        value={type}
-                        checked={checkedType === type}
+                        value={el}
+                        checked={checkedType === el}
                         onChange={changeType}
                     />
                     <span className="input-label">
-                        {type === "tv"
-                            ? type.toUpperCase()
-                            : changeFormatText(type)}
+                        {el === "tv" ? el.toUpperCase() : changeFormatText(el)}
                     </span>
                 </div>
             );
@@ -89,6 +84,7 @@ const ModalFilters = ({ closeModalFilters }) => {
 
     const changeType = (event) => {
         setCheckedType(event.target.value);
+        createStyleGenres(event.target.value);
     };
 
     const changeGenres = (event) => {
@@ -102,37 +98,17 @@ const ModalFilters = ({ closeModalFilters }) => {
         });
     };
 
-    const ratingChanged = (newRating) => {
-        setMinRating(newRating);
-    };
-
-    const getMovies = async () => {
-        console.log(
-            "Type: ",
-            checkedType,
-            " Date: ",
-            date.minDate,
-            " - ",
-            date.maxDate,
-            " Genres: ",
-            checkedGenres,
-            " Сountries: ",
-            checkedСountries,
-            " Rating: ",
-            minRating
+    const getShows = async () => {
+        dispatch(
+            setFilters(
+                checkedType,
+                minRating,
+                { minDate: date.minDate, maxDate: date.maxDate },
+                checkedGenres,
+                checkedСountries
+            )
         );
-        const data = await request(
-            `https://api.themoviedb.org/3/discover/${checkedType}?language=en-US&page=1&primary_release_date.gte=${
-                date.minDate
-            }-01-01&primary_release_date.lte=${
-                date.maxDate
-            }-12-31&with_origin_country=${checkedСountries.join(
-                "|"
-            )}&with_genres=${checkedGenres.join("|")}&vote_average.gte=${
-                minRating * 2
-            }&api_key=${_key}`
-        );
-        console.log(data);
+        closeModal();
     };
 
     return (
@@ -153,17 +129,12 @@ const ModalFilters = ({ closeModalFilters }) => {
                         <span className="label">Minimum rating:</span>
                         <div className="stars">
                             <ReactStars
-                                {...styleRating}
-                                onChange={ratingChanged}
+                                {...styleRatingStars}
+                                onChange={setMinRating}
                             />
                         </div>
                     </div>
-                    <SliderDate
-                        date={date}
-                        setDate={setDate}
-                        minDate={minDate}
-                        maxDate={maxDate}
-                    />
+                    <SliderDate date={date} setDate={setDate} />
                     <div className="filters_container ">
                         <span className="label">Genres:</span>
                         <div className="filters_container_values-genres">
@@ -183,8 +154,8 @@ const ModalFilters = ({ closeModalFilters }) => {
                         </div>
                     </div>
                 </div>
-                <div className="buttons-wide">
-                    <button onClick={getMovies}>Save</button>
+                <div className="buttons-wide" onClick={getShows}>
+                    <button>Save</button>
                 </div>
             </div>
         </div>

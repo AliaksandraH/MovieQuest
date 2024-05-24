@@ -1,7 +1,16 @@
+import { minDate, maxDate } from "../helpers/constants.js";
+
 const initialState = {
     currentType: "movie",
     genres: { movie: [], ty: [] },
     countries: [],
+    assignedFilters: {
+        type: "movie",
+        rating: 0,
+        date: { minDate, maxDate },
+        genres: [],
+        countries: [],
+    },
 };
 
 const reducer = (state = initialState, action) => {
@@ -20,6 +29,17 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 countries: action.payload,
+            };
+        case "CHANGE_FILTERS":
+            return {
+                ...state,
+                assignedFilters: {
+                    type: action.payload,
+                    rating: action.rating,
+                    date: action.date,
+                    genres: action.genres,
+                    countries: action.countries,
+                },
             };
         default:
             return state;

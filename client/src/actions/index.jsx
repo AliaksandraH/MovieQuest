@@ -19,3 +19,14 @@ export const setCountries = (countries) => {
         payload: countries,
     };
 };
+
+export const setFilters = (type, rating, date, genres, countries) => {
+    return {
+        type: "CHANGE_FILTERS",
+        payload: type,
+        rating: rating,
+        date: date,
+        genres: genres,
+        countries: countries,
+    };
+};

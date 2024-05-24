@@ -12,7 +12,9 @@ const Home = ({ openModalFilters }) => {
     const imgPath = "https://image.tmdb.org/t/p/original";
     const { request } = useHttp();
     const dispatch = useDispatch();
-    const { currentType: type } = useSelector((state) => state);
+    const { currentType: type, assignedFilters } = useSelector(
+        (state) => state
+    );
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [numPage, setNumPage] = useState(1);
@@ -41,8 +43,29 @@ const Home = ({ openModalFilters }) => {
 
     const getMovies = async (type, numPage) => {
         try {
+            if (type === "filters") return getFiltersShows(numPage);
             const data = await request(
                 `https://api.themoviedb.org/3/trending/${type}/week?language=en-US&api_key=${_key}&page=${numPage}`
+            );
+            return await data.results.map(transformInformationMovies);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getFiltersShows = async (numPage) => {
+        const { type, rating, date, genres, countries } = assignedFilters;
+        try {
+            const data = await request(
+                `https://api.themoviedb.org/3/discover/${type}?language=en-US&primary_release_date.gte=${
+                    date.minDate
+                }-01-01&primary_release_date.lte=${
+                    date.maxDate
+                }-12-31&with_origin_country=${countries.join(
+                    "|"
+                )}&with_genres=${genres.join("|")}&vote_average.gte=${
+                    rating * 2
+                }&api_key=${_key}&page=${numPage}`
             );
             return await data.results.map(transformInformationMovies);
         } catch (error) {
@@ -86,7 +109,7 @@ const Home = ({ openModalFilters }) => {
         }
     };
 
-    const updteMovies = async (newType, newPage) => {
+    const updateMovies = async (newType, newPage) => {
         if (newPage !== numPage) {
             const newData = await getMovies(newType, newPage);
             setNumPage(newPage);
@@ -131,11 +154,11 @@ const Home = ({ openModalFilters }) => {
 
     const nextPage = () => {
         const newPage = numPage + 1;
-        updteMovies(type, newPage);
+        updateMovies(type, newPage);
     };
 
     const changeType = (type) => {
-        updteMovies(type, numPage);
+        updateMovies(type, numPage);
     };
 
     return (
@@ -180,6 +203,13 @@ const Home = ({ openModalFilters }) => {
                             }}
                         >
                             TV Series
+                        </button>
+                        <button
+                            onClick={() => {
+                                changeType("filters");
+                            }}
+                        >
+                            Shows by Filters
                         </button>
                     </div>
                     <button onClick={openModalFilters}>Filters</button>

@@ -1,15 +1,18 @@
 import MultiRangeSlider from "multi-range-slider-react";
+import { minDate, maxDate } from "../../helpers/constants.js";
 import "./sliderDate.scss";
 
-const SliderDate = ({ date, setDate, minDate, maxDate }) => {
+const SliderDate = ({ date, setDate }) => {
     const gray = "rgb(124, 124, 124)";
     const white = "#e0dede";
 
     const changeDate = (event) => {
         if (event.minValue === date.minDate && event.maxValue === date.maxDate)
             return;
-        setDate((state) => ({ ...state, minDate: event.minValue }));
-        setDate((state) => ({ ...state, maxDate: event.maxValue }));
+        setDate({
+            minDate: event.minValue,
+            maxDate: event.maxValue,
+        });
     };
 
     return (

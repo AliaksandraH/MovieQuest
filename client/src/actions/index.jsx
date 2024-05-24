@@ -12,3 +12,10 @@ export const setGenres = (genresMovie, genresTv) => {
         genresTv,
     };
 };
+
+export const setCountries = (countries) => {
+    return {
+        type: "CHANGE_COUNTRIES",
+        payload: countries,
+    };
+};

@@ -13,11 +13,16 @@
     align-items: center;
     justify-content: center;
     &_container {
+        width: 600px;
+        max-width: 600px;
+        max-height: 80vh;
         background-color: $dark-grey;
         border-radius: 10px;
     }
     &_filters {
-        padding: 0 20px 20px 20px;
+        padding: 20px;
+        display: grid;
+        row-gap: 15px;
     }
     &_header {
         @extend %display-row;
@@ -25,7 +30,6 @@
         color: $white;
         justify-content: center;
         position: relative;
-        margin-bottom: 20px;
         padding: 20px 20px 0 20px;
         h2 {
             width: 100%;
@@ -47,7 +51,6 @@
 .filters_container {
     @extend %display-row;
     width: 100%;
-    margin: 10px;
     .label {
         color: $main-color;
     }
@@ -66,6 +69,24 @@
     }
     input {
         cursor: pointer;
+    }
+    .stars {
+        margin-left: 5px;
+    }
+}
+
+.filters_container-countries {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    .label {
+        color: $main-color;
+        margin-bottom: 10px;
+    }
+    .container-select {
+        width: 100%;
     }
 }
 

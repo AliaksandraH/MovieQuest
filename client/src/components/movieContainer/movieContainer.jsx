@@ -6,7 +6,7 @@ const MovieContainer = ({ movieInformation, type }) => {
     const { id, wasViewed, poster_path, title, rating } = movieInformation;
     const img_path = "https://image.tmdb.org/t/p/original";
 
-    const firstExample = {
+    const styleRating = {
         size: 27,
         value: rating / 2,
         edit: false,
@@ -21,7 +21,7 @@ const MovieContainer = ({ movieInformation, type }) => {
                 <p>{title}</p>
             </div>
             <div className="movie_rating-stars">
-                <ReactStars {...firstExample} />
+                <ReactStars {...styleRating} />
             </div>
         </Link>
     );

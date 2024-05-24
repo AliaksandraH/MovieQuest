@@ -1,6 +1,7 @@
 const initialState = {
     currentType: "movie",
     genres: { movie: [], ty: [] },
+    countries: [],
 };
 
 const reducer = (state = initialState, action) => {
@@ -14,6 +15,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 genres: { tv: action.genresTv, movie: action.genresMovie },
+            };
+        case "CHANGE_COUNTRIES":
+            return {
+                ...state,
+                countries: action.payload,
             };
         default:
             return state;

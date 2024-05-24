@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentType, setGenres } from "../../actions";
+import { setCurrentType, setGenres, setCountries } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import "./home.scss";
@@ -23,6 +23,7 @@ const Home = ({ openModalFilters }) => {
                 try {
                     const moviesData = await getMovies(type, numPage);
                     getGenres();
+                    getCountries();
                     setMovies(moviesData);
                     setBackground(moviesData);
                 } catch (error) {
@@ -63,16 +64,23 @@ const Home = ({ openModalFilters }) => {
     const getGenres = async () => {
         try {
             const movieGenres = await request(
-                `https://api.themoviedb.org/3/genre/movie/list?language=en-US&api_key=${_key}&page=${numPage}`
+                `https://api.themoviedb.org/3/genre/movie/list?language=en-US&api_key=${_key}`
             );
             const tvGenres = await request(
-                `https://api.themoviedb.org/3/genre/tv/list?language=en-US&api_key=${_key}&page=${numPage}`
+                `https://api.themoviedb.org/3/genre/tv/list?language=en-US&api_key=${_key}`
             );
-            const transformGenresMovies = movieGenres.genres.map(
-                (el) => el.name
+            dispatch(setGenres(movieGenres.genres, tvGenres.genres));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getCountries = async () => {
+        try {
+            const movieCountries = await request(
+                `https://api.themoviedb.org/3/configuration/countries?language=en-US&api_key=${_key}`
             );
-            const transformGenresTv = tvGenres.genres.map((el) => el.name);
-            dispatch(setGenres(transformGenresMovies, transformGenresTv));
+            dispatch(setCountries(movieCountries));
         } catch (error) {
             console.log(error);
         }

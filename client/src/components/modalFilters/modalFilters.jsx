@@ -1,19 +1,34 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import ReactStars from "react-rating-stars-component";
+import { useHttp } from "../../hooks/http.hook";
 import { changeFormatText } from "../../helpers/functions";
-import SliderDate from "../multiRangeSlider/sliderDate";
+import SliderDate from "../sliderDate/sliderDate";
+import SelectDropdown from "../selectDropdown/selectDropdown";
 import IconClase from "../../assets/icons8-close-26.png";
 import "./modalFilters.scss";
 
+const _key = process.env.REACT_APP_API_KEY;
+
 const ModalFilters = ({ closeModalFilters }) => {
+    const { request } = useHttp();
     const minDate = 1895;
     const maxDate = new Date().getFullYear();
-    const { genres } = useSelector((store) => store);
+    const { genres, countries } = useSelector((store) => store);
+    const [styleGenres, setStyleGenres] = useState("");
     const [checkedType, setCheckedType] = useState("movie");
     const [date, setDate] = useState({ minDate, maxDate });
     const [checkedGenres, setCheckedGenres] = useState([]);
-    const [styleGenres, setStyleGenres] = useState("");
+    const [checkedСountries, setCheckedСountries] = useState([]);
+    const [minRating, setMinRating] = useState(0);
     const types = ["movie", "tv"];
+
+    const styleRating = {
+        size: 27,
+        value: minRating,
+        edit: true,
+        activeColor: "#e0dede",
+    };
 
     useEffect(() => {
         document.body.style.overflow = "hidden";
@@ -26,19 +41,6 @@ const ModalFilters = ({ closeModalFilters }) => {
         createStyleGenres(checkedType);
     }, [checkedType]);
 
-    useEffect(() => {
-        console.log(
-            "Type: ",
-            checkedType,
-            " Date: ",
-            date.minDate,
-            " - ",
-            date.maxDate,
-            " Genres: ",
-            checkedGenres
-        );
-    }, [checkedType, date, checkedGenres]);
-
     const closeModalHandler = (value) => {
         if (value.target.className === "modal") {
             closeModalFilters();
@@ -46,9 +48,12 @@ const ModalFilters = ({ closeModalFilters }) => {
     };
 
     const createStyleTypes = () => {
-        return types.map((type) => {
+        return types.map((type, id) => {
             return (
-                <div className="filters_container_value-type">
+                <div
+                    className="filters_container_value-type"
+                    key={`${type}_${id}`}
+                >
                     <input
                         type="radio"
                         value={type}
@@ -67,16 +72,15 @@ const ModalFilters = ({ closeModalFilters }) => {
 
     const createStyleGenres = (type) => {
         setCheckedGenres([]);
-        const style = genres[type].map((el, id) => {
+        const style = genres[type].map((el) => {
             return (
-                <div key={`${el}_${id}`}>
+                <div key={`${el.id}`}>
                     <input
                         type="checkbox"
-                        id={el}
-                        value={el}
+                        value={el.id}
                         onChange={changeGenres}
                     />
-                    <span className="input-label">{el}</span>
+                    <span className="input-label">{el.name}</span>
                 </div>
             );
         });
@@ -98,6 +102,39 @@ const ModalFilters = ({ closeModalFilters }) => {
         });
     };
 
+    const ratingChanged = (newRating) => {
+        setMinRating(newRating);
+    };
+
+    const getMovies = async () => {
+        console.log(
+            "Type: ",
+            checkedType,
+            " Date: ",
+            date.minDate,
+            " - ",
+            date.maxDate,
+            " Genres: ",
+            checkedGenres,
+            " Сountries: ",
+            checkedСountries,
+            " Rating: ",
+            minRating
+        );
+        const data = await request(
+            `https://api.themoviedb.org/3/discover/${checkedType}?language=en-US&page=1&primary_release_date.gte=${
+                date.minDate
+            }-01-01&primary_release_date.lte=${
+                date.maxDate
+            }-12-31&with_origin_country=${checkedСountries.join(
+                "|"
+            )}&with_genres=${checkedGenres.join("|")}&vote_average.gte=${
+                minRating * 2
+            }&api_key=${_key}`
+        );
+        console.log(data);
+    };
+
     return (
         <div className="modal" onClick={closeModalHandler}>
             <div className="modal_container">
@@ -112,6 +149,15 @@ const ModalFilters = ({ closeModalFilters }) => {
                         <span className="label">Type:</span>
                         {createStyleTypes()}
                     </div>
+                    <div className="filters_container ">
+                        <span className="label">Minimum rating:</span>
+                        <div className="stars">
+                            <ReactStars
+                                {...styleRating}
+                                onChange={ratingChanged}
+                            />
+                        </div>
+                    </div>
                     <SliderDate
                         date={date}
                         setDate={setDate}
@@ -124,9 +170,21 @@ const ModalFilters = ({ closeModalFilters }) => {
                             {styleGenres}
                         </div>
                     </div>
+                    <div className="filters_container-countries ">
+                        <span className="label">Countries:</span>
+                        <div className="container-select">
+                            <SelectDropdown
+                                data={countries}
+                                labelField={"native_name"}
+                                valueField={"iso_3166_1"}
+                                values={checkedСountries}
+                                setValues={setCheckedСountries}
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className="buttons-wide">
-                    <button>Save</button>
+                    <button onClick={getMovies}>Save</button>
                 </div>
             </div>
         </div>

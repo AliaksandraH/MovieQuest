@@ -32,8 +32,8 @@ const SelectDropdown = ({
             dropdownHeight="100px"
             color="#9f0013"
             clearable={true}
-            labelField={`${labelField}`}
-            valueField={`${valueField}`}
+            labelField={labelField}
+            valueField={valueField}
             contentRenderer={values.length > 5 ? CustomContentRenderer : false}
         />
     );

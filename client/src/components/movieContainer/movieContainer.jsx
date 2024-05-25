@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
+import NoPoster from "../../assets/no-poster.png";
 import "./movieContainer.scss";
 
 const MovieContainer = ({ movieInformation, type }) => {
@@ -16,7 +17,10 @@ const MovieContainer = ({ movieInformation, type }) => {
     return (
         <Link to={`/${type}/${id}`} className="movie">
             <div className={wasViewed ? "movie_wasViewed" : null}></div>
-            <img src={`${img_path}${poster_path}`} alt="" />
+            <img
+                src={poster_path ? `${img_path}${poster_path}` : NoPoster}
+                alt=""
+            />
             <div className="movie_information">
                 <p>{title}</p>
             </div>

@@ -41,6 +41,18 @@ const Home = ({ openModalFilters }) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (type === "filters") {
+            const fetchData = async () => {
+                const newData = await getMovies("filters", 1);
+                setNumPage(1);
+                dispatch(setCurrentType("filters"));
+                setMovies(newData);
+            };
+            fetchData();
+        }
+    }, [assignedFilters]);
+
     const getMovies = async (type, numPage) => {
         try {
             if (type === "filters") return getFiltersShows(numPage);
@@ -141,10 +153,14 @@ const Home = ({ openModalFilters }) => {
     const getBackgroundImgPath = (array) => {
         const arrBackdrop = [];
         for (let i = 0; i < array.length; i++) {
-            if (array[i].hasOwnProperty("backdrop_path")) {
+            if (
+                array[i].hasOwnProperty("backdrop_path") &&
+                array[i].backdrop_path !== null
+            ) {
                 arrBackdrop.push(array[i].backdrop_path);
             }
         }
+        console.log(arrBackdrop);
         return arrBackdrop;
     };
 
@@ -191,6 +207,9 @@ const Home = ({ openModalFilters }) => {
                 <div className="main_filters">
                     <div>
                         <button
+                            className={
+                                type === "movie" ? "active-button" : null
+                            }
                             onClick={() => {
                                 changeType("movie");
                             }}
@@ -198,6 +217,7 @@ const Home = ({ openModalFilters }) => {
                             Movies
                         </button>
                         <button
+                            className={type === "tv" ? "active-button" : null}
                             onClick={() => {
                                 changeType("tv");
                             }}
@@ -205,6 +225,9 @@ const Home = ({ openModalFilters }) => {
                             TV Series
                         </button>
                         <button
+                            className={
+                                type === "filters" ? "active-button" : null
+                            }
                             onClick={() => {
                                 changeType("filters");
                             }}
@@ -220,7 +243,11 @@ const Home = ({ openModalFilters }) => {
                             <MovieContainer
                                 key={movie.id}
                                 movieInformation={movie}
-                                type={type}
+                                type={
+                                    type === "filters"
+                                        ? assignedFilters.type
+                                        : type
+                                }
                             />
                         ))}
                 </div>

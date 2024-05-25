@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
@@ -10,6 +11,7 @@ import ModalFilters from "./components/modalFilters/modalFilters";
 import "./App.scss";
 
 function App() {
+    const { assignedFilters } = useSelector((state) => state);
     const [modalShow, setModalShow] = useState(false);
 
     const openModal = () => setModalShow(true);
@@ -17,7 +19,12 @@ function App() {
 
     return (
         <Router>
-            {modalShow && <ModalFilters closeModalFilters={closeModal} />}
+            {modalShow && (
+                <ModalFilters
+                    closeModalFilters={closeModal}
+                    currentFilters={assignedFilters}
+                />
+            )}
             <div className="app">
                 <Header />
                 <Routes>

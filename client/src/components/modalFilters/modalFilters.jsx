@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { changeFormatText } from "../../helpers/functions";
-import { minDate, maxDate } from "../../helpers/constants";
 import { setFilters } from "../../actions";
 import ReactStars from "react-rating-stars-component";
 import SliderDate from "../sliderDate/sliderDate";
@@ -9,13 +8,17 @@ import SelectDropdown from "../selectDropdown/selectDropdown";
 import IconClase from "../../assets/icons8-close-26.png";
 import "./modalFilters.scss";
 
-const ModalFilters = ({ closeModalFilters }) => {
+const ModalFilters = ({ closeModalFilters, currentFilters }) => {
+    const { type, rating } = currentFilters;
     const dispatch = useDispatch();
     const { genres, countries } = useSelector((store) => store);
     const [styleGenres, setStyleGenres] = useState("");
-    const [checkedType, setCheckedType] = useState("movie");
-    const [minRating, setMinRating] = useState(0);
-    const [date, setDate] = useState({ minDate, maxDate });
+    const [checkedType, setCheckedType] = useState(type);
+    const [minRating, setMinRating] = useState(rating);
+    const [date, setDate] = useState({
+        minDate: currentFilters.date.minDate,
+        maxDate: currentFilters.date.maxDate,
+    });
     const [checkedGenres, setCheckedGenres] = useState([]);
     const [checkedСountries, setCheckedСountries] = useState([]);
     const types = ["movie", "tv"];

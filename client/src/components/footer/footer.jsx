@@ -15,6 +15,12 @@ const Footer = () => {
                         https://icons8.com/license
                     </a>
                 </span>
+                <span>
+                    API :{" "}
+                    <a href="https://www.themoviedb.org/">
+                        https://www.themoviedb.org/
+                    </a>
+                </span>
             </div>
         </div>
     );

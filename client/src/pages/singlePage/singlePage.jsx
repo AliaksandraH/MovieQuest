@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { changeFormatText, createLineFromArray } from "../../helpers/functions";
+import NoPoster from "../../assets/no-poster.png";
+import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
@@ -44,6 +46,7 @@ const SinglePage = () => {
 
     const generateInformation = (needInformation, obj) => {
         const data = needInformation.map((el) => {
+            if (Array.isArray(obj[el]) && obj[el].length <= 0) return;
             return (
                 obj[el] && (
                     <p>
@@ -63,12 +66,20 @@ const SinglePage = () => {
     return (
         <div className="single-page">
             <img
-                src={`${imgPath}${information.backdrop_path}`}
+                src={
+                    information.backdrop_path
+                        ? `${imgPath}${information.backdrop_path}`
+                        : NoBackground
+                }
                 className="single-page_background"
             />
             <div className="single-page_information">
                 <img
-                    src={`${imgPath}${information.poster_path}`}
+                    src={
+                        information.poster_path
+                            ? `${imgPath}${information.poster_path}`
+                            : NoPoster
+                    }
                     className="poster"
                 />
                 {Object.keys(information).length > 0 && (

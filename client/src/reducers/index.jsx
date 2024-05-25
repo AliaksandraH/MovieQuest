@@ -40,6 +40,7 @@ const reducer = (state = initialState, action) => {
                     genres: action.genres,
                     countries: action.countries,
                 },
+                currentType: "filters",
             };
         default:
             return state;

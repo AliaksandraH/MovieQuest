@@ -3,7 +3,7 @@
 
 .single-page {
     width: 100%;
-    height: calc(100vh - 55px - 90px);
+    height: calc(100vh - 55px - 100px);
     position: relative;
     &_background {
         object-fit: cover;
@@ -28,10 +28,9 @@
         left: 0;
         justify-content: space-around;
         &_container {
-            width: 500px;
+            max-width: 700px;
             max-height: calc(100% - 40px);
             color: $white;
-            min-width: 200px;
             margin-left: 15px;
             display: flex;
             flex-direction: column;
@@ -76,4 +75,28 @@
 
 .button_border {
     border-left: 1px solid $white;
+}
+
+@media only screen and (max-width: 800px) {
+    .single-page {
+        height: auto;
+        position: relative;
+        padding: 20px;
+        &_background {
+            display: none;
+        }
+    }
+    .single-page_information {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        &_container {
+            margin: 0;
+        }
+    }
+    .poster {
+        margin-bottom: 20px;
+    }
 }

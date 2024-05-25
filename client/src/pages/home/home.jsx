@@ -67,17 +67,24 @@ const Home = ({ openModalFilters }) => {
 
     const getFiltersShows = async (numPage) => {
         const { type, rating, date, genres, countries } = assignedFilters;
+        const strCountries = countries.join("|");
+        const with_origin_country = `with_origin_country=${strCountries}`;
+        const strGenres = genres.join("|");
+        const with_genres = `with_genres=${strGenres}`;
+        const vote_average = `vote_average.gte=${rating * 2}`;
+        let date_gte = null;
+        let date_lte = null;
+        if (type === "movie") {
+            date_gte = `primary_release_date.gte=${date.minDate}-01-01`;
+            date_lte = `primary_release_date.lte=${date.maxDate}-12-31`;
+        } else {
+            date_gte = `first_air_date.gte=${date.minDate}-01-01`;
+            date_lte = `first_air_date.lte=${date.maxDate}-12-31`;
+        }
+
         try {
             const data = await request(
-                `https://api.themoviedb.org/3/discover/${type}?language=en-US&primary_release_date.gte=${
-                    date.minDate
-                }-01-01&primary_release_date.lte=${
-                    date.maxDate
-                }-12-31&with_origin_country=${countries.join(
-                    "|"
-                )}&with_genres=${genres.join("|")}&vote_average.gte=${
-                    rating * 2
-                }&api_key=${_key}&page=${numPage}`
+                `https://api.themoviedb.org/3/discover/${type}?language=en-US&${date_gte}&${date_lte}&${with_origin_country}&${with_genres}&${vote_average}&page=${numPage}&api_key=${_key}`
             );
             return await data.results.map(transformInformationMovies);
         } catch (error) {

@@ -27,6 +27,8 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
         value: minRating,
         edit: true,
         activeColor: "#e0dede",
+        isHalf: true,
+        count: 5,
     };
 
     useEffect(() => {

@@ -23,10 +23,6 @@
         width: 100%;
         height: 280px;
     }
-    p {
-        text-align: center;
-        color: $white;
-    }
     &_information {
         height: calc(370px - 280px);
         padding: 10px;
@@ -35,10 +31,27 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        p {
+            text-align: center;
+            color: $white;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.5em;
+            max-height: 100%;
+        }
     }
     &_rating-stars {
         position: absolute;
         left: calc(100% / 2 - 54px);
         top: 259px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .movie {
+        margin: 20px 10px;
     }
 }

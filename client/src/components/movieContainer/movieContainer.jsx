@@ -12,6 +12,7 @@ const MovieContainer = ({ movieInformation, type }) => {
         value: rating / 2,
         edit: false,
         activeColor: "#9f0013",
+        isHalf: true,
     };
 
     return (

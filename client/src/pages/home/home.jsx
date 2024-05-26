@@ -12,11 +12,15 @@ const Home = ({ openModalFilters }) => {
     const imgPath = "https://image.tmdb.org/t/p/original";
     const { request } = useHttp();
     const dispatch = useDispatch();
-    const { currentType: type, assignedFilters } = useSelector(
-        (state) => state
-    );
+    const {
+        currentType: type,
+        assignedFilters,
+        countries,
+        genres,
+    } = useSelector((state) => state);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
+    const [numberShows, setNumberShows] = useState(0);
     const [numPage, setNumPage] = useState(1);
 
     useEffect(() => {
@@ -59,6 +63,7 @@ const Home = ({ openModalFilters }) => {
             const data = await request(
                 `https://api.themoviedb.org/3/trending/${type}/week?language=en-US&api_key=${_key}&page=${numPage}`
             );
+            setNumberShows(data.total_results);
             return await data.results.map(transformInformationMovies);
         } catch (error) {
             console.log(error);
@@ -72,6 +77,7 @@ const Home = ({ openModalFilters }) => {
         const strGenres = genres.join("|");
         const with_genres = `with_genres=${strGenres}`;
         const vote_average = `vote_average.gte=${rating * 2}`;
+        const include_adult = `include_adult=false`;
         let date_gte = null;
         let date_lte = null;
         if (type === "movie") {
@@ -84,8 +90,9 @@ const Home = ({ openModalFilters }) => {
 
         try {
             const data = await request(
-                `https://api.themoviedb.org/3/discover/${type}?language=en-US&${date_gte}&${date_lte}&${with_origin_country}&${with_genres}&${vote_average}&page=${numPage}&api_key=${_key}`
+                `https://api.themoviedb.org/3/discover/${type}?language=en-US&${date_gte}&${date_lte}&${with_origin_country}&${with_genres}&${vote_average}&${include_adult}&page=${numPage}&api_key=${_key}&sort_by=popularity.desc`
             );
+            setNumberShows(data.total_results);
             return await data.results.map(transformInformationMovies);
         } catch (error) {
             console.log(error);
@@ -167,7 +174,6 @@ const Home = ({ openModalFilters }) => {
                 arrBackdrop.push(array[i].backdrop_path);
             }
         }
-        console.log(arrBackdrop);
         return arrBackdrop;
     };
 
@@ -239,10 +245,14 @@ const Home = ({ openModalFilters }) => {
                                 changeType("filters");
                             }}
                         >
-                            Shows by Filters
+                            Shows By Filters
                         </button>
                     </div>
-                    <button onClick={openModalFilters}>Filters</button>
+                    {countries.length > 0 &&
+                        genres.movie.length > 0 &&
+                        genres.tv.length > 0 && (
+                            <button onClick={openModalFilters}>Filters</button>
+                        )}
                 </div>
                 <div className="main_movies">
                     {movies &&
@@ -259,13 +269,21 @@ const Home = ({ openModalFilters }) => {
                         ))}
                 </div>
                 <div className="pages">
-                    <button
-                        onClick={() => {
-                            nextPage();
-                        }}
-                    >
-                        Show more
-                    </button>
+                    {movies.length > 0 && numberShows > movies.length && (
+                        <button
+                            onClick={() => {
+                                nextPage();
+                            }}
+                        >
+                            Show more
+                        </button>
+                    )}
+                    {movies.length <= 0 && (
+                        <p>
+                            According to the selected filters, there are no
+                            shows.
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

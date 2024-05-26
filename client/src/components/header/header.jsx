@@ -13,7 +13,7 @@ const Header = () => {
                 </Link>
             </div>
             <div className="header_toolbar">
-                <div className="header_toolbar_search">
+                {/* <div className="header_toolbar_search">
                     <input type="text" placeholder="Search..." />
                     <img src={Search} />
                 </div>
@@ -22,7 +22,7 @@ const Header = () => {
                 </NavLink>
                 <NavLink to="/registration">
                     <span>Registration</span>
-                </NavLink>
+                </NavLink> */}
             </div>
         </div>
     );

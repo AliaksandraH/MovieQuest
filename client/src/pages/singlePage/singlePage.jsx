@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { changeFormatText, createLineFromArray } from "../../helpers/functions";
+import ReactStars from "react-rating-stars-component";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
@@ -15,12 +16,14 @@ const SinglePage = () => {
     const [sortedInformation, setSortedInformation] = useState({});
     const imgPath = "https://image.tmdb.org/t/p/original";
     const movieInformation = [
+        "original_title",
         "release_date",
         "production_countries",
         "production_companies",
         "genres",
     ];
     const tvInformation = [
+        "original_name",
         "first_air_date",
         "last_air_date",
         "number_of_seasons",
@@ -29,6 +32,14 @@ const SinglePage = () => {
         "production_companies",
         "genres",
     ];
+    const styleRatingStars = {
+        size: 29,
+        edit: false,
+        value: information.vote_average / 2,
+        activeColor: "#9f0013",
+        isHalf: true,
+        color: "rgba(39, 39, 39, 0.4)",
+    };
 
     useEffect(() => {
         getInformation(id);
@@ -84,18 +95,30 @@ const SinglePage = () => {
                 />
                 {Object.keys(information).length > 0 && (
                     <div className="single-page_information_container">
-                        {(information.title || information.name) && (
-                            <p className="single-page_information_title">
-                                {information.title
-                                    ? information.title
-                                    : information.name}
-                            </p>
-                        )}
-                        {information.tagline && (
-                            <p className="single-page_information_tagline">
-                                {information.tagline}
-                            </p>
-                        )}
+                        <div className="single-page_information_container_header">
+                            <div className="stars">
+                                <ReactStars {...styleRatingStars} />
+                            </div>
+                            <div className="single-page_information_main">
+                                {(information.title || information.name) && (
+                                    <p className="single-page_information_title">
+                                        {information.title
+                                            ? information.title
+                                            : information.name}
+                                    </p>
+                                )}
+                                {information.tagline && (
+                                    <p className="single-page_information_tagline">
+                                        {information.tagline}
+                                    </p>
+                                )}
+                            </div>
+                            {information.status && (
+                                <div className="single-page_information_status">
+                                    <p>{information.status}</p>
+                                </div>
+                            )}
+                        </div>
                         <div className="single-page_information_container_transparent">
                             {sortedInformation}
                             {information.overview && (
@@ -103,7 +126,7 @@ const SinglePage = () => {
                                     {information.overview}
                                 </p>
                             )}
-                            <div className="buttons-wide">
+                            <div className="buttons-wide button_sticky">
                                 <button>Save</button>
                                 <button className="button_border">
                                     Watched

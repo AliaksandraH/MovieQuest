@@ -42,9 +42,44 @@
                 background: rgba(39, 39, 39, 0.4);
                 border-radius: 10px;
                 margin-top: 15px;
+                overflow-y: scroll;
+                font-size: 17px;
                 p {
                     padding: 8px 10px 0 10px;
                 }
+            }
+            &_header {
+                width: 100%;
+                display: grid;
+                grid-template-columns: auto auto auto;
+                column-gap: 15px;
+                row-gap: 15px;
+                .stars {
+                    height: 100%;
+                    @extend %display-row;
+                }
+            }
+        }
+        &_main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        &_status {
+            height: 100%;
+            @extend %display-row;
+            justify-content: end;
+            p {
+                max-width: 150px;
+                padding: 20px;
+                height: 50px;
+                background: rgba(39, 39, 39, 0.4);
+                border-radius: 10px;
+                font-size: 18px;
+                @extend %display-row;
+                justify-content: center;
+                text-align: center;
             }
         }
         &_title {
@@ -56,6 +91,7 @@
             color: $white;
             font-size: 20px;
             text-align: center;
+            margin-top: 5px;
         }
         &_label {
             color: $main-color;
@@ -71,11 +107,17 @@
 
 .poster {
     width: 300px;
-    min-width: 200px;
+    min-width: 250px;
+    border-radius: 10px;
 }
 
 .button_border {
     border-left: 1px solid $white;
+}
+
+.button_sticky {
+    position: sticky;
+    bottom: 0;
 }
 
 @media only screen and (max-width: 800px) {
@@ -84,8 +126,17 @@
         position: relative;
         padding: 20px;
         &_background {
-            display: none;
+            position: absolute;
+            height: 510px;
+            top: 0;
+            left: 0;
         }
+    }
+    .single-page_information_container_header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     .single-page_information {
         display: flex;
@@ -99,5 +150,13 @@
     }
     .poster {
         margin-bottom: 20px;
+    }
+    .single-page_information_status {
+        width: 100%;
+        justify-content: center;
+        p {
+            width: 100%;
+            max-width: none;
+        }
     }
 }

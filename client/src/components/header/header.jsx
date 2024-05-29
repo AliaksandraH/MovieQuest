@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import Search from "../../assets/icons8-magnifier-64.png";
+import SearchContainer from "../searchContainer/searchContainer";
 import Logo from "../../assets/icons8-film-reel-64.png";
 import "./header.scss";
 
@@ -13,16 +13,13 @@ const Header = () => {
                 </Link>
             </div>
             <div className="header_toolbar">
-                {/* <div className="header_toolbar_search">
-                    <input type="text" placeholder="Search..." />
-                    <img src={Search} />
-                </div>
-                <NavLink to="/login">
+                <SearchContainer />
+                {/* <NavLink to="/login">
                     <span>Login</span>
                 </NavLink>
                 <NavLink to="/registration">
                     <span>Registration</span>
-                </NavLink> */}
+                </NavLink>{" "} */}
             </div>
         </div>
     );

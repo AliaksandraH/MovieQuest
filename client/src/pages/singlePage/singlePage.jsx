@@ -32,6 +32,12 @@ const SinglePage = () => {
         "production_companies",
         "genres",
     ];
+    const statusColors = {
+        "Returning Series": "rgba(0, 146, 6, 0.4)",
+        Ended: "rgba(159, 0, 19, 0.4)",
+        Released: "rgba(0, 146, 6, 0.4)",
+        Default: "rgba(39, 39, 39, 0.4)",
+    };
     const styleRatingStars = {
         size: 29,
         edit: false,
@@ -45,6 +51,10 @@ const SinglePage = () => {
         getInformation(id);
     }, []);
 
+    useEffect(() => {
+        getInformation(id);
+    }, [id]);
+
     const getInformation = async (id) => {
         const data = await request(
             `https://api.themoviedb.org/3/${type}/${id}?language=en-US&api_key=${_key}`
@@ -56,11 +66,11 @@ const SinglePage = () => {
     };
 
     const generateInformation = (needInformation, obj) => {
-        const data = needInformation.map((el) => {
+        const data = needInformation.map((el, id) => {
             if (Array.isArray(obj[el]) && obj[el].length <= 0) return;
             return (
                 obj[el] && (
-                    <p>
+                    <p key={`${el}_${id}`}>
                         <span className="single-page_information_label">
                             {changeFormatText(el)}:{" "}
                         </span>
@@ -115,7 +125,16 @@ const SinglePage = () => {
                             </div>
                             {information.status && (
                                 <div className="single-page_information_status">
-                                    <p>{information.status}</p>
+                                    <p
+                                        style={{
+                                            background:
+                                                statusColors[
+                                                    information.status
+                                                ] || statusColors.Default,
+                                        }}
+                                    >
+                                        {information.status}
+                                    </p>
                                 </div>
                             )}
                         </div>

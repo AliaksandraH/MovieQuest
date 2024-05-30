@@ -20,7 +20,22 @@ export const setCountries = (countries) => {
     };
 };
 
-export const setFilters = (type, rating, date, genres, countries) => {
+export const setCertifications = (certificationsTv, certificationsMovie) => {
+    return {
+        type: "CHANGE_CERTIFICATIONS",
+        certificationsTv,
+        certificationsMovie,
+    };
+};
+
+export const setFilters = (
+    type,
+    rating,
+    date,
+    genres,
+    countries,
+    certification
+) => {
     return {
         type: "CHANGE_FILTERS",
         payload: type,
@@ -28,5 +43,6 @@ export const setFilters = (type, rating, date, genres, countries) => {
         date: date,
         genres: genres,
         countries: countries,
+        certification: certification,
     };
 };

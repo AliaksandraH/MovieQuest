@@ -14,23 +14,24 @@
     justify-content: center;
     &_container {
         width: 600px;
-        max-width: 600px;
-        max-height: 80vh;
         background-color: $dark-grey;
         border-radius: 10px;
     }
     &_filters {
+        max-height: 70vh;
         padding: 20px;
         display: grid;
         row-gap: 15px;
+        overflow-y: scroll;
     }
     &_header {
         @extend %display-row;
         width: 100%;
         color: $white;
         justify-content: center;
-        position: relative;
         padding: 20px 20px 0 20px;
+        position: sticky;
+        top: 0;
         h2 {
             width: 100%;
             text-align: center;
@@ -48,7 +49,7 @@
     }
 }
 
-.filters_container {
+.filter_container {
     @extend %display-row;
     width: 100%;
     .label {
@@ -58,14 +59,15 @@
         color: $white;
         margin-left: 5px;
     }
-    &_value-type {
+    &_values-type {
         margin-left: 20px;
     }
-    &_values-genres {
+    &_values {
         margin-left: 20px;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 5px;
+        column-gap: 20px;
+        row-gap: 5px;
     }
     input {
         cursor: pointer;
@@ -75,7 +77,7 @@
     }
 }
 
-.filters_container-countries {
+.filter_container-countries {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -90,18 +92,19 @@
     }
 }
 
-@media only screen and (max-width: 950px) {
-    .genres_container {
-        &_values {
-            grid-template-columns: repeat(2, 1fr);
-        }
+.button_sticky {
+    position: sticky;
+    bottom: 0;
+}
+
+@media only screen and (max-width: 500px) {
+    .filter_container_values {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media only screen and (max-width: 750px) {
-    .genres_container {
-        &_values {
-            grid-template-columns: repeat(1, 1fr);
-        }
+@media only screen and (max-width: 400px) {
+    .filter_container_values {
+        grid-template-columns: repeat(1, 1fr);
     }
 }

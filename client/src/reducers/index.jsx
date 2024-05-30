@@ -4,12 +4,14 @@ const initialState = {
     currentType: "movie",
     genres: { movie: [], ty: [] },
     countries: [],
+    certifications: { movie: [], ty: [] },
     assignedFilters: {
         type: "movie",
         rating: 0,
         date: { minDate, maxDate },
         genres: [],
         countries: [],
+        certification: "",
     },
 };
 
@@ -30,6 +32,14 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 countries: action.payload,
             };
+        case "CHANGE_CERTIFICATIONS":
+            return {
+                ...state,
+                certifications: {
+                    tv: action.certificationsTv,
+                    movie: action.certificationsMovie,
+                },
+            };
         case "CHANGE_FILTERS":
             return {
                 ...state,
@@ -39,6 +49,7 @@ const reducer = (state = initialState, action) => {
                     date: action.date,
                     genres: action.genres,
                     countries: action.countries,
+                    certification: action.certification,
                 },
                 currentType: "filters",
             };

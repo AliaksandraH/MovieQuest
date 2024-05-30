@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentType, setGenres, setCountries } from "../../actions";
+import {
+    setCurrentType,
+    setGenres,
+    setCountries,
+    setCertifications,
+} from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import "./home.scss";
@@ -17,6 +22,7 @@ const Home = ({ openModalFilters }) => {
         assignedFilters,
         countries,
         genres,
+        certifications,
     } = useSelector((state) => state);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
@@ -32,6 +38,7 @@ const Home = ({ openModalFilters }) => {
                     getCountries();
                     setMovies(moviesData);
                     setBackground(moviesData);
+                    getCertifications();
                 } catch (error) {
                     console.log(error);
                 }
@@ -71,13 +78,17 @@ const Home = ({ openModalFilters }) => {
     };
 
     const getFiltersShows = async (numPage) => {
-        const { type, rating, date, genres, countries } = assignedFilters;
+        const { type, rating, date, genres, countries, certification } =
+            assignedFilters;
         const strCountries = countries.join("|");
         const with_origin_country = `with_origin_country=${strCountries}`;
         const strGenres = genres.join("|");
         const with_genres = `with_genres=${strGenres}`;
         const vote_average = `vote_average.gte=${rating * 2}`;
         const include_adult = `include_adult=false`;
+        const certification_country = `certification_country=US&certification=${
+            certification !== "All" ? certification : ""
+        }`;
         let date_gte = null;
         let date_lte = null;
         if (type === "movie") {
@@ -90,7 +101,7 @@ const Home = ({ openModalFilters }) => {
 
         try {
             const data = await request(
-                `https://api.themoviedb.org/3/discover/${type}?language=en-US&${date_gte}&${date_lte}&${with_origin_country}&${with_genres}&${vote_average}&${include_adult}&page=${numPage}&api_key=${_key}&sort_by=popularity.desc`
+                `https://api.themoviedb.org/3/discover/${type}?language=en-US&${date_gte}&${date_lte}&${certification_country}&${with_origin_country}&${with_genres}&${vote_average}&${include_adult}&page=${numPage}&api_key=${_key}&sort_by=popularity.desc`
             );
             setNumberShows(data.total_results);
             return await data.results.map(transformInformationMovies);
@@ -130,6 +141,31 @@ const Home = ({ openModalFilters }) => {
                 `https://api.themoviedb.org/3/configuration/countries?language=en-US&api_key=${_key}`
             );
             dispatch(setCountries(movieCountries));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getCertifications = async () => {
+        try {
+            const movieCertifications = await request(
+                `https://api.themoviedb.org/3/certification/movie/list?language=en-US&api_key=${_key}`
+            );
+            const tvCertifications = await request(
+                `https://api.themoviedb.org/3/certification/tv/list?language=en-US&api_key=${_key}`
+            );
+            dispatch(
+                setCertifications(
+                    [
+                        { certification: "All" },
+                        ...tvCertifications.certifications.US,
+                    ],
+                    [
+                        { certification: "All" },
+                        ...movieCertifications.certifications.US,
+                    ]
+                )
+            );
         } catch (error) {
             console.log(error);
         }
@@ -250,7 +286,9 @@ const Home = ({ openModalFilters }) => {
                     </div>
                     {countries.length > 0 &&
                         genres.movie.length > 0 &&
-                        genres.tv.length > 0 && (
+                        genres.tv.length > 0 &&
+                        certifications.movie.length > 0 &&
+                        certifications.tv.length > 0 && (
                             <button onClick={openModalFilters}>Filters</button>
                         )}
                 </div>

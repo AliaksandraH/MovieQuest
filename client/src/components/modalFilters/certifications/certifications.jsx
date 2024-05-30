@@ -13,17 +13,18 @@ const Certifications = ({
             return (
                 <div key={`${el.certification}_${id}`}>
                     <input
+                        id={el.certification}
                         type="radio"
                         value={el.certification}
-                        defaultChecked={
-                            checkedCertification === el.certification
-                        }
+                        checked={checkedCertification === el.certification}
                         onChange={(event) => {
                             setCheckedCertification(event.target.value);
                         }}
                         name="certifications"
                     />
-                    <span className="input-label">{el.certification}</span>
+                    <label htmlFor={el.certification} className="input-label">
+                        {el.certification}
+                    </label>
                 </div>
             );
         });

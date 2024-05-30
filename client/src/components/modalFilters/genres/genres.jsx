@@ -20,14 +20,15 @@ const Genres = ({ type, checkedGenres, setCheckedGenres }) => {
             return (
                 <div key={el.id}>
                     <input
+                        id={el.id}
                         type="checkbox"
                         value={el.id}
                         onChange={changeGenres}
-                        defaultChecked={checkedGenres.includes(
-                            el.id.toString()
-                        )}
+                        checked={checkedGenres.includes(el.id.toString())}
                     />
-                    <span className="input-label">{el.name}</span>
+                    <label htmlFor={el.id} className="input-label">
+                        {el.name}
+                    </label>
                 </div>
             );
         });

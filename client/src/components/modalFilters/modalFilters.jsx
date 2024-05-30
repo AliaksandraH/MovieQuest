@@ -58,15 +58,16 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                     key={`${el}_${id}`}
                 >
                     <input
+                        id={el}
                         type="radio"
                         value={el}
                         checked={checkedType === el}
                         onChange={changeType}
                         name="type"
                     />
-                    <span className="input-label">
+                    <label htmlFor={el} className="input-label">
                         {el === "tv" ? el.toUpperCase() : changeFormatText(el)}
-                    </span>
+                    </label>
                 </div>
             );
         });

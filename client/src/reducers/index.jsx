@@ -11,7 +11,7 @@ const initialState = {
         date: { minDate, maxDate },
         genres: [],
         countries: [],
-        certification: "",
+        certification: "All",
     },
 };
 

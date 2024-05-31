@@ -115,7 +115,7 @@ const SearchContainer = () => {
                             </div>
                         </>
                     )}
-                    {results.movie.length <= 0 && results.movie.length <= 0 && (
+                    {results.movie.length <= 0 && results.tv.length <= 0 && (
                         <p className="nothing-found">
                             Nothing was found on the request
                         </p>

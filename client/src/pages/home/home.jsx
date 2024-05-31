@@ -9,6 +9,7 @@ import {
 } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
+import NoBackground from "../../assets/no-background.png";
 import "./home.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
@@ -229,25 +230,36 @@ const Home = ({ openModalFilters }) => {
     return (
         <div className="home">
             <div className="home_header">
-                <img src={backgroundImg} />
+                <img
+                    className="home_header_background"
+                    src={backgroundImg || NoBackground}
+                />
                 <div className="home_header_information">
-                    <span>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Similique consequatur reiciendis facere excepturi
-                        iure quis nesciunt, incidunt vitae sed minima! Amet
-                        suscipit quisquam adipisci sed soluta est nemo
-                        asperiores exercitationem aut eligendi ducimus, quos
-                        illum. Error cupiditate tempore totam autem aperiam a
-                        quidem voluptates expedita sunt laborum. Iste
-                        consequuntur aliquid iusto minus modi, reprehenderit
-                        animi facere? Nesciunt reprehenderit vitae ducimus
-                        adipisci ipsum quo deleniti blanditiis nam consequatur.
-                        Sunt in rerum totam, vitae excepturi accusamus
-                        voluptates, praesentium facilis reprehenderit natus
-                        nostrum ipsa sequi a, officiis repudiandae culpa cumque
-                        voluptate ducimus quasi laborum placeat omnis hic
-                        distinctio ullam. Rerum facere eius inventore.
-                    </span>
+                    <div className="welcome-message">
+                        <p className="bold-text">Welcome to Movie Quest!</p>
+                        <p>
+                            Looking for something to watch tonight? You've come
+                            to the right place! Movie Quest is your reliable
+                            guide in the world of cinema. We'll help you find
+                            the perfect movie for any mood and occasion.
+                        </p>
+                        <p>
+                            Our library includes thousands of films – from
+                            classic oldies to the latest releases. Find
+                            everything you need in one place.
+                        </p>
+                        <p>
+                            Our intuitive interface allows you to quickly and
+                            easily find movies by title, genre, release year,
+                            and many other criteria.
+                        </p>
+                        <p className="bold-text">Join Movie Quest!</p>
+                        <p>
+                            Start your cinematic journey right now. Simply enter
+                            the title of a movie or choose a genre, and we will
+                            suggest the best options for you to watch.
+                        </p>
+                    </div>
                     <Calendar />
                 </div>
             </div>

@@ -56,13 +56,17 @@ const SinglePage = () => {
     }, [id]);
 
     const getInformation = async (id) => {
-        const data = await request(
-            `https://api.themoviedb.org/3/${type}/${id}?language=en-US&api_key=${_key}`
-        );
-        setInformation(data);
-        const needInformation =
-            type === "movie" ? movieInformation : tvInformation;
-        generateInformation(needInformation, data);
+        try {
+            const data = await request(
+                `https://api.themoviedb.org/3/${type}/${id}?language=en-US&api_key=${_key}`
+            );
+            setInformation(data);
+            const needInformation =
+                type === "movie" ? movieInformation : tvInformation;
+            generateInformation(needInformation, data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const generateInformation = (needInformation, obj) => {

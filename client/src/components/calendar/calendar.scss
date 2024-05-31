@@ -53,3 +53,16 @@
         visibility: hidden;
     }
 }
+
+@media only screen and (max-width: 800px) {
+    .calendar {
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .calendar {
+        width: 100%;
+        height: 220px;
+    }
+}

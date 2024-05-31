@@ -18,10 +18,7 @@ const MovieContainer = ({ movieInformation, type }) => {
     return (
         <Link to={`/${type}/${id}`} className="movie">
             <div className={wasViewed ? "movie_wasViewed" : null}></div>
-            <img
-                src={poster_path ? `${img_path}${poster_path}` : NoPoster}
-                alt=""
-            />
+            <img src={poster_path ? `${img_path}${poster_path}` : NoPoster} />
             <div className="movie_information">
                 <p>{title}</p>
             </div>

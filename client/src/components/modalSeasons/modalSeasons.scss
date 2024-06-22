@@ -1,0 +1,27 @@
+@import "../../style/variables.scss";
+
+.modal-seasons {
+    width: 100%;
+    max-height: 70vh;
+    padding: 20px 0;
+    display: grid;
+    row-gap: 15px;
+    overflow-y: scroll;
+    color: $white;
+}
+
+.accordion {
+    width: 100%;
+    button {
+        width: 100%;
+        background-color: $main-color;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        padding: 1rem;
+        font-size: 17px;
+        margin: 5px 0;
+        color: $white;
+    }
+}

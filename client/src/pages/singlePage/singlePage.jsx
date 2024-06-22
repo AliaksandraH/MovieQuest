@@ -9,7 +9,7 @@ import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
 
-const SinglePage = () => {
+const SinglePage = ({ openModalSeasons }) => {
     const { id, type } = useParams();
     const { request } = useHttp();
     const [information, setInformation] = useState({});
@@ -151,7 +151,14 @@ const SinglePage = () => {
                             )}
                             <div className="buttons-wide button_sticky">
                                 <button>Save</button>
-                                <button className="button_border">
+                                <button
+                                    className="button_border"
+                                    onClick={() => {
+                                        type === "tv"
+                                            ? openModalSeasons()
+                                            : null;
+                                    }}
+                                >
                                     Watched
                                 </button>
                             </div>

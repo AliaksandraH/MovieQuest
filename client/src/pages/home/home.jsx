@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import {
     setCurrentType,
     setGenres,
@@ -16,6 +17,8 @@ const _key = process.env.REACT_APP_API_KEY;
 
 const Home = ({ openModalFilters }) => {
     const imgPath = "https://image.tmdb.org/t/p/original";
+    const { t, i18n } = useTranslation();
+    const currentLanguage = i18n.language;
     const { request } = useHttp();
     const dispatch = useDispatch();
     const {
@@ -35,10 +38,10 @@ const Home = ({ openModalFilters }) => {
             if (movies.length < 1) {
                 try {
                     const moviesData = await getMovies(type, numPage);
-                    getGenres();
-                    getCountries();
                     setMovies(moviesData);
                     setBackground(moviesData);
+                    getGenres();
+                    getCountries();
                     getCertifications();
                 } catch (error) {
                     console.log(error);
@@ -52,6 +55,27 @@ const Home = ({ openModalFilters }) => {
             setBackground(null);
         };
     }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const moviesData = await getMovies(type, 1);
+                setMovies(moviesData);
+                getGenres();
+                getCountries();
+                getCertifications();
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            setBackground(null);
+        };
+    }, [currentLanguage]);
 
     useEffect(() => {
         if (type === "filters") {
@@ -69,7 +93,7 @@ const Home = ({ openModalFilters }) => {
         try {
             if (type === "filters") return getFiltersShows(numPage);
             const data = await request(
-                `https://api.themoviedb.org/3/trending/${type}/week?language=en-US&api_key=${_key}&page=${numPage}`
+                `https://api.themoviedb.org/3/trending/${type}/week?language=${currentLanguage}&api_key=${_key}&page=${numPage}`
             );
             setNumberShows(data.total_results);
             return await data.results.map(transformInformationMovies);
@@ -102,7 +126,7 @@ const Home = ({ openModalFilters }) => {
 
         try {
             const data = await request(
-                `https://api.themoviedb.org/3/discover/${type}?language=en-US&${date_gte}&${date_lte}&${certification_country}&${with_origin_country}&${with_genres}&${vote_average}&${include_adult}&page=${numPage}&api_key=${_key}&sort_by=popularity.desc`
+                `https://api.themoviedb.org/3/discover/${type}?language=${currentLanguage}&${date_gte}&${date_lte}&${certification_country}&${with_origin_country}&${with_genres}&${vote_average}&${include_adult}&page=${numPage}&api_key=${_key}&sort_by=popularity.desc`
             );
             setNumberShows(data.total_results);
             return await data.results.map(transformInformationMovies);
@@ -125,10 +149,10 @@ const Home = ({ openModalFilters }) => {
     const getGenres = async () => {
         try {
             const movieGenres = await request(
-                `https://api.themoviedb.org/3/genre/movie/list?language=en-US&api_key=${_key}`
+                `https://api.themoviedb.org/3/genre/movie/list?language=${currentLanguage}&api_key=${_key}`
             );
             const tvGenres = await request(
-                `https://api.themoviedb.org/3/genre/tv/list?language=en-US&api_key=${_key}`
+                `https://api.themoviedb.org/3/genre/tv/list?language=${currentLanguage}&api_key=${_key}`
             );
             dispatch(setGenres(movieGenres.genres, tvGenres.genres));
         } catch (error) {
@@ -139,7 +163,7 @@ const Home = ({ openModalFilters }) => {
     const getCountries = async () => {
         try {
             const movieCountries = await request(
-                `https://api.themoviedb.org/3/configuration/countries?language=en-US&api_key=${_key}`
+                `https://api.themoviedb.org/3/configuration/countries?language=${currentLanguage}&api_key=${_key}`
             );
             dispatch(setCountries(movieCountries));
         } catch (error) {
@@ -149,21 +173,23 @@ const Home = ({ openModalFilters }) => {
 
     const getCertifications = async () => {
         try {
+            const certification = currentLanguage === "en" ? "US" : "RU";
+
             const movieCertifications = await request(
-                `https://api.themoviedb.org/3/certification/movie/list?language=en-US&api_key=${_key}`
+                `https://api.themoviedb.org/3/certification/movie/list?api_key=${_key}`
             );
             const tvCertifications = await request(
-                `https://api.themoviedb.org/3/certification/tv/list?language=en-US&api_key=${_key}`
+                `https://api.themoviedb.org/3/certification/tv/list?api_key=${_key}`
             );
             dispatch(
                 setCertifications(
                     [
                         { certification: "All" },
-                        ...tvCertifications.certifications.US,
+                        ...tvCertifications.certifications[certification],
                     ],
                     [
                         { certification: "All" },
-                        ...movieCertifications.certifications.US,
+                        ...movieCertifications.certifications[certification],
                     ]
                 )
             );
@@ -236,29 +262,12 @@ const Home = ({ openModalFilters }) => {
                 />
                 <div className="home_header_information">
                     <div className="welcome-message">
-                        <p className="bold-text">Welcome to Movie Quest!</p>
-                        <p>
-                            Looking for something to watch tonight? You've come
-                            to the right place! Movie Quest is your reliable
-                            guide in the world of cinema. We'll help you find
-                            the perfect movie for any mood and occasion.
-                        </p>
-                        <p>
-                            Our library includes thousands of films – from
-                            classic oldies to the latest releases. Find
-                            everything you need in one place.
-                        </p>
-                        <p>
-                            Our intuitive interface allows you to quickly and
-                            easily find movies by title, genre, release year,
-                            and many other criteria.
-                        </p>
-                        <p className="bold-text">Join Movie Quest!</p>
-                        <p>
-                            Start your cinematic journey right now. Simply enter
-                            the title of a movie or choose a genre, and we will
-                            suggest the best options for you to watch.
-                        </p>
+                        <p className="bold-text">{t("welcomeParagraph1")}</p>
+                        <p>{t("welcomeParagraph2")}</p>
+                        <p>{t("welcomeParagraph3")}</p>
+                        <p>{t("welcomeParagraph4")}</p>
+                        <p className="bold-text">{t("welcomeParagraph5")}</p>
+                        <p>{t("welcomeParagraph6")}</p>
                     </div>
                     <Calendar />
                 </div>
@@ -275,7 +284,7 @@ const Home = ({ openModalFilters }) => {
                                 changeType("movie");
                             }}
                         >
-                            Movies
+                            {t("movies")}
                         </button>
                         <button
                             className={type === "tv" ? "active-button" : null}
@@ -283,7 +292,7 @@ const Home = ({ openModalFilters }) => {
                                 changeType("tv");
                             }}
                         >
-                            TV Series
+                            {t("tvSeries")}
                         </button>
                         <button
                             className={
@@ -293,7 +302,7 @@ const Home = ({ openModalFilters }) => {
                                 changeType("filters");
                             }}
                         >
-                            Shows By Filters
+                            {t("showsByFilters")}
                         </button>
                     </div>
                     {countries.length > 0 &&
@@ -301,7 +310,9 @@ const Home = ({ openModalFilters }) => {
                         genres.tv.length > 0 &&
                         certifications.movie.length > 0 &&
                         certifications.tv.length > 0 && (
-                            <button onClick={openModalFilters}>Filters</button>
+                            <button onClick={openModalFilters}>
+                                {t("filters")}
+                            </button>
                         )}
                 </div>
                 <div className="main_movies">
@@ -325,15 +336,10 @@ const Home = ({ openModalFilters }) => {
                                 nextPage();
                             }}
                         >
-                            Show more
+                            {t("showMore")}
                         </button>
                     )}
-                    {movies.length <= 0 && (
-                        <p>
-                            According to the selected filters, there are no
-                            shows.
-                        </p>
-                    )}
+                    {movies.length <= 0 && <p>{t("noShows")}</p>}
                 </div>
             </div>
         </div>

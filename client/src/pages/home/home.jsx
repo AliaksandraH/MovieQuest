@@ -71,10 +71,6 @@ const Home = ({ openModalFilters }) => {
         };
 
         fetchData();
-
-        return () => {
-            setBackground(null);
-        };
     }, [currentLanguage]);
 
     useEffect(() => {

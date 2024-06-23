@@ -1,9 +1,11 @@
 import { useState } from "react";
+import i18next from "i18next";
 import RightArrow from "../../assets/icons8-right-arrow-64.png";
 import LeftArrow from "../../assets/icons8-left-arrow-64.png";
 import "./calendar.scss";
 
 const Calendar = () => {
+    const currentLanguage = i18next.language;
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const changeDate = (increment) => {
@@ -47,7 +49,7 @@ const Calendar = () => {
                     <img src={LeftArrow} alt="left arrow" />
                 </button>
                 <p>
-                    {currentDate.toLocaleDateString("en-US", {
+                    {currentDate.toLocaleDateString(currentLanguage, {
                         month: "long",
                         year: "numeric",
                     })}

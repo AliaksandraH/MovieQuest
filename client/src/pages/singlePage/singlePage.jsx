@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHttp } from "../../hooks/http.hook";
-import { changeFormatText, createLineFromArray } from "../../helpers/functions";
+import { createLineFromArray } from "../../helpers/functions";
 import ReactStars from "react-rating-stars-component";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
@@ -14,6 +15,8 @@ const SinglePage = () => {
     const { request } = useHttp();
     const [information, setInformation] = useState({});
     const [sortedInformation, setSortedInformation] = useState({});
+    const { t, i18n } = useTranslation();
+    const currentLanguage = i18n.language;
     const imgPath = "https://image.tmdb.org/t/p/original";
     const movieInformation = [
         "original_title",
@@ -53,12 +56,12 @@ const SinglePage = () => {
 
     useEffect(() => {
         getInformation(id);
-    }, [id]);
+    }, [id, currentLanguage]);
 
     const getInformation = async (id) => {
         try {
             const data = await request(
-                `https://api.themoviedb.org/3/${type}/${id}?language=en-US&api_key=${_key}`
+                `https://api.themoviedb.org/3/${type}/${id}?language=${currentLanguage}&api_key=${_key}`
             );
             setInformation(data);
             const needInformation =
@@ -76,7 +79,7 @@ const SinglePage = () => {
                 obj[el] && (
                     <p key={`${el}_${id}`}>
                         <span className="single-page_information_label">
-                            {changeFormatText(el)}:{" "}
+                            {t(el)}:{" "}
                         </span>
                         {Array.isArray(obj[el])
                             ? createLineFromArray(obj[el])
@@ -137,7 +140,8 @@ const SinglePage = () => {
                                                 ] || statusColors.Default,
                                         }}
                                     >
-                                        {information.status}
+                                        {t(information.status) ||
+                                            information.status}
                                     </p>
                                 </div>
                             )}
@@ -150,9 +154,9 @@ const SinglePage = () => {
                                 </p>
                             )}
                             <div className="buttons-wide button_sticky">
-                                <button>Save</button>
+                                <button>{t("save")}</button>
                                 <button className="button_border">
-                                    Watched
+                                    {t("watched")}
                                 </button>
                             </div>
                         </div>

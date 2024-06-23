@@ -1,8 +1,10 @@
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import "../modalFilters.scss";
 
 const Genres = ({ type, checkedGenres, setCheckedGenres }) => {
     const { genres } = useSelector((state) => state);
+    const { t } = useTranslation();
 
     const changeGenres = (event) => {
         const value = event.target.value;
@@ -36,7 +38,7 @@ const Genres = ({ type, checkedGenres, setCheckedGenres }) => {
 
     return (
         <div className="filter_container">
-            <span className="label">Genres:</span>
+            <span className="label">{t("genres")}:</span>
             <div className="filter_container_values">{createStyleGenres()}</div>
         </div>
     );

@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import "../modalFilters.scss";
 
 const Certifications = ({
@@ -7,6 +8,7 @@ const Certifications = ({
     setCheckedCertification,
 }) => {
     const { certifications } = useSelector((state) => state);
+    const { t } = useTranslation();
 
     const createStyleCertifications = () => {
         return certifications[type].map((el, id) => {
@@ -32,7 +34,7 @@ const Certifications = ({
 
     return (
         <div className="filter_container ">
-            <span className="label">Certifications:</span>
+            <span className="label">{t("certifications")}:</span>
             <div className="filter_container_values">
                 {createStyleCertifications()}
             </div>

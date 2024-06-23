@@ -27,5 +27,22 @@
     "save" : "Сохранить",
     "of" : "из",
     "selected" : "",
-    "select" : "Выбрать"
+    "select" : "Выбрать",
+    "watched" : "Смотрел",
+    "original_name" : "Оригинальное название",
+    "first_air_date" : "Дата первого выхода",
+    "last_air_date" : "Дата последнего выхода",
+    "number_of_seasons" : "Количество сезонов",
+    "created_by" : "Создатели",
+    "production_countries" : "Страны производства",
+    "production_companies" : "Компании",
+    "original_title" : "Оригинальное название",
+    "release_date" : "Дата выхода",
+    "Returning Series" : "Возвращающийся сериал",
+    "Planned" : "Запланировано",
+    "In Production" : "В производстве",
+    "Ended" : "Завершено",
+    "Canceled" : "Отменено",
+    "Pilot" : "Пилот",
+    "Released" : "Выпущено"
 }

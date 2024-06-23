@@ -27,5 +27,22 @@
     "save" : "Save",
     "of" : "of",
     "selected" : "selected",
-    "select" : "Select"
+    "select" : "Select",
+    "watched" : "Watched",
+    "original_name" : "Original name",
+    "first_air_date" :"First air date",
+    "last_air_date" : "Last air date",
+    "number_of_seasons" : "Number of seasons",
+    "created_by":"Created by",
+    "production_countries":"Production countries",
+    "production_companies":"Production companies",
+    "original_title" : "Original title",
+    "release_date" : "Release date",
+    "Returning Series" : "Returning Series",
+    "Planned" : "Planned",
+    "In Production" : "In Production",
+    "Ended" : "Ended",
+    "Canceled" : "Canceled",
+    "Pilot" : "Pilot",
+    "Released" : "Released"
   }

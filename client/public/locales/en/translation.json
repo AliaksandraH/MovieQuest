@@ -1,5 +1,6 @@
 {
     "movies": "Movies",
+    "movie": "Movie",
     "tvSeries": "TV Series",
     "tv": "TV",
     "showsByFilters": "Shows By Filters",
@@ -15,5 +16,16 @@
     "welcomeParagraph4" : "Our intuitive interface allows you to quickly and easily find movies by title, genre, release year, and many other criteria.",
     "welcomeParagraph5" : "Join Movie Quest!",
     "welcomeParagraph6" : "Start your cinematic journey right now. Simply enter the title of a movie or choose a genre, and we will suggest the best options for you to watch.",
-    "nothingWasFound" : "Nothing was found on the request."
+    "nothingWasFound" : "Nothing was found on the request.",
+    "type" : "Type",
+    "minimumrating" : "Minimum rating",
+    "yearRelease" : "Year of release",
+    "years" : "years",
+    "countries" : "Countries",
+    "genres" : "Genres",
+    "certifications" : "Certifications",
+    "save" : "Save",
+    "of" : "of",
+    "selected" : "selected",
+    "select" : "Select"
   }

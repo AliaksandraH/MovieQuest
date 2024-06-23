@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useHttp } from "../../hooks/http.hook";
 import Search from "../../assets/icons8-magnifier-64.png";
 import "./searchContainer.scss";
@@ -7,6 +8,8 @@ import "./searchContainer.scss";
 const _key = process.env.REACT_APP_API_KEY;
 
 const SearchContainer = () => {
+    const { t, i18n } = useTranslation();
+    const currentLanguage = i18n.language;
     const [text, setText] = useState("");
     const [results, setResults] = useState({ movie: [], tv: [] });
     const [isVisible, setIsVisible] = useState(false);
@@ -16,10 +19,10 @@ const SearchContainer = () => {
     const getShowsByText = async () => {
         try {
             const resultMovie = await request(
-                `https://api.themoviedb.org/3/search/movie?language=en-US&query=${text}&api_key=${_key}`
+                `https://api.themoviedb.org/3/search/movie?language=${currentLanguage}&query=${text}&api_key=${_key}`
             );
             const resultTv = await request(
-                `https://api.themoviedb.org/3/search/tv?language=en-US&query=${text}&api_key=${_key}`
+                `https://api.themoviedb.org/3/search/tv?language=${currentLanguage}&query=${text}&api_key=${_key}`
             );
             const transformMovie = resultMovie.results.map((el) =>
                 transformInformationShows(el, "movie")
@@ -86,7 +89,7 @@ const SearchContainer = () => {
             <div className="search_container">
                 <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder={`${t("search")}...`}
                     onChange={(event) => {
                         setText(event.target.value);
                     }}
@@ -98,7 +101,7 @@ const SearchContainer = () => {
                     {results.movie.length > 0 && (
                         <>
                             <p className="search_results-container_type top">
-                                Movie
+                                {t("movies")}
                             </p>
                             <div className="results">
                                 {styleResults(results.movie)}
@@ -108,7 +111,7 @@ const SearchContainer = () => {
                     {results.tv.length > 0 && (
                         <>
                             <p className="search_results-container_type tv">
-                                TV
+                                {t("tvSeries")}
                             </p>
                             <div className="results">
                                 {styleResults(results.tv)}
@@ -116,9 +119,7 @@ const SearchContainer = () => {
                         </>
                     )}
                     {results.movie.length <= 0 && results.tv.length <= 0 && (
-                        <p className="nothing-found">
-                            Nothing was found on the request
-                        </p>
+                        <p className="nothing-found">{t("nothingWasFound")}</p>
                     )}
                 </div>
             )}

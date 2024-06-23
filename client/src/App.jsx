@@ -9,6 +9,7 @@ import Registration from "./pages/registration/registration";
 import SinglePage from "./pages/singlePage/singlePage";
 import ModalFilters from "./components/modalFilters/modalFilters";
 import "./App.scss";
+import "../i18n.js";
 
 function App() {
     const { assignedFilters } = useSelector((state) => state);

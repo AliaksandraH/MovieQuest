@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Select from "react-dropdown-select";
 import "./selectDropdown.scss";
 
@@ -10,6 +11,7 @@ const SelectDropdown = ({
     setValues,
 }) => {
     const [defaultValues, setDefaultValues] = useState([]);
+    const { t } = useTranslation();
 
     useEffect(() => {
         const mappedValues = data.filter((option) =>
@@ -25,7 +27,7 @@ const SelectDropdown = ({
         return (
             <p>
                 <span>
-                    {selectedCount} of {totalCount} selected
+                    {selectedCount} {t("of")} {totalCount} {t("selected")}
                 </span>
             </p>
         );
@@ -47,6 +49,7 @@ const SelectDropdown = ({
             valueField={valueField}
             searchBy={labelField}
             contentRenderer={values.length > 5 ? CustomContentRenderer : false}
+            placeholder={`${t("select")}...`}
         />
     );
 };

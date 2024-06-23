@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { changeFormatText } from "../../helpers/functions";
+import { useTranslation } from "react-i18next";
 import { setFilters } from "../../actions";
 import ReactStars from "react-rating-stars-component";
 import Genres from "./genres/genres";
@@ -14,6 +14,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     const { type, rating, certification } = currentFilters;
     const dispatch = useDispatch();
     const { countries } = useSelector((store) => store);
+    const { t } = useTranslation();
     const [checkedType, setCheckedType] = useState(type);
     const [minRating, setMinRating] = useState(rating);
     const [checkedGenres, setCheckedGenres] = useState(currentFilters.genres);
@@ -66,7 +67,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                         name="type"
                     />
                     <label htmlFor={el} className="input-label">
-                        {el === "tv" ? el.toUpperCase() : changeFormatText(el)}
+                        {el === "movie" ? t("movies") : t(el)}
                     </label>
                 </div>
             );
@@ -97,18 +98,18 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
         <div className="modal" onClick={closeModalHandler}>
             <div className="modal_container">
                 <div className="modal_header">
-                    <h2>Filters</h2>
+                    <h2>{t("filters")}</h2>
                     <button onClick={closeModalFilters}>
                         <img src={IconClase} alt="close" />
                     </button>
                 </div>
                 <div className="modal_filters">
                     <div className="filter_container ">
-                        <span className="label">Type:</span>
+                        <span className="label">{t("type")}:</span>
                         {createStyleTypes()}
                     </div>
                     <div className="filter_container ">
-                        <span className="label">Minimum rating:</span>
+                        <span className="label">{t("minimumrating")}:</span>
                         <div className="stars">
                             <ReactStars
                                 {...styleRatingStars}
@@ -118,7 +119,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                     </div>
                     <SliderDate date={date} setDate={setDate} />
                     <div className="filter_container-countries ">
-                        <span className="label">Countries:</span>
+                        <span className="label">{t("countries")}:</span>
                         <div className="container-select">
                             <SelectDropdown
                                 data={countries}
@@ -141,7 +142,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                     />
                 </div>
                 <div className="buttons-wide button_sticky" onClick={getShows}>
-                    <button>Save</button>
+                    <button>{t("save")}</button>
                 </div>
             </div>
         </div>

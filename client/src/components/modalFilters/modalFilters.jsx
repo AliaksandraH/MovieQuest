@@ -13,7 +13,7 @@ import "./modalFilters.scss";
 const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     const { type, rating, certification } = currentFilters;
     const dispatch = useDispatch();
-    const { countries } = useSelector((store) => store);
+    const countries = useSelector((state) => state.countries);
     const { t } = useTranslation();
     const [checkedType, setCheckedType] = useState(type);
     const [minRating, setMinRating] = useState(rating);

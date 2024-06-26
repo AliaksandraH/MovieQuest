@@ -7,7 +7,7 @@ const Certifications = ({
     checkedCertification,
     setCheckedCertification,
 }) => {
-    const { certifications } = useSelector((state) => state);
+    const certifications = useSelector((state) => state.certifications);
     const { t } = useTranslation();
 
     const createStyleCertifications = () => {

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import "../modalFilters.scss";
 
 const Genres = ({ type, checkedGenres, setCheckedGenres }) => {
-    const { genres } = useSelector((state) => state);
+    const genres = useSelector((state) => state.genres);
     const { t } = useTranslation();
 
     const changeGenres = (event) => {

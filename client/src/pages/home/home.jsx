@@ -64,6 +64,7 @@ const Home = ({ openModalFilters }) => {
                 getGenres();
                 getCountries();
                 getCertifications();
+                getFiltersShows(1);
                 window.scrollTo(0, 0);
             } catch (error) {
                 console.log(error);
@@ -101,29 +102,34 @@ const Home = ({ openModalFilters }) => {
     const getFiltersShows = async (numPage) => {
         const { type, rating, date, genres, countries, certification } =
             assignedFilters;
-        const strCountries = countries.join("|");
-        const with_origin_country = `with_origin_country=${strCountries}`;
-        const strGenres = genres.join("|");
-        const with_genres = `with_genres=${strGenres}`;
-        const vote_average = `vote_average.gte=${rating * 2}`;
-        const include_adult = `include_adult=false`;
-        const certification_country = `certification_country=US&certification=${
-            certification !== "All" ? certification : ""
-        }`;
-        let date_gte = null;
-        let date_lte = null;
-        if (type === "movie") {
-            date_gte = `primary_release_date.gte=${date.minDate}-01-01`;
-            date_lte = `primary_release_date.lte=${date.maxDate}-12-31`;
-        } else {
-            date_gte = `first_air_date.gte=${date.minDate}-01-01`;
-            date_lte = `first_air_date.lte=${date.maxDate}-12-31`;
-        }
+        const url = new URL(`https://api.themoviedb.org/3/discover/${type}`);
+        const params = {
+            api_key: _key,
+            with_origin_country: countries.join("|"),
+            with_genres: genres.join("|"),
+            "vote_average.gte": rating * 2,
+            certification_country: currentLanguage === "en" ? "US" : "RU",
+            certification: certification !== "All" ? certification : "",
+            language: currentLanguage,
+            include_adult: false,
+            page: numPage,
+            ...(type === "movie"
+                ? {
+                      "primary_release_date.gte": `${date.minDate}-01-01`,
+                      "primary_release_date.lte": `${date.maxDate}-12-31`,
+                  }
+                : {
+                      "first_air_date.gte": `${date.minDate}-01-01`,
+                      "first_air_date.lte": `${date.maxDate}-12-31`,
+                  }),
+        };
+
+        Object.keys(params).forEach((key) =>
+            url.searchParams.append(key, params[key])
+        );
 
         try {
-            const data = await request(
-                `https://api.themoviedb.org/3/discover/${type}?language=${currentLanguage}&${date_gte}&${date_lte}&${certification_country}&${with_origin_country}&${with_genres}&${vote_average}&${include_adult}&page=${numPage}&api_key=${_key}&sort_by=popularity.desc`
-            );
+            const data = await request(url);
             setNumberShows(data.total_results);
             return await data.results.map(transformInformationMovies);
         } catch (error) {

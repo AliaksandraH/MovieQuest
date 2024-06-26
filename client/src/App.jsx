@@ -12,7 +12,7 @@ import "./App.scss";
 import "../i18n.js";
 
 function App() {
-    const { assignedFilters } = useSelector((state) => state);
+    const assignedFilters = useSelector((state) => state.assignedFilters);
     const [modalShow, setModalShow] = useState(false);
 
     const openModal = () => setModalShow(true);

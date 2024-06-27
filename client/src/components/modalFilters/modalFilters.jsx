@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { changeFormatText } from "../../helpers/functions";
+import { useTranslation } from "react-i18next";
 import { setFilters } from "../../actions";
 import ReactStars from "react-rating-stars-component";
 import Genres from "./genres/genres";
@@ -12,7 +12,8 @@ import "./modalFilters.scss";
 const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     const { type, rating, certification } = currentFilters;
     const dispatch = useDispatch();
-    const { countries } = useSelector((store) => store);
+    const countries = useSelector((state) => state.countries);
+    const { t } = useTranslation();
     const [checkedType, setCheckedType] = useState(type);
     const [minRating, setMinRating] = useState(rating);
     const [checkedGenres, setCheckedGenres] = useState(currentFilters.genres);
@@ -52,7 +53,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                         name="type"
                     />
                     <label htmlFor={el} className="input-label">
-                        {el === "tv" ? el.toUpperCase() : changeFormatText(el)}
+                        {el === "movie" ? t("movies") : t(el)}
                     </label>
                 </div>
             );
@@ -80,33 +81,44 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     };
 
     return (
-        <>
-            <div className="modal-filters">
-                <div className="filter_container ">
-                    <span className="label">Type:</span>
-                    {createStyleTypes()}
+        <div className="modal" onClick={closeModalHandler}>
+            <div className="modal_container">
+                <div className="modal_header">
+                    <h2>{t("filters")}</h2>
+                    <button onClick={closeModalFilters}>
+                        <img src={IconClase} alt="close" />
+                    </button>
                 </div>
-                <div className="filter_container ">
-                    <span className="label">Minimum rating:</span>
-                    <div className="stars">
-                        <ReactStars
-                            {...styleRatingStars}
-                            onChange={setMinRating}
-                        />
+                <div className="modal_filters">
+                    <div className="filter_container ">
+                        <span className="label">{t("type")}:</span>
+                        {createStyleTypes()}
+                    </div>
+                    <div className="filter_container ">
+                        <span className="label">{t("minimumrating")}:</span>
+                        <div className="stars">
+                            <ReactStars
+                                {...styleRatingStars}
+                                onChange={setMinRating}
+                            />
+                        </div>
+                    </div>
+                    <SliderDate date={date} setDate={setDate} />
+                    <div className="filter_container-countries ">
+                        <span className="label">{t("countries")}:</span>
+                        <div className="container-select">
+                            <SelectDropdown
+                                data={countries}
+                                labelField={"native_name"}
+                                valueField={"iso_3166_1"}
+                                values={checkedСountries}
+                                setValues={setCheckedСountries}
+                            />
+                        </div>
                     </div>
                 </div>
-                <SliderDate date={date} setDate={setDate} />
-                <div className="filter_container-countries ">
-                    <span className="label">Countries:</span>
-                    <div className="container-select">
-                        <SelectDropdown
-                            data={countries}
-                            labelField={"native_name"}
-                            valueField={"iso_3166_1"}
-                            values={checkedСountries}
-                            setValues={setCheckedСountries}
-                        />
-                    </div>
+                <div className="buttons-wide button_sticky" onClick={getShows}>
+                    <button>{t("save")}</button>
                 </div>
                 <Genres
                     type={checkedType}

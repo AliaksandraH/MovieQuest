@@ -11,10 +11,10 @@ import Modal from "./components/modal/modal";
 import ModalFilters from "./components/modalFilters/modalFilters";
 import ModalSeasons from "./components/modalSeasons/modalSeasons";
 import "./App.scss";
+import "../i18n.js";
 
 function App() {
-    const { assignedFilters } = useSelector((state) => state);
-
+    const assignedFilters = useSelector((state) => state.assignedFilters);
     const [modalFilters, setModalFilters] = useState(false);
     const [modalSeasons, setModalSeasons] = useState(false);
     const [seasonsInformation, setSeasonsInformation] = useState(false);

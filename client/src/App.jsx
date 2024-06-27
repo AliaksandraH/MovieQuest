@@ -17,6 +17,7 @@ function App() {
 
     const [modalFilters, setModalFilters] = useState(false);
     const [modalSeasons, setModalSeasons] = useState(false);
+    const [seasonsInformation, setSeasonsInformation] = useState(false);
 
     const openModalFilters = () => setModalFilters(true);
     const openModalSeasons = () => setModalSeasons(true);
@@ -29,6 +30,10 @@ function App() {
     const modalFiltersProps = {
         closeModalFilters: closeModal,
         currentFilters: assignedFilters,
+    };
+
+    const modalSeasonsProps = {
+        seasonsInformation: seasonsInformation,
     };
 
     return (
@@ -44,7 +49,7 @@ function App() {
             {modalSeasons && (
                 <Modal
                     Component={ModalSeasons}
-                    componentProps={{}}
+                    componentProps={modalSeasonsProps}
                     nameModal="Seasons"
                     closeModal={closeModal}
                 />
@@ -59,7 +64,10 @@ function App() {
                     <Route
                         path="/:type/:id"
                         element={
-                            <SinglePage openModalSeasons={openModalSeasons} />
+                            <SinglePage
+                                openModalSeasons={openModalSeasons}
+                                setSeasonsInformation={setSeasonsInformation}
+                            />
                         }
                     />
                     <Route path="/login" element={<LogIn />} />

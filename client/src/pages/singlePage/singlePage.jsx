@@ -9,7 +9,7 @@ import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
 
-const SinglePage = ({ openModalSeasons }) => {
+const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
     const { id, type } = useParams();
     const { request } = useHttp();
     const [information, setInformation] = useState({});
@@ -88,6 +88,11 @@ const SinglePage = ({ openModalSeasons }) => {
         setSortedInformation(data);
     };
 
+    const showModal = () => {
+        setSeasonsInformation(information.seasons);
+        openModalSeasons();
+    };
+
     return (
         <div className="single-page">
             <img
@@ -154,9 +159,7 @@ const SinglePage = ({ openModalSeasons }) => {
                                 <button
                                     className="button_border"
                                     onClick={() => {
-                                        type === "tv"
-                                            ? openModalSeasons()
-                                            : null;
+                                        type === "tv" ? showModal() : null;
                                     }}
                                 >
                                     Watched

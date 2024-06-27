@@ -7,23 +7,51 @@ import Home from "./pages/home/home";
 import LogIn from "./pages/login/login";
 import Registration from "./pages/registration/registration";
 import SinglePage from "./pages/singlePage/singlePage";
+import Modal from "./components/modal/modal";
 import ModalFilters from "./components/modalFilters/modalFilters";
+import ModalSeasons from "./components/modalSeasons/modalSeasons";
 import "./App.scss";
 import "../i18n.js";
 
 function App() {
     const assignedFilters = useSelector((state) => state.assignedFilters);
-    const [modalShow, setModalShow] = useState(false);
+    const [modalFilters, setModalFilters] = useState(false);
+    const [modalSeasons, setModalSeasons] = useState(false);
+    const [seasonsInformation, setSeasonsInformation] = useState(false);
 
-    const openModal = () => setModalShow(true);
-    const closeModal = () => setModalShow(false);
+    const openModalFilters = () => setModalFilters(true);
+    const openModalSeasons = () => setModalSeasons(true);
+
+    const closeModal = () => {
+        setModalFilters(false);
+        setModalSeasons(false);
+    };
+
+    const modalFiltersProps = {
+        closeModalFilters: closeModal,
+        currentFilters: assignedFilters,
+    };
+
+    const modalSeasonsProps = {
+        seasonsInformation: seasonsInformation,
+    };
 
     return (
         <Router>
-            {modalShow && (
-                <ModalFilters
-                    closeModalFilters={closeModal}
-                    currentFilters={assignedFilters}
+            {modalFilters && (
+                <Modal
+                    Component={ModalFilters}
+                    componentProps={modalFiltersProps}
+                    nameModal="Filters"
+                    closeModal={closeModal}
+                />
+            )}
+            {modalSeasons && (
+                <Modal
+                    Component={ModalSeasons}
+                    componentProps={modalSeasonsProps}
+                    nameModal="Seasons"
+                    closeModal={closeModal}
                 />
             )}
             <div className="app">
@@ -31,9 +59,17 @@ function App() {
                 <Routes>
                     <Route
                         path="/"
-                        element={<Home openModalFilters={openModal} />}
+                        element={<Home openModalFilters={openModalFilters} />}
                     />
-                    <Route path="/:type/:id" element={<SinglePage />} />
+                    <Route
+                        path="/:type/:id"
+                        element={
+                            <SinglePage
+                                openModalSeasons={openModalSeasons}
+                                setSeasonsInformation={setSeasonsInformation}
+                            />
+                        }
+                    />
                     <Route path="/login" element={<LogIn />} />
                     <Route path="/registration" element={<Registration />} />
                 </Routes>

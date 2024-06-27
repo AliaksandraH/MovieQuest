@@ -10,7 +10,7 @@ import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
 
-const SinglePage = () => {
+const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
     const { id, type } = useParams();
     const { request } = useHttp();
     const [information, setInformation] = useState({});
@@ -89,6 +89,11 @@ const SinglePage = () => {
             );
         });
         setSortedInformation(data);
+    };
+
+    const showModal = () => {
+        setSeasonsInformation(information.seasons);
+        openModalSeasons();
     };
 
     return (

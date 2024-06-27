@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { setFilters } from "../../actions";
@@ -7,7 +7,6 @@ import Genres from "./genres/genres";
 import Certifications from "./certifications/certifications";
 import SliderDate from "../sliderDate/sliderDate";
 import SelectDropdown from "../selectDropdown/selectDropdown";
-import IconClase from "../../assets/icons8-close-26.png";
 import "./modalFilters.scss";
 
 const ModalFilters = ({ closeModalFilters, currentFilters }) => {
@@ -36,19 +35,6 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
         activeColor: "#e0dede",
         isHalf: true,
         count: 5,
-    };
-
-    useEffect(() => {
-        document.body.style.overflow = "hidden";
-        return () => {
-            document.body.style.overflow = "auto";
-        };
-    }, []);
-
-    const closeModalHandler = (value) => {
-        if (value.target.className === "modal") {
-            closeModalFilters();
-        }
     };
 
     const createStyleTypes = () => {
@@ -130,22 +116,25 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                             />
                         </div>
                     </div>
-                    <Genres
-                        type={checkedType}
-                        checkedGenres={checkedGenres}
-                        setCheckedGenres={setCheckedGenres}
-                    />
-                    <Certifications
-                        type={checkedType}
-                        checkedCertification={checkedCertification}
-                        setCheckedCertification={setCheckedCertification}
-                    />
                 </div>
                 <div className="buttons-wide button_sticky" onClick={getShows}>
                     <button>{t("save")}</button>
                 </div>
+                <Genres
+                    type={checkedType}
+                    checkedGenres={checkedGenres}
+                    setCheckedGenres={setCheckedGenres}
+                />
+                <Certifications
+                    type={checkedType}
+                    checkedCertification={checkedCertification}
+                    setCheckedCertification={setCheckedCertification}
+                />
             </div>
-        </div>
+            <div className="buttons-wide button_sticky" onClick={getShows}>
+                <button>Save</button>
+            </div>
+        </>
     );
 };
 

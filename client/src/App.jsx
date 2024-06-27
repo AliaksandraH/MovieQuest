@@ -42,7 +42,7 @@ function App() {
                 <Modal
                     Component={ModalFilters}
                     componentProps={modalFiltersProps}
-                    nameModal="Filters"
+                    nameModal="filters"
                     closeModal={closeModal}
                 />
             )}
@@ -50,7 +50,7 @@ function App() {
                 <Modal
                     Component={ModalSeasons}
                     componentProps={modalSeasonsProps}
-                    nameModal="Seasons"
+                    nameModal="seasons"
                     closeModal={closeModal}
                 />
             )}

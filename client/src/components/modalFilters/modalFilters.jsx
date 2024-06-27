@@ -81,60 +81,44 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     };
 
     return (
-        <div className="modal" onClick={closeModalHandler}>
-            <div className="modal_container">
-                <div className="modal_header">
-                    <h2>{t("filters")}</h2>
-                    <button onClick={closeModalFilters}>
-                        <img src={IconClase} alt="close" />
-                    </button>
-                </div>
-                <div className="modal_filters">
-                    <div className="filter_container ">
-                        <span className="label">{t("type")}:</span>
-                        {createStyleTypes()}
-                    </div>
-                    <div className="filter_container ">
-                        <span className="label">{t("minimumrating")}:</span>
-                        <div className="stars">
-                            <ReactStars
-                                {...styleRatingStars}
-                                onChange={setMinRating}
-                            />
-                        </div>
-                    </div>
-                    <SliderDate date={date} setDate={setDate} />
-                    <div className="filter_container-countries ">
-                        <span className="label">{t("countries")}:</span>
-                        <div className="container-select">
-                            <SelectDropdown
-                                data={countries}
-                                labelField={"native_name"}
-                                valueField={"iso_3166_1"}
-                                values={checkedСountries}
-                                setValues={setCheckedСountries}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="buttons-wide button_sticky" onClick={getShows}>
-                    <button>{t("save")}</button>
-                </div>
-                <Genres
-                    type={checkedType}
-                    checkedGenres={checkedGenres}
-                    setCheckedGenres={setCheckedGenres}
-                />
-                <Certifications
-                    type={checkedType}
-                    checkedCertification={checkedCertification}
-                    setCheckedCertification={setCheckedCertification}
-                />
+        <div className="modal-filters">
+            <div className="filter_container ">
+                <span className="label">{t("type")}:</span>
+                {createStyleTypes()}
             </div>
+            <div className="filter_container ">
+                <span className="label">{t("minimumrating")}:</span>
+                <div className="stars">
+                    <ReactStars {...styleRatingStars} onChange={setMinRating} />
+                </div>
+            </div>
+            <SliderDate date={date} setDate={setDate} />
+            <div className="filter_container-countries ">
+                <span className="label">{t("countries")}:</span>
+                <div className="container-select">
+                    <SelectDropdown
+                        data={countries}
+                        labelField={"native_name"}
+                        valueField={"iso_3166_1"}
+                        values={checkedСountries}
+                        setValues={setCheckedСountries}
+                    />
+                </div>
+            </div>
+            <Genres
+                type={checkedType}
+                checkedGenres={checkedGenres}
+                setCheckedGenres={setCheckedGenres}
+            />
+            <Certifications
+                type={checkedType}
+                checkedCertification={checkedCertification}
+                setCheckedCertification={setCheckedCertification}
+            />
             <div className="buttons-wide button_sticky" onClick={getShows}>
-                <button>Save</button>
+                <button>{t("save")}</button>
             </div>
-        </>
+        </div>
     );
 };
 

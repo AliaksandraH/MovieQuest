@@ -1,9 +1,12 @@
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
+import { useTranslation } from "react-i18next";
 import * as Icon from "react-icons/fi";
 import Checkbox from "react-custom-checkbox";
 import "./modalSeasons.scss";
 
 const ModalSeasons = ({ seasonsInformation }) => {
+    const { t } = useTranslation();
+
     const formatDate = (dateString) => {
         const options = { day: "2-digit", month: "2-digit", year: "numeric" };
         return new Date(dateString)
@@ -15,9 +18,11 @@ const ModalSeasons = ({ seasonsInformation }) => {
         return (
             <div className="accordion_header">
                 <div>
-                    <span>Season {el.season_number}</span>
+                    <span>
+                        {t("season")} {el.season_number}
+                    </span>
                     <span className="accordion_header_episodes">
-                        ({el.episode_count} episodes)
+                        ({el.episode_count} {t("episodes")})
                     </span>
                 </div>
                 <span className="accordion_header_date">
@@ -31,10 +36,11 @@ const ModalSeasons = ({ seasonsInformation }) => {
         return (
             <div className="accordion_checkboxes">
                 <p className="accordion_checkboxes_overview">{el.overview}</p>
-
                 {Array.from({ length: el.episode_count }).map((_, index) => (
                     <div key={index} className="accordion_checkbox">
-                        <span>Episode {index + 1}</span>
+                        <span>
+                            {t("episode")} {index + 1}
+                        </span>
                         <Checkbox
                             checked={false}
                             icon={

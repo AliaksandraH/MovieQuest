@@ -46,3 +46,10 @@ export const setFilters = (
         certification: certification,
     };
 };
+
+export const setFiltersCertification = (certification) => {
+    return {
+        type: "CHANGE_FILTERS_CERTIFICATION",
+        certification: certification,
+    };
+};

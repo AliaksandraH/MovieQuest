@@ -53,6 +53,14 @@ const reducer = (state = initialState, action) => {
                 },
                 currentType: "filters",
             };
+        case "CHANGE_FILTERS_CERTIFICATION":
+            return {
+                ...state,
+                assignedFilters: {
+                    ...state.assignedFilters,
+                    certification: action.certification,
+                },
+            };
         default:
             return state;
     }

@@ -44,5 +44,9 @@
     "Ended" : "Завершено",
     "Canceled" : "Отменено",
     "Pilot" : "Пилот",
-    "Released" : "Выпущено"
+    "Released" : "Выпущено",
+    "season" : "Сезон",
+    "episodes" : "серий",
+    "episode" : "Серия",
+    "seasons" : "Сезоны"
 }

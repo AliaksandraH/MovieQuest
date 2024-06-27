@@ -44,5 +44,9 @@
     "Ended" : "Ended",
     "Canceled" : "Canceled",
     "Pilot" : "Pilot",
-    "Released" : "Released"
+    "Released" : "Released",
+    "season" : "Season",
+    "episodes" : "episodes",
+    "episode" : "Episode",
+    "seasons" : "Seasons"
   }

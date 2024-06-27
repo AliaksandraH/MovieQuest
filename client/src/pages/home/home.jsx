@@ -7,6 +7,7 @@ import {
     setGenres,
     setCountries,
     setCertifications,
+    setFiltersCertification,
 } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
@@ -60,6 +61,7 @@ const Home = ({ openModalFilters }) => {
         const fetchData = async () => {
             try {
                 const moviesData = await getMovies(type, 1);
+                dispatch(setFiltersCertification("All"));
                 setMovies(moviesData);
                 getGenres();
                 getCountries();

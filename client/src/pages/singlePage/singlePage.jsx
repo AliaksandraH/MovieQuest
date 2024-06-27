@@ -160,7 +160,12 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
                             )}
                             <div className="buttons-wide button_sticky">
                                 <button>{t("save")}</button>
-                                <button className="button_border">
+                                <button
+                                    className="button_border"
+                                    onClick={() => {
+                                        type === "tv" && showModal();
+                                    }}
+                                >
                                     {t("watched")}
                                 </button>
                             </div>

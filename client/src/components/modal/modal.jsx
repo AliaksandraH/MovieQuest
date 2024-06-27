@@ -1,8 +1,11 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import IconClase from "../../assets/icons8-close-26.png";
 import "./modal.scss";
 
 const Modal = ({ Component, componentProps, nameModal, closeModal }) => {
+    const { t } = useTranslation();
+
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {
@@ -20,7 +23,7 @@ const Modal = ({ Component, componentProps, nameModal, closeModal }) => {
         <div className="modal" onClick={closeModalHandler}>
             <div className="modal_container">
                 <div className="modal_header">
-                    <h2>{nameModal}</h2>
+                    <h2>{t(nameModal)}</h2>
                     <button onClick={closeModal}>
                         <img src={IconClase} alt="close" />
                     </button>

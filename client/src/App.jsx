@@ -4,10 +4,9 @@ import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
-import LogIn from "./pages/login/login";
-import Registration from "./pages/registration/registration";
 import SinglePage from "./pages/singlePage/singlePage";
 import Modal from "./components/modal/modal";
+import Auth from "./components/auth/auth.jsx";
 import ModalFilters from "./components/modalFilters/modalFilters";
 import ModalSeasons from "./components/modalSeasons/modalSeasons";
 import "./App.scss";
@@ -17,6 +16,8 @@ function App() {
     const assignedFilters = useSelector((state) => state.assignedFilters);
     const [modalFilters, setModalFilters] = useState(false);
     const [modalSeasons, setModalSeasons] = useState(false);
+    const [modalSignIn, setModalSignIn] = useState(false);
+    const [modalSignUp, setModalSignUp] = useState(false);
     const [seasonsInformation, setSeasonsInformation] = useState(false);
 
     const openModalFilters = () => setModalFilters(true);
@@ -25,6 +26,8 @@ function App() {
     const closeModal = () => {
         setModalFilters(false);
         setModalSeasons(false);
+        setModalSignIn(false);
+        setModalSignUp(false);
     };
 
     const modalFiltersProps = {
@@ -54,6 +57,12 @@ function App() {
                     closeModal={closeModal}
                 />
             )}
+            <Modal
+                Component={Auth}
+                componentProps={{}}
+                nameModal="authorization"
+                closeModal={closeModal}
+            />
             <div className="app">
                 <Header />
                 <Routes>
@@ -70,8 +79,6 @@ function App() {
                             />
                         }
                     />
-                    <Route path="/login" element={<LogIn />} />
-                    <Route path="/registration" element={<Registration />} />
                 </Routes>
                 <Footer />
             </div>

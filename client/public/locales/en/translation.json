@@ -48,5 +48,12 @@
     "season" : "Season",
     "episodes" : "episodes",
     "episode" : "Episode",
-    "seasons" : "Seasons"
+    "seasons" : "Seasons",
+    "authorization" : "Authorization",
+    "singIn" : "Sing In",
+    "singUp" : "Sing Up",
+    "email" : "Email",
+    "password" : "Password",
+    "repeatPassword" : "Repeat the password",
+    "fullName": "Full name"
   }

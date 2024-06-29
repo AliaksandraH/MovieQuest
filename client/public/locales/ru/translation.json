@@ -48,5 +48,12 @@
     "season" : "Сезон",
     "episodes" : "серий",
     "episode" : "Серия",
-    "seasons" : "Сезоны"
+    "seasons" : "Сезоны",
+    "authorization" : "Авторизация",
+    "signIn" : "Войти",
+    "signUp" : "Зарегистрироваться",
+    "email" : "Электронная почта",
+    "password" : "Пароль",
+    "repeatPassword" : "Повторите пароль",
+    "fullName": "Полное имя"
 }

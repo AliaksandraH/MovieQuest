@@ -2,6 +2,7 @@ import { minDate, maxDate } from "../helpers/constants.js";
 
 const initialState = {
     currentType: "movie",
+    currentNumPage: 1,
     genres: { movie: [], ty: [] },
     countries: [],
     certifications: { movie: [], ty: [] },
@@ -21,6 +22,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentType: action.payload,
+            };
+        case "CHANGE_CURRENT_NUM_PAGE":
+            return {
+                ...state,
+                currentNumPage: action.payload,
             };
         case "CHANGE_GENRES":
             return {

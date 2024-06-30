@@ -5,6 +5,13 @@ export const setCurrentType = (type) => {
     };
 };
 
+export const setCurrentNumPage = (page) => {
+    return {
+        type: "CHANGE_CURRENT_NUM_PAGE",
+        payload: page,
+    };
+};
+
 export const setGenres = (genresMovie, genresTv) => {
     return {
         type: "CHANGE_GENRES",

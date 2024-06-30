@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
 import { createLineFromArray } from "../../helpers/functions";
 import ReactStars from "react-rating-stars-component";
@@ -159,11 +160,21 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
                                 </p>
                             )}
                             <div className="buttons-wide button_sticky">
-                                <button>{t("save")}</button>
+                                <button
+                                    onClick={() => {
+                                        toast.error(t("textCannotBeMade"));
+                                    }}
+                                >
+                                    {t("save")}
+                                </button>
                                 <button
                                     className="button_border"
                                     onClick={() => {
-                                        type === "tv" && showModal();
+                                        type === "tv"
+                                            ? showModal()
+                                            : toast.error(
+                                                  t("textCannotBeMade")
+                                              );
                                     }}
                                 >
                                     {t("watched")}

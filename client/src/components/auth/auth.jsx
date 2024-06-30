@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import SwitchSelector from "react-switch-selector";
 import "./auth.scss";
 
@@ -136,7 +137,7 @@ const Auth = () => {
             <div
                 className="buttons-wide button_sticky"
                 onClick={() => {
-                    console.log("OK");
+                    toast.error(t("textCannotBeMade"));
                 }}
             >
                 <button>{showSignIn ? t("signIn") : t("signUp")}</button>

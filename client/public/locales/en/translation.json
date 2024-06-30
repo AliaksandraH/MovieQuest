@@ -50,10 +50,11 @@
     "episode" : "Episode",
     "seasons" : "Seasons",
     "authorization" : "Authorization",
-    "singIn" : "Sing In",
-    "singUp" : "Sing Up",
+    "signIn" : "Sing In",
+    "signUp" : "Sing Up",
     "email" : "Email",
     "password" : "Password",
     "repeatPassword" : "Repeat the password",
-    "fullName": "Full name"
+    "fullName": "Full name",
+    "textCannotBeMade": "Unfortunately, this is not possible at the moment."
   }

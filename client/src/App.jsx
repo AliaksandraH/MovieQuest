@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import { ToastContainer, Flip } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
@@ -16,9 +18,14 @@ function App() {
     const assignedFilters = useSelector((state) => state.assignedFilters);
     const [modalFilters, setModalFilters] = useState(false);
     const [modalSeasons, setModalSeasons] = useState(false);
-    const [modalSignIn, setModalSignIn] = useState(false);
-    const [modalSignUp, setModalSignUp] = useState(false);
+    const [modalAuth, setModalAuth] = useState(false);
     const [seasonsInformation, setSeasonsInformation] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setModalAuth(true);
+        }, 10000);
+    }, []);
 
     const openModalFilters = () => setModalFilters(true);
     const openModalSeasons = () => setModalSeasons(true);
@@ -26,8 +33,7 @@ function App() {
     const closeModal = () => {
         setModalFilters(false);
         setModalSeasons(false);
-        setModalSignIn(false);
-        setModalSignUp(false);
+        setModalAuth(false);
     };
 
     const modalFiltersProps = {
@@ -40,49 +46,62 @@ function App() {
     };
 
     return (
-        <Router>
-            {modalFilters && (
-                <Modal
-                    Component={ModalFilters}
-                    componentProps={modalFiltersProps}
-                    nameModal="filters"
-                    closeModal={closeModal}
-                />
-            )}
-            {modalSeasons && (
-                <Modal
-                    Component={ModalSeasons}
-                    componentProps={modalSeasonsProps}
-                    nameModal="seasons"
-                    closeModal={closeModal}
-                />
-            )}
-            <Modal
-                Component={Auth}
-                componentProps={{}}
-                nameModal="authorization"
-                closeModal={closeModal}
+        <>
+            <ToastContainer
+                position="bottom-right"
+                theme="colored"
+                transition={Flip}
             />
-            <div className="app">
-                <Header />
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<Home openModalFilters={openModalFilters} />}
+            <Router>
+                {modalFilters && (
+                    <Modal
+                        Component={ModalFilters}
+                        componentProps={modalFiltersProps}
+                        nameModal="filters"
+                        closeModal={closeModal}
                     />
-                    <Route
-                        path="/:type/:id"
-                        element={
-                            <SinglePage
-                                openModalSeasons={openModalSeasons}
-                                setSeasonsInformation={setSeasonsInformation}
-                            />
-                        }
+                )}
+                {modalSeasons && (
+                    <Modal
+                        Component={ModalSeasons}
+                        componentProps={modalSeasonsProps}
+                        nameModal="seasons"
+                        closeModal={closeModal}
                     />
-                </Routes>
-                <Footer />
-            </div>
-        </Router>
+                )}
+                {modalAuth && (
+                    <Modal
+                        Component={Auth}
+                        componentProps={{}}
+                        nameModal="authorization"
+                        closeModal={closeModal}
+                    />
+                )}
+                <div className="app">
+                    <Header />
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={
+                                <Home openModalFilters={openModalFilters} />
+                            }
+                        />
+                        <Route
+                            path="/:type/:id"
+                            element={
+                                <SinglePage
+                                    openModalSeasons={openModalSeasons}
+                                    setSeasonsInformation={
+                                        setSeasonsInformation
+                                    }
+                                />
+                            }
+                        />
+                    </Routes>
+                    <Footer />
+                </div>
+            </Router>
+        </>
     );
 }
 

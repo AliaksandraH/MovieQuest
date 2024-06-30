@@ -48,5 +48,13 @@
     "season" : "Season",
     "episodes" : "episodes",
     "episode" : "Episode",
-    "seasons" : "Seasons"
+    "seasons" : "Seasons",
+    "authorization" : "Authorization",
+    "signIn" : "Sing In",
+    "signUp" : "Sing Up",
+    "email" : "Email",
+    "password" : "Password",
+    "repeatPassword" : "Repeat the password",
+    "fullName": "Full name",
+    "textCannotBeMade": "Unfortunately, this is not possible at the moment."
   }

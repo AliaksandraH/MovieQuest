@@ -1,5 +1,6 @@
 import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import * as Icon from "react-icons/fi";
 import Checkbox from "react-custom-checkbox";
 import "./modalSeasons.scss";
@@ -62,6 +63,9 @@ const ModalSeasons = ({ seasonsInformation }) => {
                             borderRadius={20}
                             style={{ overflow: "hidden" }}
                             size={25}
+                            onChange={() => {
+                                toast.error(t("textCannotBeMade"));
+                            }}
                         />
                     </div>
                 ))}

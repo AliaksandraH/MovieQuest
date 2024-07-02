@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/bootstrap.css";
+import { isEqual } from "lodash";
 import {
     setCurrentType,
     setGenres,
@@ -36,6 +37,12 @@ const Home = ({ openModalFilters }) => {
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
+
+    const prevFilters = useRef(assignedFilters);
+
+    const currentFilters = useMemo(() => {
+        return assignedFilters;
+    }, [assignedFilters]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -79,16 +86,27 @@ const Home = ({ openModalFilters }) => {
     }, [currentLanguage]);
 
     useEffect(() => {
-        if (type === "filters") {
-            const fetchData = async () => {
-                const newData = await getMovies("filters", 1);
-                dispatch(setCurrentNumPage(1));
-                dispatch(setCurrentType("filters"));
-                setMovies(newData);
-            };
-            fetchData();
+        if (!isEqual(currentFilters, prevFilters.current)) {
+            if (type === "filters") {
+                const fetchData = async () => {
+                    const data = await getMovies("filters", 1);
+                    dispatch(setCurrentNumPage(1));
+                    setMovies(data);
+                };
+                fetchData();
+            }
+            prevFilters.current = currentFilters;
+            return;
+        } else {
+            if (type === "filters") {
+                const fetchData = async () => {
+                    const data = await getMovies("filters", numPage);
+                    setMovies(data);
+                };
+                fetchData();
+            }
         }
-    }, [assignedFilters]);
+    }, [currentFilters]);
 
     const getMovies = async (type, numPage) => {
         try {

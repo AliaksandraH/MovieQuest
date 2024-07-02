@@ -52,6 +52,7 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
     };
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         getInformation(id);
     }, []);
 

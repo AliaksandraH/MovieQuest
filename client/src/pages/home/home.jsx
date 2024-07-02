@@ -34,12 +34,14 @@ const Home = ({ openModalFilters }) => {
         countries,
         genres,
         certifications,
+        mouseYposition,
     } = useSelector((state) => state);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
 
     const prevFilters = useRef(assignedFilters);
+    const scrollRef = useRef(null);
 
     const currentFilters = useMemo(() => {
         return assignedFilters;
@@ -55,6 +57,9 @@ const Home = ({ openModalFilters }) => {
                     getGenres();
                     getCountries();
                     getCertifications();
+                    window.scrollTo({
+                        top: mouseYposition - 55,
+                    });
                 } catch (error) {
                     console.log(error);
                 }
@@ -72,17 +77,15 @@ const Home = ({ openModalFilters }) => {
         const fetchData = async () => {
             try {
                 const moviesData = await getMovies(type, numPage);
-                dispatch(setFiltersCertification("All"));
                 setMovies(moviesData);
+                dispatch(setFiltersCertification("All"));
                 getGenres();
                 getCountries();
                 getCertifications();
-                window.scrollTo(0, 0);
             } catch (error) {
                 console.log(error);
             }
         };
-
         fetchData();
     }, [currentLanguage]);
 
@@ -268,6 +271,7 @@ const Home = ({ openModalFilters }) => {
     };
 
     const nextPage = (number) => {
+        scroll();
         dispatch(setCurrentNumPage(number));
         updateMovies(type, number);
     };
@@ -275,6 +279,16 @@ const Home = ({ openModalFilters }) => {
     const changeType = (type) => {
         dispatch(setCurrentNumPage(1));
         updateMovies(type, 1);
+    };
+
+    const scroll = () => {
+        const scrollOptions = { behavior: "smooth" };
+        const elementTop =
+            scrollRef.current.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+            top: elementTop - 20,
+            ...scrollOptions,
+        });
     };
 
     return (
@@ -339,7 +353,7 @@ const Home = ({ openModalFilters }) => {
                             </button>
                         )}
                 </div>
-                <div className="main_movies">
+                <div ref={scrollRef} className="main_movies">
                     {movies &&
                         movies.map((movie) => (
                             <MovieContainer

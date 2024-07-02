@@ -14,6 +14,7 @@ const initialState = {
         countries: [],
         certification: "All",
     },
+    mouseYposition: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -66,6 +67,11 @@ const reducer = (state = initialState, action) => {
                     ...state.assignedFilters,
                     certification: action.certification,
                 },
+            };
+        case "CHANGE_MOUSE_Y_POSITION":
+            return {
+                ...state,
+                mouseYposition: action.payload,
             };
         default:
             return state;

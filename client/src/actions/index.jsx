@@ -60,3 +60,10 @@ export const setFiltersCertification = (certification) => {
         certification: certification,
     };
 };
+
+export const setMouseYposition = (position) => {
+    return {
+        type: "CHANGE_MOUSE_Y_POSITION",
+        payload: position,
+    };
+};

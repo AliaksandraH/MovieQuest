@@ -88,7 +88,6 @@
         font-size: 18px;
         text-align: center;
     }
-
     button {
         margin: 5px;
         width: 150px;
@@ -97,6 +96,9 @@
         color: $white;
         border-radius: 6px;
         cursor: pointer;
+    }
+    &_pagination {
+        width: 40%;
     }
 }
 

@@ -2,6 +2,7 @@ import { minDate, maxDate } from "../helpers/constants.js";
 
 const initialState = {
     currentType: "movie",
+    currentNumPage: 1,
     genres: { movie: [], ty: [] },
     countries: [],
     certifications: { movie: [], ty: [] },
@@ -13,6 +14,7 @@ const initialState = {
         countries: [],
         certification: "All",
     },
+    mouseYposition: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,6 +23,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentType: action.payload,
+            };
+        case "CHANGE_CURRENT_NUM_PAGE":
+            return {
+                ...state,
+                currentNumPage: action.payload,
             };
         case "CHANGE_GENRES":
             return {
@@ -60,6 +67,11 @@ const reducer = (state = initialState, action) => {
                     ...state.assignedFilters,
                     certification: action.certification,
                 },
+            };
+        case "CHANGE_MOUSE_Y_POSITION":
+            return {
+                ...state,
+                mouseYposition: action.payload,
             };
         default:
             return state;

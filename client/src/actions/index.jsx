@@ -5,6 +5,13 @@ export const setCurrentType = (type) => {
     };
 };
 
+export const setCurrentNumPage = (page) => {
+    return {
+        type: "CHANGE_CURRENT_NUM_PAGE",
+        payload: page,
+    };
+};
+
 export const setGenres = (genresMovie, genresTv) => {
     return {
         type: "CHANGE_GENRES",
@@ -51,5 +58,12 @@ export const setFiltersCertification = (certification) => {
     return {
         type: "CHANGE_FILTERS_CERTIFICATION",
         certification: certification,
+    };
+};
+
+export const setMouseYposition = (position) => {
+    return {
+        type: "CHANGE_MOUSE_Y_POSITION",
+        payload: position,
     };
 };

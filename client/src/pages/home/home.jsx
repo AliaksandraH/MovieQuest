@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useHttp } from "../../hooks/http.hook";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import ResponsivePagination from "react-responsive-pagination";
+import "react-responsive-pagination/themes/bootstrap.css";
+import "./pagination.scss";
+import { isEqual } from "lodash";
 import {
     setCurrentType,
     setGenres,
     setCountries,
     setCertifications,
     setFiltersCertification,
+    setCurrentNumPage,
 } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
@@ -24,15 +29,23 @@ const Home = ({ openModalFilters }) => {
     const dispatch = useDispatch();
     const {
         currentType: type,
+        currentNumPage: numPage,
         assignedFilters,
         countries,
         genres,
         certifications,
+        mouseYposition,
     } = useSelector((state) => state);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
-    const [numberShows, setNumberShows] = useState(0);
-    const [numPage, setNumPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const prevFilters = useRef(assignedFilters);
+    const scrollRef = useRef(null);
+
+    const currentFilters = useMemo(() => {
+        return assignedFilters;
+    }, [assignedFilters]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,6 +57,9 @@ const Home = ({ openModalFilters }) => {
                     getGenres();
                     getCountries();
                     getCertifications();
+                    window.scrollTo({
+                        top: mouseYposition - 55,
+                    });
                 } catch (error) {
                     console.log(error);
                 }
@@ -60,33 +76,41 @@ const Home = ({ openModalFilters }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const moviesData = await getMovies(type, 1);
-                dispatch(setFiltersCertification("All"));
+                const moviesData = await getMovies(type, numPage);
                 setMovies(moviesData);
+                dispatch(setFiltersCertification("All"));
                 getGenres();
                 getCountries();
                 getCertifications();
-                getFiltersShows(1);
-                window.scrollTo(0, 0);
             } catch (error) {
                 console.log(error);
             }
         };
-
         fetchData();
     }, [currentLanguage]);
 
     useEffect(() => {
-        if (type === "filters") {
-            const fetchData = async () => {
-                const newData = await getMovies("filters", 1);
-                setNumPage(1);
-                dispatch(setCurrentType("filters"));
-                setMovies(newData);
-            };
-            fetchData();
+        if (!isEqual(currentFilters, prevFilters.current)) {
+            if (type === "filters") {
+                const fetchData = async () => {
+                    const data = await getMovies("filters", 1);
+                    dispatch(setCurrentNumPage(1));
+                    setMovies(data);
+                };
+                fetchData();
+            }
+            prevFilters.current = currentFilters;
+            return;
+        } else {
+            if (type === "filters") {
+                const fetchData = async () => {
+                    const data = await getMovies("filters", numPage);
+                    setMovies(data);
+                };
+                fetchData();
+            }
         }
-    }, [assignedFilters]);
+    }, [currentFilters]);
 
     const getMovies = async (type, numPage) => {
         try {
@@ -94,7 +118,7 @@ const Home = ({ openModalFilters }) => {
             const data = await request(
                 `https://api.themoviedb.org/3/trending/${type}/week?language=${currentLanguage}&api_key=${_key}&page=${numPage}`
             );
-            setNumberShows(data.total_results);
+            setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
             return await data.results.map(transformInformationMovies);
         } catch (error) {
             console.log(error);
@@ -132,7 +156,7 @@ const Home = ({ openModalFilters }) => {
 
         try {
             const data = await request(url);
-            setNumberShows(data.total_results);
+            setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
             return await data.results.map(transformInformationMovies);
         } catch (error) {
             console.log(error);
@@ -203,13 +227,11 @@ const Home = ({ openModalFilters }) => {
     };
 
     const updateMovies = async (newType, newPage) => {
-        if (newPage !== numPage) {
+        if (newPage !== numPage && newType == type) {
             const newData = await getMovies(newType, newPage);
-            setNumPage(newPage);
-            setMovies([...movies, ...newData]);
+            setMovies(newData);
         } else if (newType !== type) {
-            const newData = await getMovies(newType, 1);
-            setNumPage(1);
+            const newData = await getMovies(newType, newPage);
             dispatch(setCurrentType(newType));
             setMovies(newData);
         }
@@ -248,13 +270,25 @@ const Home = ({ openModalFilters }) => {
         setBackgroundImg(`${imgPath}${img}`);
     };
 
-    const nextPage = () => {
-        const newPage = numPage + 1;
-        updateMovies(type, newPage);
+    const nextPage = (number) => {
+        scroll();
+        dispatch(setCurrentNumPage(number));
+        updateMovies(type, number);
     };
 
     const changeType = (type) => {
-        updateMovies(type, numPage);
+        dispatch(setCurrentNumPage(1));
+        updateMovies(type, 1);
+    };
+
+    const scroll = () => {
+        const scrollOptions = { behavior: "smooth" };
+        const elementTop =
+            scrollRef.current.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+            top: elementTop - 20,
+            ...scrollOptions,
+        });
     };
 
     return (
@@ -319,7 +353,7 @@ const Home = ({ openModalFilters }) => {
                             </button>
                         )}
                 </div>
-                <div className="main_movies">
+                <div ref={scrollRef} className="main_movies">
                     {movies &&
                         movies.map((movie) => (
                             <MovieContainer
@@ -334,14 +368,16 @@ const Home = ({ openModalFilters }) => {
                         ))}
                 </div>
                 <div className="pages">
-                    {movies.length > 0 && numberShows > movies.length && (
-                        <button
-                            onClick={() => {
-                                nextPage();
-                            }}
-                        >
-                            {t("showMore")}
-                        </button>
+                    {movies.length > 0 && totalPages && (
+                        <div className="pages_pagination">
+                            <ResponsivePagination
+                                current={numPage}
+                                total={totalPages}
+                                onPageChange={(number) => {
+                                    nextPage(number);
+                                }}
+                            />
+                        </div>
                     )}
                     {movies.length <= 0 && <p>{t("noShows")}</p>}
                 </div>

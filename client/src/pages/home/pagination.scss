@@ -1,0 +1,28 @@
+@import "../../style/helpers.scss";
+@import "../../style/variables.scss";
+
+.page-item .page-link {
+    color: $white;
+    background-color: rgb(50, 50, 50);
+    border: 1px rgb(36, 36, 36) solid;
+}
+
+.page-item a.page-link:hover {
+    color: $main-color;
+    border: 1px rgb(36, 36, 36) solid;
+    background: $white;
+}
+
+.page-item.active .page-link {
+    color: #ffffff;
+    background-color: $main-color;
+    border: 1px rgb(36, 36, 36) solid;
+}
+
+.page-item.disabled .page-link {
+    color: $white;
+    pointer-events: none;
+    cursor: auto;
+    background-color: rgb(50, 50, 50);
+    border: 1px rgb(36, 36, 36) solid;
+}

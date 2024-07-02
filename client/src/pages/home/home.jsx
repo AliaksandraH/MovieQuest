@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/bootstrap.css";
+import "./pagination.scss";
 import { isEqual } from "lodash";
 import {
     setCurrentType,

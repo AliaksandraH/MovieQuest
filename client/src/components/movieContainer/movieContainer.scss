@@ -44,7 +44,7 @@
     &_rating-stars {
         position: absolute;
         left: 0;
-        top: calc(280px - 22px);
+        top: calc(280px - 15px);
         width: 100%;
         display: flex;
         align-items: center;
@@ -72,7 +72,7 @@
             height: calc(300px - 230px);
         }
         &_rating-stars {
-            top: calc(230px - 22px);
+            top: calc(230px - 15px);
         }
     }
 }

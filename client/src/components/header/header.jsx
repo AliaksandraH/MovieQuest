@@ -51,12 +51,6 @@ const Header = () => {
                 <div className="header_search">
                     <SearchContainer />
                 </div>
-                {/* <NavLink to="/login">
-                    <span>Login</span>
-                </NavLink>
-                <NavLink to="/registration">
-                    <span>Registration</span>
-                </NavLink>{" "} */}
             </div>
         </div>
     );

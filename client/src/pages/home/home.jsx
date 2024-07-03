@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/bootstrap.css";
-import "./pagination.scss";
+import { createSelector } from "reselect";
 import { isEqual } from "lodash";
 import {
     setCurrentType,
@@ -17,9 +17,47 @@ import {
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import NoBackground from "../../assets/no-background.png";
+import "./pagination.scss";
 import "./home.scss";
 
 const _key = process.env.REACT_APP_API_KEY;
+
+const selectCurrentType = (state) => state.currentType;
+const selectCurrentNumPage = (state) => state.currentNumPage;
+const selectAssignedFilters = (state) => state.assignedFilters;
+const selectCountries = (state) => state.countries;
+const selectGenres = (state) => state.genres;
+const selectCertifications = (state) => state.certifications;
+const selectMouseYposition = (state) => state.mouseYposition;
+
+const selectRequiredState = createSelector(
+    [
+        selectCurrentType,
+        selectCurrentNumPage,
+        selectAssignedFilters,
+        selectCountries,
+        selectGenres,
+        selectCertifications,
+        selectMouseYposition,
+    ],
+    (
+        currentType,
+        currentNumPage,
+        assignedFilters,
+        countries,
+        genres,
+        certifications,
+        mouseYposition
+    ) => ({
+        currentType,
+        currentNumPage,
+        assignedFilters,
+        countries,
+        genres,
+        certifications,
+        mouseYposition,
+    })
+);
 
 const Home = ({ openModalFilters }) => {
     const imgPath = "https://image.tmdb.org/t/p/original";
@@ -35,7 +73,7 @@ const Home = ({ openModalFilters }) => {
         genres,
         certifications,
         mouseYposition,
-    } = useSelector((state) => state);
+    } = useSelector(selectRequiredState);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
@@ -57,9 +95,11 @@ const Home = ({ openModalFilters }) => {
                     getGenres();
                     getCountries();
                     getCertifications();
-                    window.scrollTo({
-                        top: mouseYposition - 55,
-                    });
+                    if (mouseYposition) {
+                        window.scrollTo({
+                            top: mouseYposition - 55,
+                        });
+                    }
                 } catch (error) {
                     console.log(error);
                 }

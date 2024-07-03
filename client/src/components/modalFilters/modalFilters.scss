@@ -34,7 +34,7 @@
         cursor: pointer;
     }
     .stars {
-        margin-left: 5px;
+        margin-left: 10px;
     }
 }
 
@@ -63,6 +63,13 @@
 }
 
 @media only screen and (max-width: 400px) {
+    .filter_container_rating {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+    }
     .filter_container_values {
         grid-template-columns: repeat(1, 1fr);
     }

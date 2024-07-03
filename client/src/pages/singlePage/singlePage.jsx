@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
 import { createLineFromArray } from "../../helpers/functions";
-import ReactStars from "react-rating-stars-component";
+import StarRatings from "react-star-ratings";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
@@ -43,12 +43,13 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
         Default: "rgba(39, 39, 39, 0.4)",
     };
     const styleRatingStars = {
-        size: 29,
-        edit: false,
-        value: information.vote_average / 2,
-        activeColor: "#9f0013",
-        isHalf: true,
-        color: "rgba(39, 39, 39, 0.4)",
+        starDimension: "25px",
+        starSpacing: "1px",
+        numberOfStars: 5,
+        rating: information.vote_average / 2,
+        isSelectable: false,
+        starRatedColor: "#9f0013",
+        starEmptyColor: "rgb(124, 124, 124)",
     };
 
     useEffect(() => {
@@ -121,7 +122,7 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
                     <div className="single-page_information_container">
                         <div className="single-page_information_container_header">
                             <div className="stars">
-                                <ReactStars {...styleRatingStars} />
+                                <StarRatings {...styleRatingStars} />
                             </div>
                             <div className="single-page_information_main">
                                 {(information.title || information.name) && (

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { setFilters } from "../../actions";
-import ReactStars from "react-rating-stars-component";
+import StarRatings from "react-star-ratings";
 import Genres from "./genres/genres";
 import Certifications from "./certifications/certifications";
 import SliderDate from "../sliderDate/sliderDate";
@@ -29,12 +29,14 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
 
     const types = ["movie", "tv"];
     const styleRatingStars = {
-        size: 27,
-        value: minRating,
-        edit: true,
-        activeColor: "#e0dede",
-        isHalf: true,
-        count: 5,
+        starDimension: "27px",
+        starSpacing: "2px",
+        numberOfStars: 5,
+        rating: minRating,
+        isSelectable: true,
+        starRatedColor: "#9f0013",
+        starHoverColor: "#9f0013",
+        starEmptyColor: "rgb(124, 124, 124)",
     };
 
     const createStyleTypes = () => {
@@ -86,10 +88,13 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                 <span className="label">{t("type")}:</span>
                 {createStyleTypes()}
             </div>
-            <div className="filter_container ">
+            <div className="filter_container filter_container_rating">
                 <span className="label">{t("minimumrating")}:</span>
                 <div className="stars">
-                    <ReactStars {...styleRatingStars} onChange={setMinRating} />
+                    <StarRatings
+                        {...styleRatingStars}
+                        changeRating={setMinRating}
+                    />
                 </div>
             </div>
             <SliderDate date={date} setDate={setDate} />

@@ -53,7 +53,7 @@
                 row-gap: 15px;
                 .stars {
                     height: 100%;
-                    @extend %display-row;
+                    @extend %display-column-CC;
                 }
             }
         }
@@ -114,7 +114,7 @@
     bottom: 0;
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 810px) {
     .single-page {
         height: auto;
         position: relative;

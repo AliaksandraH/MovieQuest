@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setMouseYposition } from "../../actions";
-import ReactStars from "react-rating-stars-component";
+import StarRatings from "react-star-ratings";
 import NoPoster from "../../assets/no-poster.png";
 import "./movieContainer.scss";
 
@@ -13,11 +13,13 @@ const MovieContainer = ({ movieInformation, type }) => {
     const img_path = "https://image.tmdb.org/t/p/original";
 
     const styleRating = {
-        size: 27,
-        value: rating / 2,
-        edit: false,
-        activeColor: "#9f0013",
-        isHalf: true,
+        starDimension: "25px",
+        starSpacing: "2px",
+        numberOfStars: 5,
+        rating: rating / 2,
+        isSelectable: false,
+        starRatedColor: "#9f0013",
+        starEmptyColor: "rgb(124, 124, 124)",
     };
 
     const onChangeMouseYPosition = () => {
@@ -39,7 +41,7 @@ const MovieContainer = ({ movieInformation, type }) => {
                 <p>{title}</p>
             </div>
             <div className="movie_rating-stars">
-                <ReactStars {...styleRating} />
+                <StarRatings {...styleRating} />
             </div>
         </Link>
     );

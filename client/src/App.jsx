@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer, Flip } from "react-toastify";
@@ -21,14 +21,9 @@ function App() {
     const [modalAuth, setModalAuth] = useState(false);
     const [seasonsInformation, setSeasonsInformation] = useState(false);
 
-    useEffect(() => {
-        setTimeout(() => {
-            setModalAuth(true);
-        }, 10000);
-    }, []);
-
     const openModalFilters = () => setModalFilters(true);
     const openModalSeasons = () => setModalSeasons(true);
+    const openModalAuth = () => setModalAuth(true);
 
     const closeModal = () => {
         setModalFilters(false);
@@ -43,6 +38,10 @@ function App() {
 
     const modalSeasonsProps = {
         seasonsInformation: seasonsInformation,
+    };
+
+    const modalAuthProps = {
+        closeModalAuth: closeModal,
     };
 
     return (
@@ -72,13 +71,13 @@ function App() {
                 {modalAuth && (
                     <Modal
                         Component={Auth}
-                        componentProps={{}}
+                        componentProps={modalAuthProps}
                         nameModal="authorization"
                         closeModal={closeModal}
                     />
                 )}
                 <div className="app">
-                    <Header />
+                    <Header openModalAuth={openModalAuth} />
                     <Routes>
                         <Route
                             path="/"
@@ -91,6 +90,7 @@ function App() {
                             element={
                                 <SinglePage
                                     openModalSeasons={openModalSeasons}
+                                    openModalAuth={openModalAuth}
                                     setSeasonsInformation={
                                         setSeasonsInformation
                                     }

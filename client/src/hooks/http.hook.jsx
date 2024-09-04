@@ -8,13 +8,23 @@ export const useHttp = () => {
             body = null,
             headers = { "Content-Type": "application/json" }
         ) => {
-            const response = await fetch(url, { method, body, headers });
-            if (!response.ok) {
-                throw new Error(
-                    `Could not fetch ${url}, status: ${response.status}`
-                );
+            try {
+                let requestUrl = url;
+                let options = { method, headers };
+
+                if (method === "GET" && body) {
+                    const queryParams = new URLSearchParams(body).toString();
+                    requestUrl += `/?${queryParams}`;
+                } else if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(requestUrl, options);
+
+                return await response.json();
+            } catch (error) {
+                console.log("--- error ---", error, url);
             }
-            return await response.json();
         },
         []
     );

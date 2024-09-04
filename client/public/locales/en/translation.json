@@ -1,4 +1,5 @@
 {
+    "error": "An error has occurred, please try again later.",
     "movies": "Movies",
     "movie": "Movie",
     "tvSeries": "TV Series",
@@ -52,9 +53,22 @@
     "authorization" : "Authorization",
     "signIn" : "Sing In",
     "signUp" : "Sing Up",
+    "signOut": "Sign Out",
     "email" : "Email",
     "password" : "Password",
-    "repeatPassword" : "Repeat the password",
-    "fullName": "Full name",
-    "textCannotBeMade": "Unfortunately, this is not possible at the moment."
+    "repeatPassword" : "Repeat The Password",
+    "fullName": "Full Name",
+    "textCannotBeMade": "Unfortunately, this is not possible at the moment.",
+    "registrationSuccess": "You have successfully registered! Please sign in.",
+    "loginSuccess": "You have successfully logged in!",
+    "logoutSuccess": "You have successfully logged out!",
+
+    "A user with such an email already exists.": "A user with such an email already exists.",
+    "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",
+    "Email must be a valid email address." : "Email must be a valid email address.",
+    "Password must be at least 6 characters long." : "Password must be at least 6 characters long.",
+    "Passwords do not match." : "Passwords do not match.",
+    "Invalid email or password." : "Invalid email or password.",
+    "There is no such user." : "There is no such user.",
+    "Password is required." : "Password is required."
   }

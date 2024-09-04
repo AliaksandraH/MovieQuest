@@ -34,6 +34,17 @@
     &_search {
         min-width: 200px;
     }
+    &_button {
+        cursor: pointer;
+        text-decoration: underline;
+        font-size: 18px;
+        &_sign-out {
+            color: #9f0013;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 18px;
+        }
+    }
 }
 
 @media only screen and (max-width: 800px) {
@@ -42,7 +53,7 @@
     }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 700px) {
     .header {
         height: auto;
         display: flex;
@@ -63,6 +74,12 @@
         &_switch {
             height: 25px;
             width: 100px;
+        }
+        &_button {
+            font-size: 16px;
+            &_sign-out {
+                font-size: 16px;
+            }
         }
     }
 }

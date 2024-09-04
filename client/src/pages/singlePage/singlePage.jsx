@@ -9,9 +9,13 @@ import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
 
-const _key = process.env.REACT_APP_API_KEY;
+const _key = process.env.REACT_APP_API_TMDB_KEY;
 
-const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
+const SinglePage = ({
+    openModalSeasons,
+    openModalAuth,
+    setSeasonsInformation,
+}) => {
     const { id, type } = useParams();
     const { request } = useHttp();
     const [information, setInformation] = useState({});
@@ -94,9 +98,23 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
         setSortedInformation(data);
     };
 
-    const showModal = () => {
-        setSeasonsInformation(information.seasons);
-        openModalSeasons();
+    // const showModal = () => {
+    //     setSeasonsInformation(information.seasons);
+    //     openModalSeasons();
+    // };
+
+    const save = () => {
+        toast.error(t("textCannotBeMade"));
+        if (!localStorage.getItem("userId")) {
+            openModalAuth();
+        }
+    };
+
+    const watched = () => {
+        toast.error(t("textCannotBeMade"));
+        if (!localStorage.getItem("userId")) {
+            openModalAuth();
+        }
     };
 
     return (
@@ -162,22 +180,12 @@ const SinglePage = ({ openModalSeasons, setSeasonsInformation }) => {
                                 </p>
                             )}
                             <div className="buttons-wide button_sticky">
-                                <button
-                                    onClick={() => {
-                                        toast.error(t("textCannotBeMade"));
-                                    }}
-                                >
+                                <button onClick={() => save()}>
                                     {t("save")}
                                 </button>
                                 <button
                                     className="button_border"
-                                    onClick={() => {
-                                        type === "tv"
-                                            ? showModal()
-                                            : toast.error(
-                                                  t("textCannotBeMade")
-                                              );
-                                    }}
+                                    onClick={() => watched()}
                                 >
                                     {t("watched")}
                                 </button>

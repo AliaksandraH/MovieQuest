@@ -20,7 +20,7 @@ import NoBackground from "../../assets/no-background.png";
 import "./pagination.scss";
 import "./home.scss";
 
-const _key = process.env.REACT_APP_API_KEY;
+const _key = process.env.REACT_APP_API_TMDB_KEY;
 
 const selectCurrentType = (state) => state.currentType;
 const selectCurrentNumPage = (state) => state.currentNumPage;

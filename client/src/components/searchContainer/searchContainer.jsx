@@ -5,7 +5,7 @@ import { useHttp } from "../../hooks/http.hook";
 import Search from "../../assets/icons8-magnifier-64.png";
 import "./searchContainer.scss";
 
-const _key = process.env.REACT_APP_API_KEY;
+const _key = process.env.REACT_APP_API_TMDB_KEY;
 
 const SearchContainer = () => {
     const { t, i18n } = useTranslation();

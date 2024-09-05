@@ -62,6 +62,7 @@
     "registrationSuccess": "You have successfully registered! Please sign in.",
     "loginSuccess": "You have successfully logged in!",
     "logoutSuccess": "You have successfully logged out!",
+    "addedToListSuccess": "Successfully added to the list!",
 
     "A user with such an email already exists.": "A user with such an email already exists.",
     "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",

@@ -62,6 +62,7 @@
     "registrationSuccess": "Вы успешно зарегистрировались! Пожалуйста, войдите в систему.",
     "loginSuccess": "Вы успешно вошли в систему!",
     "logoutSuccess": "Вы успешно вышли из системы!",
+    "addedToListSuccess": "Успешно добавлено в список!",
 
     "A user with such an email already exists.": "Пользователь с таким Email уже существует.",
     "Username must be between 1 and 30 characters long." : "Имя должно содержать от 1 до 30 символов.",

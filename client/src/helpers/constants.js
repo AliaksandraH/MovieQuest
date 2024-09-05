@@ -4,6 +4,8 @@ export const api = {
     login: `${http}/auth/login`,
     register: `${http}/auth/register`,
     deleteAccount: `${http}/auth/deleteAccount`,
+    addSavedMovie: `${http}/userMovies/addSavedMovie`,
+    addWatchedMovie: `${http}/userMovies/addWatchedMovie`,
 };
 
 export const minDate = 1895;

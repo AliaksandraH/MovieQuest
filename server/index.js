@@ -13,6 +13,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use("/auth", require("./routes/auth"));
+app.use("/userMovies", require("./routes/userMovies"));
 
 const startServer = async () => {
     try {

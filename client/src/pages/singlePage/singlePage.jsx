@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
 import { createLineFromArray } from "../../helpers/functions";
+import { api } from "../../helpers/constants";
 import StarRatings from "react-star-ratings";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
@@ -103,17 +104,24 @@ const SinglePage = ({
     //     openModalSeasons();
     // };
 
-    const save = () => {
-        toast.error(t("textCannotBeMade"));
-        if (!localStorage.getItem("userId")) {
-            openModalAuth();
-        }
-    };
-
-    const watched = () => {
-        toast.error(t("textCannotBeMade"));
-        if (!localStorage.getItem("userId")) {
-            openModalAuth();
+    const addToList = async (type) => {
+        try {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                openModalAuth();
+            } else {
+                const data = await request(api[type], "POST", {
+                    userId,
+                    movieId: information.id,
+                });
+                if (data.message === "OK") {
+                    toast.success(t("addedToListSuccess"));
+                } else {
+                    toast.error(t("error"));
+                }
+            }
+        } catch (error) {
+            toast.error(t("error"));
         }
     };
 
@@ -180,12 +188,14 @@ const SinglePage = ({
                                 </p>
                             )}
                             <div className="buttons-wide button_sticky">
-                                <button onClick={() => save()}>
+                                <button
+                                    onClick={() => addToList("addSavedMovie")}
+                                >
                                     {t("save")}
                                 </button>
                                 <button
                                     className="button_border"
-                                    onClick={() => watched()}
+                                    onClick={() => addToList("addWatchedMovie")}
                                 >
                                     {t("watched")}
                                 </button>

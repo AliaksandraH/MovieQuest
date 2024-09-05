@@ -60,7 +60,7 @@ const Auth = ({ closeModalAuth }) => {
     const onSignUp = async (e) => {
         e.preventDefault();
         try {
-            const data = await request(api.register, "GET", userSignUp);
+            const data = await request(api.register, "POST", userSignUp);
 
             if (data.message === "OK") {
                 toast.success(t("registrationSuccess"));

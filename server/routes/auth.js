@@ -14,7 +14,7 @@ const {
 const router = Router();
 
 router.post("/login", loginValidationRules(), validate, login);
-router.get("/register", registerValidationRules(), validate, register);
+router.post("/register", registerValidationRules(), validate, register);
 router.delete(
     "/deleteAccount",
     deleteAccountValidationRules(),

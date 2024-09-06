@@ -20,6 +20,7 @@ const SinglePage = ({
     const { id, type } = useParams();
     const { request } = useHttp();
     const [information, setInformation] = useState({});
+    const [types, setTypes] = useState({ saved: false, watched: false });
     const [sortedInformation, setSortedInformation] = useState({});
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
@@ -75,6 +76,7 @@ const SinglePage = ({
             const needInformation =
                 type === "movie" ? movieInformation : tvInformation;
             generateInformation(needInformation, data);
+            getTypesMovie(id);
         } catch (error) {
             console.log(error);
         }
@@ -99,6 +101,26 @@ const SinglePage = ({
         setSortedInformation(data);
     };
 
+    const getTypesMovie = async (id) => {
+        try {
+            const userId = localStorage.getItem("userId");
+            if (!userId) return;
+
+            const data = await request(api.getTypesMovie, "GET", {
+                userId,
+                movieId: id,
+            });
+            if (data.message === "OK") {
+                console.log(data);
+                setTypes(data.types);
+            } else {
+                toast.error(t("error"));
+            }
+        } catch (error) {
+            toast.error(t("error"));
+        }
+    };
+
     // const showModal = () => {
     //     setSeasonsInformation(information.seasons);
     //     openModalSeasons();
@@ -116,6 +138,27 @@ const SinglePage = ({
                 });
                 if (data.message === "OK") {
                     toast.success(t("addedToListSuccess"));
+                } else {
+                    toast.error(t("error"));
+                }
+            }
+        } catch (error) {
+            toast.error(t("error"));
+        }
+    };
+
+    const deleteToList = async (type) => {
+        try {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                toast.error(t("error"));
+            } else {
+                const data = await request(api[type], "POST", {
+                    userId,
+                    movieId: information.id,
+                });
+                if (data.message === "OK") {
+                    toast.success(t("removedFromListSuccess"));
                 } else {
                     toast.error(t("error"));
                 }
@@ -187,18 +230,43 @@ const SinglePage = ({
                                     {information.overview}
                                 </p>
                             )}
-                            <div className="buttons-wide button_sticky">
-                                <button
-                                    onClick={() => addToList("addSavedMovie")}
-                                >
-                                    {t("save")}
-                                </button>
-                                <button
-                                    className="button_border"
-                                    onClick={() => addToList("addWatchedMovie")}
-                                >
-                                    {t("watched")}
-                                </button>
+                            <div className="buttons_container button_sticky">
+                                {types.watched ? (
+                                    <button
+                                        onClick={() =>
+                                            deleteToList("deleteWatchedMovie")
+                                        }
+                                    >
+                                        {t("notWatched")}
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() =>
+                                            addToList("addWatchedMovie")
+                                        }
+                                    >
+                                        {t("watched")}
+                                    </button>
+                                )}
+                                {types.saved ? (
+                                    <button
+                                        className="button_border"
+                                        onClick={() =>
+                                            deleteToList("deleteSavedMovie")
+                                        }
+                                    >
+                                        {t("delete")}
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="button_border"
+                                        onClick={() =>
+                                            addToList("addSavedMovie")
+                                        }
+                                    >
+                                        {t("save")}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -105,8 +105,38 @@
     border-radius: 10px;
 }
 
+.buttons_container {
+    @extend %display-row;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    height: 33px;
+    margin-top: 20px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    button {
+        cursor: pointer;
+        color: $white;
+        width: 50%;
+        height: 100%;
+        padding: 5px;
+        font-size: 15px;
+        background: $main-color;
+    }
+}
+
 .button_border {
-    border-left: 1px solid $white;
+    position: relative;
+}
+
+.button_border::before {
+    content: "";
+    position: absolute;
+    top: 15%;
+    left: 0;
+    height: 70%;
+    width: 1px;
+    background-color: $white;
 }
 
 .button_sticky {

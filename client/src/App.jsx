@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setUserId } from "./actions/index.jsx";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
@@ -15,11 +16,19 @@ import "./App.scss";
 import "../i18n.js";
 
 function App() {
+    const dispatch = useDispatch();
     const assignedFilters = useSelector((state) => state.assignedFilters);
     const [modalFilters, setModalFilters] = useState(false);
     const [modalSeasons, setModalSeasons] = useState(false);
     const [modalAuth, setModalAuth] = useState(false);
     const [seasonsInformation, setSeasonsInformation] = useState(false);
+
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+            dispatch(setUserId(userId));
+        }
+    }, []);
 
     const openModalFilters = () => setModalFilters(true);
     const openModalSeasons = () => setModalSeasons(true);

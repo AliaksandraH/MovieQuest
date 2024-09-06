@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
@@ -11,6 +12,30 @@ import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
+const imgPath = "https://image.tmdb.org/t/p/original";
+const movieInformation = [
+    "original_title",
+    "release_date",
+    "production_countries",
+    "production_companies",
+    "genres",
+];
+const tvInformation = [
+    "original_name",
+    "first_air_date",
+    "last_air_date",
+    "number_of_seasons",
+    "created_by",
+    "production_countries",
+    "production_companies",
+    "genres",
+];
+const statusColors = {
+    "Returning Series": "rgba(0, 146, 6, 0.4)",
+    Ended: "rgba(159, 0, 19, 0.4)",
+    Released: "rgba(0, 146, 6, 0.4)",
+    Default: "rgba(39, 39, 39, 0.4)",
+};
 
 const SinglePage = ({
     openModalSeasons,
@@ -18,36 +43,13 @@ const SinglePage = ({
     setSeasonsInformation,
 }) => {
     const { id, type } = useParams();
+    const { t, i18n } = useTranslation();
+    const currentLanguage = i18n.language;
     const { request } = useHttp();
+    const userId = useSelector((state) => state.userId);
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
     const [sortedInformation, setSortedInformation] = useState({});
-    const { t, i18n } = useTranslation();
-    const currentLanguage = i18n.language;
-    const imgPath = "https://image.tmdb.org/t/p/original";
-    const movieInformation = [
-        "original_title",
-        "release_date",
-        "production_countries",
-        "production_companies",
-        "genres",
-    ];
-    const tvInformation = [
-        "original_name",
-        "first_air_date",
-        "last_air_date",
-        "number_of_seasons",
-        "created_by",
-        "production_countries",
-        "production_companies",
-        "genres",
-    ];
-    const statusColors = {
-        "Returning Series": "rgba(0, 146, 6, 0.4)",
-        Ended: "rgba(159, 0, 19, 0.4)",
-        Released: "rgba(0, 146, 6, 0.4)",
-        Default: "rgba(39, 39, 39, 0.4)",
-    };
     const styleRatingStars = {
         starDimension: "25px",
         starSpacing: "1px",
@@ -66,6 +68,10 @@ const SinglePage = ({
     useEffect(() => {
         getInformation(id);
     }, [id, currentLanguage]);
+
+    useEffect(() => {
+        getTypesMovie(id);
+    }, [userId]);
 
     const getInformation = async (id) => {
         try {
@@ -103,15 +109,15 @@ const SinglePage = ({
 
     const getTypesMovie = async (id) => {
         try {
-            const userId = localStorage.getItem("userId");
-            if (!userId) return;
-
+            if (!userId) {
+                setTypes({ saved: false, watched: false });
+                return;
+            }
             const data = await request(api.getTypesMovie, "GET", {
                 userId,
                 movieId: id,
             });
             if (data.message === "OK") {
-                console.log(data);
                 setTypes(data.types);
             } else {
                 toast.error(t("error"));
@@ -128,7 +134,6 @@ const SinglePage = ({
 
     const addToList = async (type) => {
         try {
-            const userId = localStorage.getItem("userId");
             if (!userId) {
                 openModalAuth();
             } else {
@@ -138,6 +143,7 @@ const SinglePage = ({
                 });
                 if (data.message === "OK") {
                     toast.success(t("addedToListSuccess"));
+                    setTypes(data.types);
                 } else {
                     toast.error(t("error"));
                 }
@@ -149,7 +155,6 @@ const SinglePage = ({
 
     const deleteToList = async (type) => {
         try {
-            const userId = localStorage.getItem("userId");
             if (!userId) {
                 toast.error(t("error"));
             } else {
@@ -159,6 +164,7 @@ const SinglePage = ({
                 });
                 if (data.message === "OK") {
                     toast.success(t("removedFromListSuccess"));
+                    setTypes(data.types);
                 } else {
                     toast.error(t("error"));
                 }
@@ -233,38 +239,40 @@ const SinglePage = ({
                             <div className="buttons_container button_sticky">
                                 {types.watched ? (
                                     <button
+                                        className="button_delete"
                                         onClick={() =>
                                             deleteToList("deleteWatchedMovie")
                                         }
                                     >
-                                        {t("notWatched")}
+                                        <span>{t("notWatched")}</span>
                                     </button>
                                 ) : (
                                     <button
+                                        className="button_add"
                                         onClick={() =>
                                             addToList("addWatchedMovie")
                                         }
                                     >
-                                        {t("watched")}
+                                        <span>{t("watched")}</span>
                                     </button>
                                 )}
                                 {types.saved ? (
                                     <button
-                                        className="button_border"
+                                        className="button_border button_delete"
                                         onClick={() =>
                                             deleteToList("deleteSavedMovie")
                                         }
                                     >
-                                        {t("delete")}
+                                        <span>{t("delete")}</span>
                                     </button>
                                 ) : (
                                     <button
-                                        className="button_border"
+                                        className="button_border button_add"
                                         onClick={() =>
                                             addToList("addSavedMovie")
                                         }
                                     >
-                                        {t("save")}
+                                        <span>{t("save")}</span>
                                     </button>
                                 )}
                             </div>

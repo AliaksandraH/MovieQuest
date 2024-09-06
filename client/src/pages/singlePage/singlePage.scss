@@ -116,12 +116,18 @@
     border-bottom-right-radius: 10px;
     button {
         cursor: pointer;
-        color: $white;
         width: 50%;
         height: 100%;
         padding: 5px;
         font-size: 15px;
+    }
+    .button_add {
+        color: $white;
         background: $main-color;
+    }
+    .button_delete {
+        color: $main-color;
+        background: $white;
     }
 }
 
@@ -137,6 +143,10 @@
     height: 70%;
     width: 1px;
     background-color: $white;
+}
+
+.button_delete + .button_border::before {
+    background-color: $main-color;
 }
 
 .button_sticky {

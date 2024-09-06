@@ -27,22 +27,26 @@ const managerAddingMovies = catchAsync(async (req, res, statusField) => {
 
     const updateData = { $set: { [statusField]: true } };
 
-    const movie = await UserMovies.findOneAndUpdate(
+    let movie = await UserMovies.findOneAndUpdate(
         { userId, movieId },
         updateData,
         { new: true }
     );
 
     if (!movie) {
-        await UserMovies.create({
+        movie = await UserMovies.create({
             userId,
             movieId,
             [statusField]: true,
         });
     }
 
+    const saved = movie.saved || false;
+    const watched = movie.watched || false;
+
     res.status(200).json({
         message: "OK",
+        types: { saved, watched },
     });
 });
 
@@ -68,10 +72,21 @@ const managerDeletionMovies = catchAsync(async (req, res, statusField) => {
 
     if (movie.saved === false && movie.watched === false) {
         await UserMovies.deleteOne({ userId, movieId });
+        return res.status(200).json({
+            message: "OK",
+            types: {
+                saved: false,
+                watched: false,
+            },
+        });
     }
+
+    const saved = movie.saved || false;
+    const watched = movie.watched || false;
 
     res.status(200).json({
         message: "OK",
+        types: { saved, watched },
     });
 });
 

@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import SearchContainer from "../searchContainer/searchContainer";
 import Logo from "../../assets/icons8-film-reel-64.png";
 import SwitchSelector from "react-switch-selector";
+import { setUserId } from "../../actions";
 import "./header.scss";
 
 const options = [
@@ -23,16 +24,8 @@ const options = [
 const Header = ({ openModalAuth }) => {
     const { i18n, t } = useTranslation();
     const currentLanguage = i18n.language;
-
-    const [userId, setUserId] = useState(null);
-
-    useEffect(() => {
-        if (localStorage.getItem("userId")) {
-            setUserId(localStorage.getItem("userId"));
-        } else {
-            setUserId(null);
-        }
-    }, [localStorage.getItem("userId")]);
+    const dispatch = useDispatch();
+    const userId = useSelector((state) => state.userId);
 
     const changeLanguage = (newValue) => {
         i18n.changeLanguage(newValue);
@@ -44,7 +37,7 @@ const Header = ({ openModalAuth }) => {
 
     const signOut = () => {
         localStorage.removeItem("userId");
-        setUserId(null);
+        dispatch(setUserId(null));
         toast.success(t("logoutSuccess"));
     };
 

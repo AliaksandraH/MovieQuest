@@ -66,6 +66,10 @@
     "logoutSuccess": "You have successfully logged out!",
     "addedToListSuccess": "Successfully added to the list!",
     "removedFromListSuccess": "Successfully removed from the list!",
+    "all": "All",
+    "saved": "Saved",
+    "savedMoviesAndShows": "Saved movies and TV shows",
+    "listIsEmpty": "This list is empty.",
 
     "A user with such an email already exists.": "A user with such an email already exists.",
     "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",

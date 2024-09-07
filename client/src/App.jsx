@@ -8,6 +8,7 @@ import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
 import SinglePage from "./pages/singlePage/singlePage";
+import Saved from "./pages/saved/saved.jsx";
 import Modal from "./components/modal/modal";
 import Auth from "./components/auth/auth.jsx";
 import ModalFilters from "./components/modalFilters/modalFilters";
@@ -105,6 +106,10 @@ function App() {
                                     }
                                 />
                             }
+                        />
+                        <Route
+                            path="/saved"
+                            element={<Saved openModalAuth={openModalAuth} />}
                         />
                     </Routes>
                     <Footer />

@@ -62,7 +62,11 @@ const Header = ({ openModalAuth }) => {
                 <div className="header_search">
                     <SearchContainer />
                 </div>
-                <div>
+                <div className="header_links">
+                    <Link to="/saved">
+                        <span className="header_button">{t("saved")}</span>
+                    </Link>
+
                     {userId ? (
                         <span
                             className="header_button_sign-out"

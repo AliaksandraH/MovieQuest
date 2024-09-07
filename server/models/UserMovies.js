@@ -10,6 +10,10 @@ const userMoviesSchema = new Schema({
         ref: "User",
         required: true,
     },
+    type: {
+        type: String,
+        required: true,
+    },
     saved: {
         type: Boolean,
         default: false,

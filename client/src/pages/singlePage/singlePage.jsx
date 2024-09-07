@@ -116,6 +116,7 @@ const SinglePage = ({
             const data = await request(api.getTypesMovie, "GET", {
                 userId,
                 movieId: id,
+                type,
             });
             if (data.message === "OK") {
                 setTypes(data.types);
@@ -132,14 +133,15 @@ const SinglePage = ({
     //     openModalSeasons();
     // };
 
-    const addToList = async (type) => {
+    const addToList = async (url) => {
         try {
             if (!userId) {
                 openModalAuth();
             } else {
-                const data = await request(api[type], "POST", {
+                const data = await request(api[url], "POST", {
                     userId,
                     movieId: information.id,
+                    type,
                 });
                 if (data.message === "OK") {
                     toast.success(t("addedToListSuccess"));
@@ -153,14 +155,15 @@ const SinglePage = ({
         }
     };
 
-    const deleteToList = async (type) => {
+    const deleteToList = async (url) => {
         try {
             if (!userId) {
                 toast.error(t("error"));
             } else {
-                const data = await request(api[type], "POST", {
+                const data = await request(api[url], "POST", {
                     userId,
                     movieId: information.id,
+                    type,
                 });
                 if (data.message === "OK") {
                     toast.success(t("removedFromListSuccess"));

@@ -11,6 +11,7 @@ export const api = {
     addWatchedMovie: `${http}/userMovies/addWatchedMovie`,
     deleteSavedMovie: `${http}/userMovies/deleteSavedMovie`,
     deleteWatchedMovie: `${http}/userMovies/deleteWatchedMovie`,
+    putRatingMovie: `${http}/userMovies/putRatingMovie`,
 };
 
 export const minDate = 1895;

@@ -22,6 +22,10 @@ const userMoviesSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    userRating: {
+        type: Number,
+        default: 0,
+    },
 });
 
 module.exports = model("UserMovies", userMoviesSchema);

@@ -22,9 +22,13 @@
         );
         background-color: $main-color;
         p {
-            color: $white;
-            font-size: 30px;
+            color: rgba(255, 255, 255, 0.795);
+            font-size: 16px;
             text-align: center;
+        }
+        .title {
+            font-size: 30px;
+            color: $white;
         }
     }
     .main {
@@ -70,12 +74,18 @@
         padding: 15px 15px;
     }
     .saved-page_header p {
+        font-size: 15px;
+    }
+    .saved-page_header .title {
         font-size: 27px;
     }
 }
 
 @media only screen and (max-width: 500px) {
     .saved-page_header p {
+        font-size: 13px;
+    }
+    .saved-page_header .title {
         font-size: 23px;
     }
 }

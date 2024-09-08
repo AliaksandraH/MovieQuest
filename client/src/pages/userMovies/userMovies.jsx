@@ -9,7 +9,7 @@ import "./userMovies.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
 
-const UserMovies = ({ title, url }) => {
+const UserMovies = ({ title, url, sort }) => {
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
     const { request } = useHttp();
@@ -33,13 +33,24 @@ const UserMovies = ({ title, url }) => {
     }, [movies, currentLanguage]);
 
     useEffect(() => {
+        let filteredMovies = [];
         if (type === "all") {
-            setCurrentMovies(moviesInformation);
-            return;
+            filteredMovies = moviesInformation;
+        } else {
+            filteredMovies = moviesInformation.filter(
+                (movie) => movie.type === type
+            );
         }
-        const data = moviesInformation.filter((movie) => movie.type === type);
-        setCurrentMovies(data);
+        const sortedMovies = sortMovies(filteredMovies, sort);
+        setCurrentMovies(sortedMovies);
     }, [type, moviesInformation]);
+
+    const sortMovies = (movies, sort) => {
+        if (sort) {
+            return [...movies].sort((a, b) => b.userRating - a.userRating);
+        }
+        return [...movies];
+    };
 
     const getMovies = async () => {
         try {
@@ -69,6 +80,7 @@ const UserMovies = ({ title, url }) => {
                 ).then((apiData) => ({
                     ...apiData,
                     type: movie.type,
+                    userRating: movie.userRating,
                 }))
             );
             const dataResponses = await Promise.all(data);
@@ -90,13 +102,15 @@ const UserMovies = ({ title, url }) => {
             backdrop_path: movie.backdrop_path ? movie.backdrop_path : null,
             wasViewed: false,
             type: movie.type,
+            userRating: movie.userRating,
         };
     };
 
     return (
         <div className="saved-page">
             <div className="saved-page_header">
-                <p>{t(title)}</p>
+                <p className="title">{t(title)}</p>
+                {sort && <p>{t("listSortedByRatings")}</p>}
             </div>
             <div className="main">
                 <hr />

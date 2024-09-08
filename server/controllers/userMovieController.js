@@ -109,6 +109,27 @@ const deleteSavedMovie = (req, res) => managerDeletionMovies(req, res, "saved");
 const deleteWatchedMovie = (req, res) =>
     managerDeletionMovies(req, res, "watched");
 
+const putRatingMovie = catchAsync(async (req, res) => {
+    const { userId, movieId, type, rating } = req.body;
+    const updateData = { $set: { userRating: rating } };
+
+    let movie = await UserMovies.findOneAndUpdate(
+        { userId, movieId, type, watched: true },
+        updateData,
+        { new: true }
+    );
+
+    if (!movie) {
+        res.status(400).json({
+            message: "The movie was not found.",
+        });
+    }
+
+    res.status(200).json({
+        message: "OK",
+    });
+});
+
 module.exports = {
     getUserSavedMovies,
     getUserWatchedMovies,
@@ -117,4 +138,5 @@ module.exports = {
     addWatchedMovie,
     deleteSavedMovie,
     deleteWatchedMovie,
+    putRatingMovie,
 };

@@ -72,6 +72,11 @@
     "savedMoviesAndShows": "Saved Movies and TV Shows",
     "watchedMoviesAndShows": "Watched Movies and TV Shows",
     "listIsEmpty": "This list is empty.",
+    "rating": "Rating",
+    "rateMovieOrShow": "Rate the Movie or TV Show!",
+    "ratingHelp": "Your rating will help us sort Movies and TV Shows according to your preferences. This will make watching and finding your favorite movies/tv shows more convenient!",
+    "thanksForFeedback": "Thanks for your feedback :)",
+    "listSortedByRatings": "The list is sorted according to your ratings.",
 
     "A user with such an email already exists.": "A user with such an email already exists.",
     "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",

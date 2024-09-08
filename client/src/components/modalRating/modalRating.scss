@@ -1,0 +1,23 @@
+@import "../../style/variables.scss";
+@import "../../style/helpers.scss";
+
+.modal-rating {
+    &_information {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+        p {
+            color: $white;
+            text-align: justify;
+            padding: 0 15px;
+            font-size: 17px;
+        }
+        .text-rate {
+            color: $main-color-light;
+        }
+    }
+    &_stars {
+        width: 100%;
+        @extend %display-column-CC;
+    }
+}

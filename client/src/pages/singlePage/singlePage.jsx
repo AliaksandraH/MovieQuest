@@ -7,6 +7,8 @@ import { useHttp } from "../../hooks/http.hook";
 import { createLineFromArray } from "../../helpers/functions";
 import { api } from "../../helpers/constants";
 import StarRatings from "react-star-ratings";
+import Modal from "../../components/modal/modal";
+import ModalRating from "../../components/modalRating/modalRating";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
@@ -47,6 +49,7 @@ const SinglePage = ({
     const currentLanguage = i18n.language;
     const { request } = useHttp();
     const userId = useSelector((state) => state.userId);
+    const [modalRating, setModalRating] = useState(false);
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
     const [sortedInformation, setSortedInformation] = useState({});
@@ -72,6 +75,14 @@ const SinglePage = ({
     useEffect(() => {
         getTypesMovie(id);
     }, [userId]);
+
+    const openModalRating = () => setModalRating(true);
+    const closeModalRating = () => setModalRating(false);
+
+    const modalRatingProps = {
+        closeModalRating,
+        openModalAuth,
+    };
 
     const getInformation = async (id) => {
         try {
@@ -146,6 +157,9 @@ const SinglePage = ({
                 if (data.message === "OK") {
                     toast.success(t("addedToListSuccess"));
                     setTypes(data.types);
+                    if (url === "addWatchedMovie") {
+                        openModalRating();
+                    }
                 } else {
                     toast.error(t("error"));
                 }
@@ -179,6 +193,14 @@ const SinglePage = ({
 
     return (
         <div className="single-page">
+            {modalRating && (
+                <Modal
+                    Component={ModalRating}
+                    componentProps={modalRatingProps}
+                    nameModal="rating"
+                    closeModal={closeModalRating}
+                />
+            )}
             <img
                 src={
                     information.backdrop_path

@@ -57,10 +57,12 @@ function App() {
     const propsSavedMovies = {
         title: "savedMoviesAndShows",
         url: "getUserSavedMovies",
+        sort: false,
     };
     const propsWatchedMovies = {
         title: "watchedMoviesAndShows",
         url: "getUserWatchedMovies",
+        sort: true,
     };
 
     return (

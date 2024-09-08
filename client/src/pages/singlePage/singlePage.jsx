@@ -1,15 +1,43 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
 import { createLineFromArray } from "../../helpers/functions";
+import { api } from "../../helpers/constants";
 import StarRatings from "react-star-ratings";
+import Modal from "../../components/modal/modal";
+import ModalRating from "../../components/modalRating/modalRating";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
+const imgPath = "https://image.tmdb.org/t/p/original";
+const movieInformation = [
+    "original_title",
+    "release_date",
+    "production_countries",
+    "production_companies",
+    "genres",
+];
+const tvInformation = [
+    "original_name",
+    "first_air_date",
+    "last_air_date",
+    "number_of_seasons",
+    "created_by",
+    "production_countries",
+    "production_companies",
+    "genres",
+];
+const statusColors = {
+    "Returning Series": "rgba(0, 146, 6, 0.4)",
+    Ended: "rgba(159, 0, 19, 0.4)",
+    Released: "rgba(0, 146, 6, 0.4)",
+    Default: "rgba(39, 39, 39, 0.4)",
+};
 
 const SinglePage = ({
     openModalSeasons,
@@ -17,35 +45,14 @@ const SinglePage = ({
     setSeasonsInformation,
 }) => {
     const { id, type } = useParams();
-    const { request } = useHttp();
-    const [information, setInformation] = useState({});
-    const [sortedInformation, setSortedInformation] = useState({});
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
-    const imgPath = "https://image.tmdb.org/t/p/original";
-    const movieInformation = [
-        "original_title",
-        "release_date",
-        "production_countries",
-        "production_companies",
-        "genres",
-    ];
-    const tvInformation = [
-        "original_name",
-        "first_air_date",
-        "last_air_date",
-        "number_of_seasons",
-        "created_by",
-        "production_countries",
-        "production_companies",
-        "genres",
-    ];
-    const statusColors = {
-        "Returning Series": "rgba(0, 146, 6, 0.4)",
-        Ended: "rgba(159, 0, 19, 0.4)",
-        Released: "rgba(0, 146, 6, 0.4)",
-        Default: "rgba(39, 39, 39, 0.4)",
-    };
+    const { request } = useHttp();
+    const userId = useSelector((state) => state.userId);
+    const [modalRating, setModalRating] = useState(false);
+    const [information, setInformation] = useState({});
+    const [types, setTypes] = useState({ saved: false, watched: false });
+    const [sortedInformation, setSortedInformation] = useState({});
     const styleRatingStars = {
         starDimension: "25px",
         starSpacing: "1px",
@@ -65,6 +72,18 @@ const SinglePage = ({
         getInformation(id);
     }, [id, currentLanguage]);
 
+    useEffect(() => {
+        getTypesMovie(id);
+    }, [userId]);
+
+    const openModalRating = () => setModalRating(true);
+    const closeModalRating = () => setModalRating(false);
+
+    const modalRatingProps = {
+        closeModalRating,
+        openModalAuth,
+    };
+
     const getInformation = async (id) => {
         try {
             const data = await request(
@@ -74,6 +93,7 @@ const SinglePage = ({
             const needInformation =
                 type === "movie" ? movieInformation : tvInformation;
             generateInformation(needInformation, data);
+            getTypesMovie(id);
         } catch (error) {
             console.log(error);
         }
@@ -98,27 +118,89 @@ const SinglePage = ({
         setSortedInformation(data);
     };
 
+    const getTypesMovie = async (id) => {
+        try {
+            if (!userId) {
+                setTypes({ saved: false, watched: false });
+                return;
+            }
+            const data = await request(api.getTypesMovie, "GET", {
+                userId,
+                movieId: id,
+                type,
+            });
+            if (data.message === "OK") {
+                setTypes(data.types);
+            } else {
+                toast.error(t("error"));
+            }
+        } catch (error) {
+            toast.error(t("error"));
+        }
+    };
+
     // const showModal = () => {
     //     setSeasonsInformation(information.seasons);
     //     openModalSeasons();
     // };
 
-    const save = () => {
-        toast.error(t("textCannotBeMade"));
-        if (!localStorage.getItem("userId")) {
-            openModalAuth();
+    const addToList = async (url) => {
+        try {
+            if (!userId) {
+                openModalAuth();
+            } else {
+                const data = await request(api[url], "POST", {
+                    userId,
+                    movieId: information.id,
+                    type,
+                });
+                if (data.message === "OK") {
+                    toast.success(t("addedToListSuccess"));
+                    setTypes(data.types);
+                    if (url === "addWatchedMovie") {
+                        openModalRating();
+                    }
+                } else {
+                    toast.error(t("error"));
+                }
+            }
+        } catch (error) {
+            toast.error(t("error"));
         }
     };
 
-    const watched = () => {
-        toast.error(t("textCannotBeMade"));
-        if (!localStorage.getItem("userId")) {
-            openModalAuth();
+    const deleteToList = async (url) => {
+        try {
+            if (!userId) {
+                toast.error(t("error"));
+            } else {
+                const data = await request(api[url], "POST", {
+                    userId,
+                    movieId: information.id,
+                    type,
+                });
+                if (data.message === "OK") {
+                    toast.success(t("removedFromListSuccess"));
+                    setTypes(data.types);
+                } else {
+                    toast.error(t("error"));
+                }
+            }
+        } catch (error) {
+            toast.error(t("error"));
         }
     };
 
     return (
         <div className="single-page">
+            {modalRating && (
+                <Modal
+                    Component={ModalRating}
+                    componentProps={modalRatingProps}
+                    nameModal="rating"
+                    closeModal={closeModalRating}
+                />
+            )}
             <img
                 src={
                     information.backdrop_path
@@ -179,16 +261,45 @@ const SinglePage = ({
                                     {information.overview}
                                 </p>
                             )}
-                            <div className="buttons-wide button_sticky">
-                                <button onClick={() => save()}>
-                                    {t("save")}
-                                </button>
-                                <button
-                                    className="button_border"
-                                    onClick={() => watched()}
-                                >
-                                    {t("watched")}
-                                </button>
+                            <div className="buttons_container button_sticky">
+                                {types.watched ? (
+                                    <button
+                                        className="button_delete"
+                                        onClick={() =>
+                                            deleteToList("deleteWatchedMovie")
+                                        }
+                                    >
+                                        <span>{t("notWatched")}</span>
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="button_add"
+                                        onClick={() =>
+                                            addToList("addWatchedMovie")
+                                        }
+                                    >
+                                        <span>{t("watched")}</span>
+                                    </button>
+                                )}
+                                {types.saved ? (
+                                    <button
+                                        className="button_border button_delete"
+                                        onClick={() =>
+                                            deleteToList("deleteSavedMovie")
+                                        }
+                                    >
+                                        <span>{t("delete")}</span>
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="button_border button_add"
+                                        onClick={() =>
+                                            addToList("addSavedMovie")
+                                        }
+                                    >
+                                        <span>{t("save")}</span>
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

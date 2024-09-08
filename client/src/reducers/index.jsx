@@ -1,6 +1,7 @@
 import { minDate, maxDate } from "../helpers/constants.js";
 
 const initialState = {
+    userId: null,
     currentType: "movie",
     currentNumPage: 1,
     genres: { movie: [], ty: [] },
@@ -19,6 +20,11 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
+        case "CHANGE_USER_ID":
+            return {
+                ...state,
+                userId: action.payload,
+            };
         case "CHANGE_CURRENT_TYPE":
             return {
                 ...state,

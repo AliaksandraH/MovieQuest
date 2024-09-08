@@ -20,7 +20,7 @@ const login = catchAsync(async (req, res) => {
 });
 
 const register = catchAsync(async (req, res) => {
-    const { email, username, password, passwordConfirm } = req.query;
+    const { email, username, password, passwordConfirm } = req.body;
 
     const candidate = await User.findOne({ email });
     if (candidate) return initError(res, "register", "userExists");

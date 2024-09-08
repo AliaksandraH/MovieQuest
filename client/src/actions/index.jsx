@@ -1,3 +1,10 @@
+export const setUserId = (id) => {
+    return {
+        type: "CHANGE_USER_ID",
+        payload: id,
+    };
+};
+
 export const setCurrentType = (type) => {
     return {
         type: "CHANGE_CURRENT_TYPE",

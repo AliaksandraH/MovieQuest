@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setUserId } from "./actions/index.jsx";
 import Header from "./components/header/header";
 import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
 import SinglePage from "./pages/singlePage/singlePage";
+import UserMovies from "./pages/userMovies/userMovies.jsx";
 import Modal from "./components/modal/modal";
 import Auth from "./components/auth/auth.jsx";
 import ModalFilters from "./components/modalFilters/modalFilters";
@@ -15,11 +17,19 @@ import "./App.scss";
 import "../i18n.js";
 
 function App() {
+    const dispatch = useDispatch();
     const assignedFilters = useSelector((state) => state.assignedFilters);
     const [modalFilters, setModalFilters] = useState(false);
     const [modalSeasons, setModalSeasons] = useState(false);
     const [modalAuth, setModalAuth] = useState(false);
     const [seasonsInformation, setSeasonsInformation] = useState(false);
+
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+            dispatch(setUserId(userId));
+        }
+    }, []);
 
     const openModalFilters = () => setModalFilters(true);
     const openModalSeasons = () => setModalSeasons(true);
@@ -42,6 +52,17 @@ function App() {
 
     const modalAuthProps = {
         closeModalAuth: closeModal,
+    };
+
+    const propsSavedMovies = {
+        title: "savedMoviesAndShows",
+        url: "getUserSavedMovies",
+        sort: false,
+    };
+    const propsWatchedMovies = {
+        title: "watchedMoviesAndShows",
+        url: "getUserWatchedMovies",
+        sort: true,
     };
 
     return (
@@ -96,6 +117,14 @@ function App() {
                                     }
                                 />
                             }
+                        />
+                        <Route
+                            path="/saved"
+                            element={<UserMovies {...propsSavedMovies} />}
+                        />
+                        <Route
+                            path="/watched"
+                            element={<UserMovies {...propsWatchedMovies} />}
                         />
                     </Routes>
                     <Footer />

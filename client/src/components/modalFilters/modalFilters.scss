@@ -51,11 +51,6 @@
     }
 }
 
-.button_sticky {
-    position: sticky;
-    bottom: 0;
-}
-
 @media only screen and (max-width: 500px) {
     .filter_container_values {
         grid-template-columns: repeat(2, 1fr);

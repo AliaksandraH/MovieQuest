@@ -45,15 +45,19 @@
             font-size: 18px;
         }
     }
+    &_links {
+        display: flex;
+        column-gap: 7px;
+    }
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 1000px) {
     .header {
         padding: 10px 20px;
     }
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 950px) {
     .header {
         height: auto;
         display: flex;

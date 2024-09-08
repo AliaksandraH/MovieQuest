@@ -1,14 +1,17 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useHttp } from "../../hooks/http.hook";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import SwitchSelector from "react-switch-selector";
 import { api } from "../../helpers/constants";
+import { setUserId } from "../../actions";
 import "./auth.scss";
 
 const Auth = ({ closeModalAuth }) => {
     const { t } = useTranslation();
     const { request } = useHttp();
+    const dispatch = useDispatch();
     const [showSignIn, setShowSignIn] = useState(true);
     const [userSignIn, setUserSignIn] = useState({ email: "", password: "" });
     const [userSignUp, setUserSignUp] = useState({
@@ -48,6 +51,7 @@ const Auth = ({ closeModalAuth }) => {
                 toast.success(t("loginSuccess"));
                 setUserSignIn({ email: "", password: "" });
                 localStorage.setItem("userId", data.userId);
+                dispatch(setUserId(data.userId));
                 closeModalAuth();
             } else {
                 toast.error(t(data.message));
@@ -60,7 +64,7 @@ const Auth = ({ closeModalAuth }) => {
     const onSignUp = async (e) => {
         e.preventDefault();
         try {
-            const data = await request(api.register, "GET", userSignUp);
+            const data = await request(api.register, "POST", userSignUp);
 
             if (data.message === "OK") {
                 toast.success(t("registrationSuccess"));

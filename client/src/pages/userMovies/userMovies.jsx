@@ -5,15 +5,16 @@ import { useHttp } from "../../hooks/http.hook";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/constants";
 import MovieContainer from "../../components/movieContainer/movieContainer";
-import "./saved.scss";
+import "./userMovies.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
 
-const Saved = ({ openModalAuth }) => {
+const UserMovies = ({ title, url }) => {
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
     const { request } = useHttp();
     const userId = useSelector((state) => state.userId);
+
     const [type, setType] = useState("all");
     const [movies, setMovies] = useState([]);
     const [moviesInformation, setMoviesInformation] = useState([]);
@@ -25,7 +26,7 @@ const Saved = ({ openModalAuth }) => {
 
     useEffect(() => {
         getMovies();
-    }, [userId]);
+    }, [userId, url]);
 
     useEffect(() => {
         getMoviesInformation(movies);
@@ -42,14 +43,11 @@ const Saved = ({ openModalAuth }) => {
 
     const getMovies = async () => {
         try {
-            if (!userId) {
-                setMovies([]);
-                setMoviesInformation([]);
-                setCurrentMovies([]);
-                openModalAuth();
-                return;
-            }
-            const data = await request(api.getUserSavedMovies, "GET", {
+            setMovies([]);
+            setMoviesInformation([]);
+            setCurrentMovies([]);
+            if (!userId) return;
+            const data = await request(api[url], "GET", {
                 userId,
             });
             if (data.message === "OK") {
@@ -98,7 +96,7 @@ const Saved = ({ openModalAuth }) => {
     return (
         <div className="saved-page">
             <div className="saved-page_header">
-                <p>{t("savedMoviesAndShows")}</p>
+                <p>{t(title)}</p>
             </div>
             <div className="main">
                 <hr />
@@ -150,4 +148,4 @@ const Saved = ({ openModalAuth }) => {
     );
 };
 
-export default Saved;
+export default UserMovies;

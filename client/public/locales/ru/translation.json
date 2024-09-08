@@ -31,6 +31,7 @@
     "selected" : "",
     "select" : "Выбрать",
     "watched" : "Смотрел",
+    "watchedLink": "Просмотренное",
     "notWatched": "Не смотрел",
     "original_name" : "Оригинальное название",
     "first_air_date" : "Дата первого выхода",
@@ -68,7 +69,8 @@
     "removedFromListSuccess": "Успешно удалено из списка!",
     "all": "Все",
     "saved": "Сохранённое",
-    "savedMoviesAndShows": "Сохранённые фильмы и сериалы",
+    "savedMoviesAndShows": "Сохранённые Фильмы и Сериалы",
+    "watchedMoviesAndShows": "Просмотренные Фильмы и Сериалы",
     "listIsEmpty": "Этот список пуст.",
 
     "A user with such an email already exists.": "Пользователь с таким Email уже существует.",

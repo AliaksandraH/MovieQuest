@@ -31,6 +31,7 @@
     "selected" : "selected",
     "select" : "Select",
     "watched" : "Watched",
+    "watchedLink": "Watched",
     "notWatched": "Not watched",
     "original_name" : "Original name",
     "first_air_date" :"First air date",
@@ -68,7 +69,8 @@
     "removedFromListSuccess": "Successfully removed from the list!",
     "all": "All",
     "saved": "Saved",
-    "savedMoviesAndShows": "Saved movies and TV shows",
+    "savedMoviesAndShows": "Saved Movies and TV Shows",
+    "watchedMoviesAndShows": "Watched Movies and TV Shows",
     "listIsEmpty": "This list is empty.",
 
     "A user with such an email already exists.": "A user with such an email already exists.",

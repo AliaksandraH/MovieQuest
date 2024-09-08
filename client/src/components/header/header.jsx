@@ -63,17 +63,25 @@ const Header = ({ openModalAuth }) => {
                     <SearchContainer />
                 </div>
                 <div className="header_links">
-                    <Link to="/saved">
-                        <span className="header_button">{t("saved")}</span>
-                    </Link>
-
                     {userId ? (
-                        <span
-                            className="header_button_sign-out"
-                            onClick={() => signOut()}
-                        >
-                            {t("signOut")}
-                        </span>
+                        <>
+                            <Link to="/watched">
+                                <span className="header_button">
+                                    {t("watchedLink")}
+                                </span>
+                            </Link>
+                            <Link to="/saved">
+                                <span className="header_button">
+                                    {t("saved")}
+                                </span>
+                            </Link>{" "}
+                            <span
+                                className="header_button_sign-out"
+                                onClick={() => signOut()}
+                            >
+                                {t("signOut")}
+                            </span>
+                        </>
                     ) : (
                         <span
                             className="header_button"

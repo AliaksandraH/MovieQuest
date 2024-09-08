@@ -5,6 +5,7 @@ export const api = {
     register: `${http}/auth/register`,
     deleteAccount: `${http}/auth/deleteAccount`,
     getUserSavedMovies: `${http}/userMovies/getUserSavedMovies`,
+    getUserWatchedMovies: `${http}/userMovies/getUserWatchedMovies`,
     getTypesMovie: `${http}/userMovies/getTypesMovie`,
     addSavedMovie: `${http}/userMovies/addSavedMovie`,
     addWatchedMovie: `${http}/userMovies/addWatchedMovie`,

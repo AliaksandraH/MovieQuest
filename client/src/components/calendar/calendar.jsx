@@ -1,19 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import i18next from "i18next";
-import RightArrow from "../../assets/icons8-right-arrow-64.png";
-import LeftArrow from "../../assets/icons8-left-arrow-64.png";
+import { useHttp } from "../../hooks/http.hook";
+import { api } from "../../helpers/constants";
 import "./calendar.scss";
 
 const Calendar = () => {
     const currentLanguage = i18next.language;
+    const { request } = useHttp();
+    const userId = useSelector((state) => state.userId);
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [calendarDays, setCalendarDays] = useState([]);
+    const [movies, setMovies] = useState([]);
 
-    const changeDate = (increment) => {
-        setCurrentDate((prevDate) => {
-            const newDate = new Date(prevDate);
-            newDate.setMonth(newDate.getMonth() + increment);
-            return newDate;
+    useEffect(() => {
+        getMovies();
+    }, [userId]);
+
+    useEffect(() => {
+        renderDays();
+    }, [movies]);
+
+    const getMovies = async () => {
+        try {
+            if (!userId) return;
+            const data = await request(api.getUserWatchedMoviesInMonth, "GET", {
+                userId,
+                date: currentDate,
+            });
+            if (data.message === "OK") {
+                setMovies(data.movies);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const formatDate = (date) => {
+        const monthYearString = date.toLocaleDateString(currentLanguage, {
+            month: "long",
+            year: "numeric",
         });
+        return (
+            monthYearString.charAt(0).toUpperCase() + monthYearString.slice(1)
+        );
     };
 
     const renderDays = () => {
@@ -29,36 +59,49 @@ const Calendar = () => {
         );
 
         const days = [];
-        for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
-            days.push(<div key={i} className="calendar_day"></div>);
-        }
+        const emptyDays = [];
+        const dayOfWeek = firstDayOfMonth.getDay();
 
-        for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
-            days.unshift(
-                <div key={`empty${i}`} className="calendar_empty-day"></div>
+        const adjustedDayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+        const daysArray = movies.map((movie) => {
+            const date = new Date(movie.watchedDate);
+            return date.getUTCDate();
+        });
+
+        for (let i = 0; i < adjustedDayOfWeek; i++) {
+            emptyDays.push(
+                <div key={`empty-${i}`} className="calendar_empty-day"></div>
             );
         }
 
-        return days;
+        for (let i = 1; i <= lastDayOfMonth.getDate(); i++) {
+            const count = daysArray.filter((day) => day === i).length;
+            const dayClass =
+                count >= 3
+                    ? "lot-views"
+                    : count === 2
+                    ? "average-views"
+                    : count === 1
+                    ? "few-views"
+                    : "no-views";
+
+            days.push(
+                <div key={i} className={`calendar_day ${dayClass}`}>
+                    <p>{i}</p>
+                </div>
+            );
+        }
+
+        setCalendarDays([...emptyDays, ...days]);
     };
 
     return (
         <div className="calendar">
             <div className="calendar_header">
-                <button onClick={() => changeDate(-1)}>
-                    <img src={LeftArrow} alt="left arrow" />
-                </button>
-                <p>
-                    {currentDate.toLocaleDateString(currentLanguage, {
-                        month: "long",
-                        year: "numeric",
-                    })}
-                </p>
-                <button onClick={() => changeDate(1)}>
-                    <img src={RightArrow} alt="right arrow" />
-                </button>
+                <p>{formatDate(currentDate)}</p>
             </div>
-            <div className="calendar_days">{renderDays()}</div>
+            <div className="calendar_days">{calendarDays}</div>
         </div>
     );
 };

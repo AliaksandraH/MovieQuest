@@ -11,10 +11,45 @@ const SearchContainer = () => {
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
     const [text, setText] = useState("");
+    const [debouncedValue, setDebouncedValue] = useState(text);
     const [results, setResults] = useState({ movie: [], tv: [] });
     const [isVisible, setIsVisible] = useState(false);
     const { request } = useHttp();
     const searchRef = useRef();
+
+    useEffect(() => {
+        if (!text.trim()) {
+            setIsVisible(false);
+            return;
+        }
+        const timerId = setTimeout(() => {
+            setDebouncedValue(text);
+        }, 300);
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [text]);
+
+    useEffect(() => {
+        if (debouncedValue) {
+            getShowsByText();
+        }
+    }, [debouncedValue]);
+
+    useEffect(() => {
+        if (isVisible) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }
+    }, [isVisible]);
+
+    const handleClickOutside = (event) => {
+        if (searchRef.current && !searchRef.current.contains(event.target)) {
+            setIsVisible(false);
+        }
+    };
 
     const getShowsByText = async () => {
         try {
@@ -72,26 +107,12 @@ const SearchContainer = () => {
         });
     };
 
-    const handleClickOutside = (event) => {
-        if (searchRef.current && !searchRef.current.contains(event.target)) {
-            setIsVisible(false);
-        }
-    };
-
-    useEffect(() => {
-        if (isVisible) {
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }
-    }, [isVisible]);
-
     return (
         <div className="search" ref={searchRef}>
             <div className="search_container">
                 <input
                     type="text"
+                    value={text}
                     placeholder={`${t("search")}...`}
                     onChange={(event) => {
                         setText(event.target.value);

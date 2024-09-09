@@ -34,7 +34,7 @@
     &_results-container {
         width: 100%;
         padding: 0;
-        background-color: $main-color;
+        background: rgba(50, 50, 50, 1);
         border-radius: 10px;
         position: absolute;
         left: 0;
@@ -45,7 +45,7 @@
             text-align: center;
             padding: 5px 0;
             border-bottom: 1px solid $white;
-            background: rgba(39, 39, 39, 0.4);
+            background: $main-color;
         }
         .top {
             border-top-left-radius: 10px;
@@ -65,5 +65,9 @@
     &_result {
         width: 100%;
         padding: 5px;
+        .year {
+            margin-left: 5px;
+            color: $main-color-light;
+        }
     }
 }

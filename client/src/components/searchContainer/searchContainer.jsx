@@ -60,7 +60,10 @@ const SearchContainer = () => {
                     onClick={() => setIsVisible(false)}
                 >
                     {year ? (
-                        <p>{`${el.title} (${year})`}</p>
+                        <p>
+                            {`${el.title}`}
+                            <span className="year">{`(${year})`}</span>
+                        </p>
                     ) : (
                         <p>{el.title}</p>
                     )}

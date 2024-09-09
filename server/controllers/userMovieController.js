@@ -17,6 +17,31 @@ const getUserSavedMovies = (req, res) =>
 const getUserWatchedMovies = (req, res) =>
     managerGetUserMovies(req, res, "watched");
 
+const getUserWatchedMoviesInMonth = catchAsync(async (req, res) => {
+    const { userId, date } = req.query;
+
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+        return res.status(400).json({ message: "Invalid date format" });
+    }
+    const year = parsedDate.getFullYear();
+    const month = parsedDate.getMonth() + 1;
+
+    const movies = await UserMovies.find({
+        userId,
+        watched: true,
+        watchedDate: {
+            $gte: new Date(year, month - 1, 1),
+            $lt: new Date(year, month, 1),
+        },
+    });
+
+    res.status(200).json({
+        message: "OK",
+        movies,
+    });
+});
+
 const getTypesMovie = catchAsync(async (req, res) => {
     const { userId, movieId, type } = req.query;
 
@@ -39,7 +64,12 @@ const getTypesMovie = catchAsync(async (req, res) => {
 const managerAddingMovies = catchAsync(async (req, res, statusField) => {
     const { userId, movieId, type } = req.body;
 
-    const updateData = { $set: { [statusField]: true } };
+    const updateData = {
+        $set: {
+            [statusField]: true,
+            ...(statusField === "watched" && { watchedDate: Date.now() }),
+        },
+    };
 
     let movie = await UserMovies.findOneAndUpdate(
         { userId, movieId, type },
@@ -133,6 +163,7 @@ const putRatingMovie = catchAsync(async (req, res) => {
 module.exports = {
     getUserSavedMovies,
     getUserWatchedMovies,
+    getUserWatchedMoviesInMonth,
     getTypesMovie,
     addSavedMovie,
     addWatchedMovie,

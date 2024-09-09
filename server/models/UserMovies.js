@@ -22,6 +22,10 @@ const userMoviesSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    watchedDate: {
+        type: Date,
+        default: Date.now(),
+    },
     userRating: {
         type: Number,
         default: 0,

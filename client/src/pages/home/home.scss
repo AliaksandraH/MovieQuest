@@ -36,10 +36,13 @@
                 font-size: 17px;
                 display: grid;
                 row-gap: 10px;
+                background-color: rgba(50, 50, 50, 0.5);
+                border-radius: 10px;
+                padding: 15px;
                 .bold-text {
                     font-size: 20px;
                     font-weight: bold;
-                    color: $main-color;
+                    color: $main-color-light;
                 }
             }
         }
@@ -64,6 +67,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
+            padding: 5px 15px;
         }
         .active-button {
             background: $main-color;

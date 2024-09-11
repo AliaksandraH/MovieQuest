@@ -14,7 +14,7 @@ const MovieContainer = ({ movieInformation, type }) => {
 
     const styleRating = {
         starDimension: "25px",
-        starSpacing: "2px",
+        starSpacing: "1px",
         numberOfStars: 5,
         rating: rating / 2,
         isSelectable: false,

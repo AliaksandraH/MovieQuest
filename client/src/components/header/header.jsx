@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -6,6 +7,7 @@ import SearchContainer from "../searchContainer/searchContainer";
 import Logo from "../../assets/icons8-film-reel-64.png";
 import SwitchSelector from "react-switch-selector";
 import { setUserId } from "../../actions";
+import Menu from "../../assets/icons8-menu-100.png";
 import "./header.scss";
 
 const options = [
@@ -26,6 +28,7 @@ const Header = ({ openModalAuth }) => {
     const currentLanguage = i18n.language;
     const dispatch = useDispatch();
     const userId = useSelector((state) => state.userId);
+    const [panelVisibility, setPanelVisibility] = useState(false);
 
     const changeLanguage = (newValue) => {
         i18n.changeLanguage(newValue);
@@ -43,55 +46,79 @@ const Header = ({ openModalAuth }) => {
 
     return (
         <div className="header">
-            <div className="header_logo">
-                <img src={Logo} />
-                <Link to="/">
+            <div className="main-panel">
+                <Link
+                    to="/"
+                    className="main-panel_logo"
+                    onClick={() => setPanelVisibility(false)}
+                >
+                    <img src={Logo} />
                     <h3>MovieQuest</h3>
                 </Link>
-            </div>
-            <div className="header_toolbar">
-                <div className="header_switch">
-                    <SwitchSelector
-                        onChange={changeLanguage}
-                        options={options}
-                        initialSelectedIndex={initialSelectedIndex}
-                        backgroundColor={"#353b48"}
-                        fontColor={"#e0dede"}
+                <div className="main-panel_toolbar">
+                    <div
+                        className="main-panel_search"
+                        onClick={() => setPanelVisibility(false)}
+                    >
+                        <SearchContainer />
+                    </div>
+                    <img
+                        src={Menu}
+                        className="main-panel_menu"
+                        onClick={() => setPanelVisibility((state) => !state)}
                     />
                 </div>
-                <div className="header_search">
-                    <SearchContainer />
-                </div>
-                <div className="header_links">
-                    {userId ? (
-                        <>
-                            <Link to="/watched">
-                                <span className="header_button">
-                                    {t("watchedLink")}
-                                </span>
-                            </Link>
-                            <Link to="/saved">
-                                <span className="header_button">
-                                    {t("saved")}
-                                </span>
-                            </Link>{" "}
-                            <span
-                                className="header_button_sign-out"
+            </div>
+            {panelVisibility && (
+                <div className="additional-panel">
+                    <div className="additional-panel_links">
+                        {userId && (
+                            <>
+                                <Link
+                                    to="/saved"
+                                    className="additional-panel_button"
+                                    onClick={() => setPanelVisibility(false)}
+                                >
+                                    <span>{t("saved")}</span>
+                                </Link>
+                                <Link
+                                    to="/watched"
+                                    className="additional-panel_button"
+                                    onClick={() => setPanelVisibility(false)}
+                                >
+                                    <span>{t("watchedLink")}</span>
+                                </Link>
+                            </>
+                        )}
+                    </div>
+                    <div className="additional-panel_links">
+                        {userId ? (
+                            <button
+                                className="additional-panel_button"
                                 onClick={() => signOut()}
                             >
                                 {t("signOut")}
-                            </span>
-                        </>
-                    ) : (
-                        <span
-                            className="header_button"
-                            onClick={() => openModalAuth()}
-                        >
-                            {t("signIn")}
-                        </span>
-                    )}
+                            </button>
+                        ) : (
+                            <button
+                                className="additional-panel_button_sign-in"
+                                onClick={() => openModalAuth()}
+                            >
+                                {t("signIn")}
+                            </button>
+                        )}
+                        <div className="additional-panel_switch">
+                            <SwitchSelector
+                                onChange={changeLanguage}
+                                options={options}
+                                initialSelectedIndex={initialSelectedIndex}
+                                backgroundColor={"#353b48"}
+                                fontColor={"#e0dede"}
+                            />
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

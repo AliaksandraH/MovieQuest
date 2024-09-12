@@ -6,6 +6,7 @@ import { useHttp } from "../../hooks/http.hook";
 import { api } from "../../helpers/constants";
 import { toast } from "react-toastify";
 import StarRatings from "react-star-ratings";
+import Spinner from "../spinner/spinner";
 import "./modalRating.scss";
 
 const ModalRating = ({ closeModalRating, openModalAuth }) => {
@@ -13,6 +14,7 @@ const ModalRating = ({ closeModalRating, openModalAuth }) => {
     const { t } = useTranslation();
     const { request } = useHttp();
     const userId = useSelector((state) => state.userId);
+    const [loading, setLoading] = useState(false);
     const [rating, setRating] = useState(0);
 
     const styleRatingStars = {
@@ -32,6 +34,7 @@ const ModalRating = ({ closeModalRating, openModalAuth }) => {
                 openModalAuth();
                 return;
             }
+            setLoading(true);
             const data = await request(api.putRatingMovie, "POST", {
                 userId,
                 movieId: id,
@@ -46,6 +49,8 @@ const ModalRating = ({ closeModalRating, openModalAuth }) => {
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -64,7 +69,9 @@ const ModalRating = ({ closeModalRating, openModalAuth }) => {
                 </div>
             </div>
             <div className="buttons-wide button_sticky" onClick={putRating}>
-                <button>{t("save")}</button>
+                <button>
+                    {!loading ? t("save") : <Spinner width={20} height={20} />}
+                </button>
             </div>
         </div>
     );

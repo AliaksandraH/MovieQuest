@@ -16,6 +16,7 @@ import {
 } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
+import Spinner from "../../components/spinner/spinner";
 import NoBackground from "../../assets/no-background.png";
 import "./pagination.scss";
 import "./home.scss";
@@ -77,6 +78,7 @@ const Home = ({ openModalFilters }) => {
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const prevFilters = useRef(assignedFilters);
     const scrollRef = useRef(null);
@@ -154,6 +156,7 @@ const Home = ({ openModalFilters }) => {
 
     const getMovies = async (type, numPage) => {
         try {
+            setLoading(true);
             if (type === "filters") return getFiltersShows(numPage);
             const data = await request(
                 `https://api.themoviedb.org/3/trending/${type}/week?language=${currentLanguage}&api_key=${_key}&page=${numPage}`
@@ -162,6 +165,8 @@ const Home = ({ openModalFilters }) => {
             return await data.results.map(transformInformationMovies);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -394,7 +399,8 @@ const Home = ({ openModalFilters }) => {
                         )}
                 </div>
                 <div ref={scrollRef} className="main_movies">
-                    {movies &&
+                    {!loading &&
+                        movies &&
                         movies.map((movie) => (
                             <MovieContainer
                                 key={movie.id}
@@ -408,7 +414,8 @@ const Home = ({ openModalFilters }) => {
                         ))}
                 </div>
                 <div className="pages">
-                    {movies.length > 0 && totalPages && (
+                    {loading && <Spinner />}
+                    {movies.length > 0 && totalPages && !loading && (
                         <div className="pages_pagination">
                             <ResponsivePagination
                                 current={numPage}
@@ -419,7 +426,7 @@ const Home = ({ openModalFilters }) => {
                             />
                         </div>
                     )}
-                    {movies.length <= 0 && <p>{t("noShows")}</p>}
+                    {movies.length <= 0 && !loading && <p>{t("noShows")}</p>}
                 </div>
             </div>
         </div>

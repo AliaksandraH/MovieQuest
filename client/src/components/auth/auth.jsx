@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import SwitchSelector from "react-switch-selector";
 import { api } from "../../helpers/constants";
 import { setUserId } from "../../actions";
+import Spinner from "../spinner/spinner";
 import "./auth.scss";
 
 const Auth = ({ closeModalAuth }) => {
@@ -13,6 +14,7 @@ const Auth = ({ closeModalAuth }) => {
     const { request } = useHttp();
     const dispatch = useDispatch();
     const [showSignIn, setShowSignIn] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [userSignIn, setUserSignIn] = useState({ email: "", password: "" });
     const [userSignUp, setUserSignUp] = useState({
         username: "",
@@ -45,8 +47,8 @@ const Auth = ({ closeModalAuth }) => {
     const onSignIn = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const data = await request(api.login, "POST", userSignIn);
-
             if (data.message === "OK") {
                 toast.success(t("loginSuccess"));
                 setUserSignIn({ email: "", password: "" });
@@ -58,14 +60,16 @@ const Auth = ({ closeModalAuth }) => {
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoading(false);
         }
     };
 
     const onSignUp = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const data = await request(api.register, "POST", userSignUp);
-
             if (data.message === "OK") {
                 toast.success(t("registrationSuccess"));
                 setUserSignUp({
@@ -79,6 +83,8 @@ const Auth = ({ closeModalAuth }) => {
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -128,7 +134,13 @@ const Auth = ({ closeModalAuth }) => {
                         autoComplete="off"
                     />
                     <div className="buttons-wide button_sticky">
-                        <button type="submit">{t("signIn")}</button>
+                        <button type="submit">
+                            {!loading ? (
+                                t("signIn")
+                            ) : (
+                                <Spinner width={20} height={20} />
+                            )}
+                        </button>
                     </div>
                 </form>
             ) : (
@@ -194,7 +206,13 @@ const Auth = ({ closeModalAuth }) => {
                         autoComplete="off"
                     />
                     <div className="buttons-wide button_sticky">
-                        <button type="submit">{t("signUp")}</button>
+                        <button type="submit">
+                            {!loading ? (
+                                t("signUp")
+                            ) : (
+                                <Spinner width={20} height={20} />
+                            )}
+                        </button>
                     </div>
                 </form>
             )}

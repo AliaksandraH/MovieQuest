@@ -95,7 +95,6 @@ const Home = ({ openModalFilters }) => {
                 try {
                     const moviesData = await getMovies(type, numPage);
                     setMovies(moviesData);
-
                     setBackground(moviesData);
                     getGenres();
                     getCountries();

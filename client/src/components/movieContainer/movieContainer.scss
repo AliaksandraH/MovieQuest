@@ -12,13 +12,41 @@
     box-sizing: border-box;
     cursor: pointer;
     position: relative;
-    &_wasViewed {
+    &_translucent {
+        @extend %display-column-CC;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
-        background-color: rgba(39, 39, 39, 0.5);
+        height: 280px;
+        p {
+            font-size: 20px;
+            transform: rotate(55deg);
+            text-align: center;
+            font-style: italic;
+        }
+        &_watched {
+            background-color: rgba(39, 39, 39, 0.8);
+            p {
+                color: rgb(194, 194, 194);
+            }
+        }
+        &_saved {
+            background-color: rgba(197, 197, 197, 0.4);
+            p {
+                color: rgb(0, 0, 0);
+            }
+        }
+        &_watched-saved {
+            background: linear-gradient(
+                55deg,
+                rgba(39, 39, 39, 0.7) 40%,
+                rgba(197, 197, 197, 0.6) 60%
+            );
+            p {
+                color: #fd2626;
+            }
+        }
     }
     img {
         width: 100%;
@@ -68,12 +96,18 @@
         img {
             height: 230px;
         }
+        &_translucent {
+            height: 230px;
+        }
         &_information {
             height: calc(300px - 230px);
         }
         &_rating-stars {
             top: calc(230px - 15px);
         }
+    }
+    .movie_translucent p {
+        font-size: 16px;
     }
 }
 

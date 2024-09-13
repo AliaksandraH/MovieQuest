@@ -1,6 +1,17 @@
 const UserMovies = require("../models/UserMovies");
 const catchAsync = require("../utils/catchAsync");
 
+const getUserMovies = catchAsync(async (req, res) => {
+    const { userId } = req.query;
+
+    const movies = await UserMovies.find({ userId });
+
+    res.status(200).json({
+        message: "OK",
+        movies,
+    });
+});
+
 const managerGetUserMovies = catchAsync(async (req, res, statusField) => {
     const { userId } = req.query;
 
@@ -161,6 +172,7 @@ const putRatingMovie = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+    getUserMovies,
     getUserSavedMovies,
     getUserWatchedMovies,
     getUserWatchedMoviesInMonth,

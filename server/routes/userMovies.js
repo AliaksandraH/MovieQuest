@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 const {
+    getUserMovies,
     getUserSavedMovies,
     getUserWatchedMovies,
     getUserWatchedMoviesInMonth,
@@ -13,6 +14,7 @@ const {
     putRatingMovie,
 } = require("../controllers/userMovieController");
 
+router.get("/getUserMovies", getUserMovies);
 router.get("/getUserSavedMovies", getUserSavedMovies);
 router.get("/getUserWatchedMovies", getUserWatchedMovies);
 router.get("/getUserWatchedMoviesInMonth", getUserWatchedMoviesInMonth);

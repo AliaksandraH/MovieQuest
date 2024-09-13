@@ -2,14 +2,16 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setMouseYposition } from "../../actions";
+import { useTranslation } from "react-i18next";
 import StarRatings from "react-star-ratings";
 import NoPoster from "../../assets/no-poster.png";
 import "./movieContainer.scss";
 
 const MovieContainer = ({ movieInformation, type }) => {
     const blockRef = useRef(null);
+    const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { id, wasViewed, poster_path, title, rating } = movieInformation;
+    const { id, watched, saved, poster_path, title, rating } = movieInformation;
     const img_path = "https://image.tmdb.org/t/p/original";
 
     const styleRating = {
@@ -28,6 +30,20 @@ const MovieContainer = ({ movieInformation, type }) => {
         dispatch(setMouseYposition(blockYPosition));
     };
 
+    const getTranslucentClass = () => {
+        if (watched && saved) return "movie_translucent_watched-saved";
+        if (watched) return "movie_translucent_watched";
+        if (saved) return "movie_translucent_saved";
+        return null;
+    };
+
+    const getText = () => {
+        if (watched && saved) return "watchedAndSaved";
+        if (watched) return "watchedLink";
+        if (saved) return "saved";
+        return null;
+    };
+
     return (
         <Link
             to={`/${type}/${id}`}
@@ -35,7 +51,11 @@ const MovieContainer = ({ movieInformation, type }) => {
             onClick={onChangeMouseYPosition}
             ref={blockRef}
         >
-            <div className={wasViewed ? "movie_wasViewed" : null}></div>
+            {getTranslucentClass() && (
+                <div className={`movie_translucent ${getTranslucentClass()}`}>
+                    <p>{t(getText())}</p>
+                </div>
+            )}
             <img src={poster_path ? `${img_path}${poster_path}` : NoPoster} />
             <div className="movie_information">
                 <p>{title}</p>

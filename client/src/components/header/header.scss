@@ -2,23 +2,27 @@
 @import "../../style/helpers.scss";
 
 .header {
+    width: 100%;
+    color: $white;
+    position: sticky;
+    top: 0;
+    z-index: 990;
+}
+
+.main-panel {
     @extend %display-row;
+    justify-content: space-between;
     width: 100%;
     height: 55px;
     background: rgba(39, 39, 39, 0.5);
-    color: $white;
     padding: 10px 30px;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 998;
     &_logo {
         @extend %display-row;
+        column-gap: 10px;
+        cursor: pointer;
         img {
             width: 35px;
             height: 35px;
-            cursor: pointer;
-            margin-right: 10px;
         }
     }
     &_toolbar {
@@ -27,38 +31,59 @@
         @extend %display-row;
         column-gap: 10px;
     }
-    &_switch {
-        height: 90%;
-        width: 100px;
-    }
     &_search {
         min-width: 200px;
     }
-    &_button {
+    &_menu {
+        height: 90%;
         cursor: pointer;
-        text-decoration: underline;
-        font-size: 18px;
-        &_sign-out {
-            color: #9f0013;
+    }
+}
+
+.additional-panel {
+    @extend %display-row;
+    justify-content: space-between;
+    width: 100%;
+    background: rgba(39, 39, 39, 0.5);
+    padding: 10px 30px;
+    position: fixed;
+    &_links {
+        @extend %display-row;
+        column-gap: 10px;
+    }
+    &_button {
+        @extend %display-column-CC;
+        cursor: pointer;
+        font-size: 17px;
+        padding: 5px 15px;
+        background: $main-color;
+        border-radius: 5px;
+        color: $white;
+        &_sign-in {
+            @extend %display-column-CC;
             cursor: pointer;
-            text-decoration: underline;
-            font-size: 18px;
+            font-size: 17px;
+            padding: 5px 15px;
+            background: $white;
+            border-radius: 5px;
+            color: $main-color;
         }
     }
-    &_links {
-        display: flex;
-        column-gap: 7px;
+    &_switch {
+        height: 30px;
+        width: 100px;
     }
 }
 
 @media only screen and (max-width: 1000px) {
-    .header {
-        padding: 10px 20px;
+    .main-panel,
+    .additional-panel {
+        padding: 10px;
     }
 }
 
-@media only screen and (max-width: 950px) {
-    .header {
+@media only screen and (max-width: 600px) {
+    .main-panel {
         height: auto;
         display: flex;
         flex-direction: column;
@@ -66,24 +91,37 @@
         justify-content: center;
         padding: 10px 5px;
         row-gap: 5px;
-        &_toolbar {
-            height: 100%;
-            margin: 0px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            row-gap: 5px;
-        }
-        &_switch {
-            height: 25px;
-            width: 100px;
-        }
-        &_button {
-            font-size: 16px;
-            &_sign-out {
-                font-size: 16px;
-            }
-        }
+    }
+    .main-panel_toolbar {
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
+    }
+    .main-panel_menu {
+        width: 35px;
+        height: 35px;
+    }
+    .additional-panel {
+        padding: 0 10px 10px 10px;
+    }
+}
+
+@media only screen and (max-width: 530px) {
+    .additional-panel {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 5px;
+        row-gap: 5px;
+    }
+    .additional-panel {
+        padding: 0 10px 10px 10px;
+    }
+    .main-panel_toolbar {
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
     }
 }

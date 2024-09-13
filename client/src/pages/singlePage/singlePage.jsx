@@ -9,6 +9,7 @@ import { api } from "../../helpers/constants";
 import StarRatings from "react-star-ratings";
 import Modal from "../../components/modal/modal";
 import ModalRating from "../../components/modalRating/modalRating";
+import Spinner from "../../components/spinner/spinner";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
 import "./singlePage.scss";
@@ -53,6 +54,9 @@ const SinglePage = ({
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
     const [sortedInformation, setSortedInformation] = useState({});
+    const [loadingInformation, setLoadingInformation] = useState(false);
+    const [loadingSaved, setLoadingSaved] = useState(false);
+    const [loadingWatched, setLoadingWatched] = useState(false);
     const styleRatingStars = {
         starDimension: "25px",
         starSpacing: "1px",
@@ -86,6 +90,7 @@ const SinglePage = ({
 
     const getInformation = async (id) => {
         try {
+            setLoadingInformation(true);
             const data = await request(
                 `https://api.themoviedb.org/3/${type}/${id}?language=${currentLanguage}&api_key=${_key}`
             );
@@ -96,6 +101,8 @@ const SinglePage = ({
             getTypesMovie(id);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoadingInformation(false);
         }
     };
 
@@ -120,6 +127,8 @@ const SinglePage = ({
 
     const getTypesMovie = async (id) => {
         try {
+            setLoadingSaved(true);
+            setLoadingWatched(true);
             if (!userId) {
                 setTypes({ saved: false, watched: false });
                 return;
@@ -136,6 +145,9 @@ const SinglePage = ({
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoadingSaved(false);
+            setLoadingWatched(false);
         }
     };
 
@@ -144,14 +156,15 @@ const SinglePage = ({
     //     openModalSeasons();
     // };
 
-    const addToList = async (url) => {
+    const addToList = async (url, loading) => {
         try {
             if (!userId) {
                 openModalAuth();
             } else {
+                loading(true);
                 const data = await request(api[url], "POST", {
                     userId,
-                    movieId: information.id,
+                    movieId: id,
                     type,
                 });
                 if (data.message === "OK") {
@@ -166,17 +179,20 @@ const SinglePage = ({
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            loading(false);
         }
     };
 
-    const deleteToList = async (url) => {
+    const deleteToList = async (url, loading) => {
         try {
             if (!userId) {
                 toast.error(t("error"));
             } else {
+                loading(true);
                 const data = await request(api[url], "POST", {
                     userId,
-                    movieId: information.id,
+                    movieId: id,
                     type,
                 });
                 if (data.message === "OK") {
@@ -188,6 +204,8 @@ const SinglePage = ({
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            loading(false);
         }
     };
 
@@ -218,7 +236,12 @@ const SinglePage = ({
                     }
                     className="poster"
                 />
-                {Object.keys(information).length > 0 && (
+                {loadingInformation && (
+                    <div className="single-page_information_container_spinner">
+                        <Spinner />
+                    </div>
+                )}
+                {Object.keys(information).length > 0 && !loadingInformation && (
                     <div className="single-page_information_container">
                         <div className="single-page_information_container_header">
                             <div className="stars">
@@ -266,38 +289,74 @@ const SinglePage = ({
                                     <button
                                         className="button_delete"
                                         onClick={() =>
-                                            deleteToList("deleteWatchedMovie")
+                                            deleteToList(
+                                                "deleteWatchedMovie",
+                                                setLoadingWatched
+                                            )
                                         }
                                     >
-                                        <span>{t("notWatched")}</span>
+                                        {!loadingWatched ? (
+                                            t("notWatched")
+                                        ) : (
+                                            <Spinner
+                                                width={20}
+                                                height={20}
+                                                color="#9f0013"
+                                            />
+                                        )}
                                     </button>
                                 ) : (
                                     <button
                                         className="button_add"
                                         onClick={() =>
-                                            addToList("addWatchedMovie")
+                                            addToList(
+                                                "addWatchedMovie",
+                                                setLoadingWatched
+                                            )
                                         }
                                     >
-                                        <span>{t("watched")}</span>
+                                        {!loadingWatched ? (
+                                            t("watched")
+                                        ) : (
+                                            <Spinner width={20} height={20} />
+                                        )}
                                     </button>
                                 )}
                                 {types.saved ? (
                                     <button
                                         className="button_border button_delete"
                                         onClick={() =>
-                                            deleteToList("deleteSavedMovie")
+                                            deleteToList(
+                                                "deleteSavedMovie",
+                                                setLoadingSaved
+                                            )
                                         }
                                     >
-                                        <span>{t("delete")}</span>
+                                        {!loadingSaved ? (
+                                            t("delete")
+                                        ) : (
+                                            <Spinner
+                                                width={20}
+                                                height={20}
+                                                color="#9f0013"
+                                            />
+                                        )}
                                     </button>
                                 ) : (
                                     <button
                                         className="button_border button_add"
                                         onClick={() =>
-                                            addToList("addSavedMovie")
+                                            addToList(
+                                                "addSavedMovie",
+                                                setLoadingSaved
+                                            )
                                         }
                                     >
-                                        <span>{t("save")}</span>
+                                        {!loadingSaved ? (
+                                            t("save")
+                                        ) : (
+                                            <Spinner width={20} height={20} />
+                                        )}
                                     </button>
                                 )}
                             </div>

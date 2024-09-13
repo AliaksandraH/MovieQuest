@@ -5,6 +5,7 @@ import { useHttp } from "../../hooks/http.hook";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/constants";
 import MovieContainer from "../../components/movieContainer/movieContainer";
+import Spinner from "../../components/spinner/spinner";
 import "./userMovies.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
@@ -19,6 +20,7 @@ const UserMovies = ({ title, url, sort }) => {
     const [movies, setMovies] = useState([]);
     const [moviesInformation, setMoviesInformation] = useState([]);
     const [currentMovies, setCurrentMovies] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getMovies();
@@ -54,6 +56,7 @@ const UserMovies = ({ title, url, sort }) => {
 
     const getMovies = async () => {
         try {
+            setLoading(true);
             setMovies([]);
             setMoviesInformation([]);
             setCurrentMovies([]);
@@ -68,12 +71,15 @@ const UserMovies = ({ title, url, sort }) => {
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoading(false);
         }
     };
 
     const getMoviesInformation = async (movies) => {
         if (movies.length <= 0) return;
         try {
+            setLoading(true);
             const data = movies.map((movie) =>
                 request(
                     `https://api.themoviedb.org/3/${movie.type}/${movie.movieId}?language=${currentLanguage}&api_key=${_key}`
@@ -90,6 +96,8 @@ const UserMovies = ({ title, url, sort }) => {
             setMoviesInformation(transformedData);
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -145,7 +153,9 @@ const UserMovies = ({ title, url, sort }) => {
                     </div>
                 </div>
                 <div className="main_movies">
-                    {currentMovies.length > 0 ? (
+                    {loading ? (
+                        <Spinner />
+                    ) : currentMovies.length > 0 ? (
                         currentMovies.map((movie) => (
                             <MovieContainer
                                 key={movie.id}

@@ -14,8 +14,10 @@ import {
     setFiltersCertification,
     setCurrentNumPage,
 } from "../../actions";
+import { api } from "../../helpers/constants";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
+import Spinner from "../../components/spinner/spinner";
 import NoBackground from "../../assets/no-background.png";
 import "./pagination.scss";
 import "./home.scss";
@@ -74,9 +76,11 @@ const Home = ({ openModalFilters }) => {
         certifications,
         mouseYposition,
     } = useSelector(selectRequiredState);
+    const userId = useSelector((state) => state.userId);
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const prevFilters = useRef(assignedFilters);
     const scrollRef = useRef(null);
@@ -111,7 +115,7 @@ const Home = ({ openModalFilters }) => {
         return () => {
             setBackground(null);
         };
-    }, []);
+    }, [userId]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -154,18 +158,41 @@ const Home = ({ openModalFilters }) => {
 
     const getMovies = async (type, numPage) => {
         try {
-            if (type === "filters") return getFiltersShows(numPage);
+            setLoading(true);
+            const userMovies = await getUserMovies();
+            if (type === "filters") return getFiltersShows(numPage, userMovies);
             const data = await request(
                 `https://api.themoviedb.org/3/trending/${type}/week?language=${currentLanguage}&api_key=${_key}&page=${numPage}`
             );
             setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
-            return await data.results.map(transformInformationMovies);
+            return await data.results.map((movie) =>
+                transformInformationMovies(movie, userMovies)
+            );
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const getFiltersShows = async (numPage) => {
+    const getUserMovies = async () => {
+        try {
+            if (!userId) {
+                return [];
+            }
+            const data = await request(api.getUserMovies, "GET", { userId });
+            if (data.message === "OK") {
+                return data.movies || [];
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    };
+
+    const getFiltersShows = async (numPage, userMovies) => {
         const { type, rating, date, genres, countries, certification } =
             assignedFilters;
         const url = new URL(`https://api.themoviedb.org/3/discover/${type}`);
@@ -197,20 +224,30 @@ const Home = ({ openModalFilters }) => {
         try {
             const data = await request(url);
             setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
-            return await data.results.map(transformInformationMovies);
+            return await data.results.map((movie) =>
+                transformInformationMovies(movie, userMovies)
+            );
         } catch (error) {
             console.log(error);
         }
     };
 
-    const transformInformationMovies = (movie) => {
+    const transformInformationMovies = (movie, userMovies) => {
+        let exists = false;
+        if (userMovies && userMovies.length > 0) {
+            exists = userMovies.find((item) => item.movieId == movie.id);
+            if (!exists) {
+                exists = false;
+            }
+        }
         return {
             id: movie.id,
             title: movie.title ? movie.title : movie.name,
             poster_path: movie.poster_path ? movie.poster_path : null,
             rating: movie.vote_average,
             backdrop_path: movie.backdrop_path ? movie.backdrop_path : null,
-            wasViewed: false,
+            watched: exists ? exists.watched : false,
+            saved: exists ? exists.saved : false,
         };
     };
 
@@ -394,7 +431,8 @@ const Home = ({ openModalFilters }) => {
                         )}
                 </div>
                 <div ref={scrollRef} className="main_movies">
-                    {movies &&
+                    {!loading &&
+                        movies &&
                         movies.map((movie) => (
                             <MovieContainer
                                 key={movie.id}
@@ -408,7 +446,8 @@ const Home = ({ openModalFilters }) => {
                         ))}
                 </div>
                 <div className="pages">
-                    {movies.length > 0 && totalPages && (
+                    {loading && <Spinner />}
+                    {movies && movies.length > 0 && totalPages && !loading && (
                         <div className="pages_pagination">
                             <ResponsivePagination
                                 current={numPage}
@@ -419,7 +458,8 @@ const Home = ({ openModalFilters }) => {
                             />
                         </div>
                     )}
-                    {movies.length <= 0 && <p>{t("noShows")}</p>}
+                    {((movies && movies.length <= 0) || !movies) &&
+                        !loading && <p>{t("noShows")}</p>}
                 </div>
             </div>
         </div>

@@ -11,7 +11,8 @@ const MovieContainer = ({ movieInformation, type }) => {
     const blockRef = useRef(null);
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { id, watched, saved, poster_path, title, rating } = movieInformation;
+    const { id, watched, saved, poster_path, title, rating, userRating } =
+        movieInformation;
     const img_path = "https://image.tmdb.org/t/p/original";
 
     const styleRating = {
@@ -63,6 +64,11 @@ const MovieContainer = ({ movieInformation, type }) => {
             <div className="movie_rating-stars">
                 <StarRatings {...styleRating} />
             </div>
+            {userRating != null && (
+                <div className="movie_user-rating">
+                    <span>{userRating}</span>
+                </div>
+            )}
         </Link>
     );
 };

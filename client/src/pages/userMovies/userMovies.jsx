@@ -86,7 +86,7 @@ const UserMovies = ({ title, url, sort }) => {
                 ).then((apiData) => ({
                     ...apiData,
                     type: movie.type,
-                    userRating: movie.userRating,
+                    userRating: sort ? movie.userRating : null,
                 }))
             );
             const dataResponses = await Promise.all(data);

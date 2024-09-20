@@ -78,6 +78,21 @@
         align-items: center;
         justify-content: center;
     }
+    &_user-rating {
+        @extend %display-column-CC;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: $main-color;
+        padding: 5px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        span {
+            font-size: 15px;
+            color: $white;
+        }
+    }
 }
 
 @media only screen and (max-width: 1000px) {

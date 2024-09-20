@@ -59,7 +59,6 @@
             justify-content: center;
             flex-wrap: wrap;
             width: 100%;
-            padding: 15px 80px;
             p {
                 color: $white;
                 font-size: 18px;
@@ -70,9 +69,6 @@
 }
 
 @media only screen and (max-width: 800px) {
-    .main_movies {
-        padding: 15px 15px;
-    }
     .saved-page_header p {
         font-size: 15px;
     }

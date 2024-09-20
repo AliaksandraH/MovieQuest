@@ -78,7 +78,6 @@
         justify-content: center;
         flex-wrap: wrap;
         width: 100%;
-        padding: 15px 80px;
     }
 }
 
@@ -107,9 +106,6 @@
 }
 
 @media only screen and (max-width: 850px) {
-    .main_movies {
-        padding: 15px 15px;
-    }
     .home {
         &_header {
             height: auto;

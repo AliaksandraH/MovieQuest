@@ -78,6 +78,8 @@
     "thanksForFeedback": "Thanks for your feedback :)",
     "listSortedByRatings": "The list is sorted according to your ratings.",
     "watchedAndSaved": "Watched and Saved",
+    "trailer": "Trailer",
+    "trailerNotFound": "Trailer not found.",
 
     "A user with such an email already exists.": "A user with such an email already exists.",
     "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",

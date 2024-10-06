@@ -1,0 +1,10 @@
+@import "../../style/helpers.scss";
+
+.modal-trailer {
+    @extend %display-column-CC;
+    padding: 0 20px 20px 20px;
+    .trailer-iframe {
+        width: 100%;
+        height: 300px;
+    }
+}

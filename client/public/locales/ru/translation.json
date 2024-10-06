@@ -78,6 +78,8 @@
     "thanksForFeedback": "Спасибо за ваш отзыв :)",
     "listSortedByRatings": "Список отсортирован относительно ваших оценок.",
     "watchedAndSaved": "Просмотрено и Сохранено",
+    "trailer": "Трейлер",
+    "trailerNotFound": "Трейлер не найден.",
 
     "A user with such an email already exists.": "Пользователь с таким Email уже существует.",
     "Username must be between 1 and 30 characters long." : "Имя должно содержать от 1 до 30 символов.",

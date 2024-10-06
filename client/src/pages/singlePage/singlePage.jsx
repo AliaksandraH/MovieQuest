@@ -61,6 +61,8 @@ const SinglePage = ({
     const [loadingInformation, setLoadingInformation] = useState(false);
     const [loadingSaved, setLoadingSaved] = useState(false);
     const [loadingWatched, setLoadingWatched] = useState(false);
+    const [loadingTrailer, setLoadingTrailer] = useState(false);
+
     const styleRatingStars = {
         starDimension: "25px",
         starSpacing: "1px",
@@ -215,6 +217,7 @@ const SinglePage = ({
 
     const showModalTrailer = async () => {
         try {
+            setLoadingTrailer(true);
             const fetchTrailerData = async (lang) => {
                 return await request(
                     `https://api.themoviedb.org/3/${type}/${id}/videos?language=${lang}&api_key=${_key}`
@@ -231,6 +234,8 @@ const SinglePage = ({
             }
         } catch (error) {
             toast.error(t("error"));
+        } finally {
+            setLoadingTrailer(false);
         }
     };
 
@@ -249,6 +254,7 @@ const SinglePage = ({
     };
 
     const closeModalTrailer = () => {
+        setTrailerUrl("");
         setModalTrailer(false);
     };
 
@@ -289,8 +295,14 @@ const SinglePage = ({
                         className="poster"
                     />
                     <button onClick={showModalTrailer}>
-                        <img src={Play} />
-                        <span>{t("trailer")}</span>
+                        {!loadingTrailer ? (
+                            <>
+                                <img src={Play} />
+                                <span>{t("trailer")}</span>
+                            </>
+                        ) : (
+                            <Spinner width={20} height={20} />
+                        )}
                     </button>
                 </div>
                 {loadingInformation && (

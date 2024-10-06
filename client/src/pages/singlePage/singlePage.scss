@@ -46,6 +46,13 @@
                     padding: 8px 10px 0 10px;
                 }
             }
+            &_poster {
+                @extend %display-column-CC;
+                row-gap: 10px;
+                button {
+                    @extend %red-button;
+                }
+            }
             &_spinner {
                 background: rgba(39, 39, 39, 0.4);
                 border-radius: 10px;
@@ -56,7 +63,7 @@
                 display: grid;
                 grid-template-columns: auto auto auto;
                 column-gap: 15px;
-                row-gap: 15px;
+                row-gap: 10px;
                 .stars {
                     height: 100%;
                     @extend %display-column-CC;
@@ -171,6 +178,9 @@
             top: 0;
             left: 0;
         }
+        &_information_container_poster {
+            margin-bottom: 15px;
+        }
     }
     .single-page_information_container_header {
         display: flex;
@@ -187,9 +197,6 @@
         &_container {
             margin: 0;
         }
-    }
-    .poster {
-        margin-bottom: 20px;
     }
     .single-page_information_status {
         width: 100%;

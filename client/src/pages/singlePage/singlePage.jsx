@@ -9,9 +9,11 @@ import { api } from "../../helpers/constants";
 import StarRatings from "react-star-ratings";
 import Modal from "../../components/modal/modal";
 import ModalRating from "../../components/modalRating/modalRating";
+import ModalTrailer from "../../components/modalTrailer/modalTrailer";
 import Spinner from "../../components/spinner/spinner";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
+import Play from "../../assets/icons8-play-100.png";
 import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
@@ -51,6 +53,8 @@ const SinglePage = ({
     const { request } = useHttp();
     const userId = useSelector((state) => state.userId);
     const [modalRating, setModalRating] = useState(false);
+    const [modalTrailer, setModalTrailer] = useState(false);
+    const [trailerUrl, setTrailerUrl] = useState("");
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
     const [sortedInformation, setSortedInformation] = useState({});
@@ -209,6 +213,45 @@ const SinglePage = ({
         }
     };
 
+    const showModalTrailer = async () => {
+        try {
+            const fetchTrailerData = async (lang) => {
+                return await request(
+                    `https://api.themoviedb.org/3/${type}/${id}/videos?language=${lang}&api_key=${_key}`
+                );
+            };
+            let data = await fetchTrailerData(currentLanguage);
+            if (!data?.results.length) {
+                data = await fetchTrailerData("en-US");
+            }
+            if (data?.results.length) {
+                findTrailer(data.results);
+            } else {
+                toast.error(t("trailerNotFound"));
+            }
+        } catch (error) {
+            toast.error(t("error"));
+        }
+    };
+
+    const findTrailer = (data) => {
+        const videosYouTube = data.filter((video) => video.site === "YouTube");
+        if (videosYouTube.length) {
+            const trailer =
+                videosYouTube.find((video) => video.type === "Trailer") ||
+                videosYouTube[0];
+            const keyTrailer = trailer.key;
+            setTrailerUrl(`https://www.youtube.com/embed/${keyTrailer}`);
+            setModalTrailer(true);
+        } else {
+            toast.error(t("trailerNotFound"));
+        }
+    };
+
+    const closeModalTrailer = () => {
+        setModalTrailer(false);
+    };
+
     return (
         <div className="single-page">
             {modalRating && (
@@ -217,6 +260,14 @@ const SinglePage = ({
                     componentProps={modalRatingProps}
                     nameModal="rating"
                     closeModal={closeModalRating}
+                />
+            )}
+            {modalTrailer && trailerUrl && (
+                <Modal
+                    Component={ModalTrailer}
+                    componentProps={{ trailerUrl }}
+                    nameModal="trailer"
+                    closeModal={closeModalTrailer}
                 />
             )}
             <img
@@ -228,14 +279,20 @@ const SinglePage = ({
                 className="single-page_background"
             />
             <div className="single-page_information">
-                <img
-                    src={
-                        information.poster_path
-                            ? `${imgPath}${information.poster_path}`
-                            : NoPoster
-                    }
-                    className="poster"
-                />
+                <div className="single-page_information_container_poster">
+                    <img
+                        src={
+                            information.poster_path
+                                ? `${imgPath}${information.poster_path}`
+                                : NoPoster
+                        }
+                        className="poster"
+                    />
+                    <button onClick={showModalTrailer}>
+                        <img src={Play} />
+                        <span>{t("trailer")}</span>
+                    </button>
+                </div>
                 {loadingInformation && (
                     <div className="single-page_information_container_spinner">
                         <Spinner />

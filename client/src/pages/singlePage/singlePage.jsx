@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
@@ -48,6 +49,7 @@ const SinglePage = ({
     setSeasonsInformation,
 }) => {
     const { id, type } = useParams();
+    const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
     const { request } = useHttp();
@@ -67,7 +69,7 @@ const SinglePage = ({
         starDimension: "25px",
         starSpacing: "1px",
         numberOfStars: 5,
-        rating: information.vote_average / 2,
+        rating: information.vote_average || 0 / 2,
         isSelectable: false,
         starRatedColor: "#9f0013",
         starEmptyColor: "rgb(124, 124, 124)",
@@ -100,6 +102,12 @@ const SinglePage = ({
             const data = await request(
                 `https://api.themoviedb.org/3/${type}/${id}?language=${currentLanguage}&api_key=${_key}`
             );
+            if (
+                data.status_message ===
+                "The resource you requested could not be found."
+            ) {
+                navigate("/404");
+            }
             setInformation(data);
             const needInformation =
                 type === "movie" ? movieInformation : tvInformation;
@@ -107,6 +115,7 @@ const SinglePage = ({
             getTypesMovie(id);
         } catch (error) {
             console.log(error);
+            navigate("/404");
         } finally {
             setLoadingInformation(false);
         }

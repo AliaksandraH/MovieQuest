@@ -9,6 +9,7 @@ import Footer from "./components/footer/footer";
 import Home from "./pages/home/home";
 import SinglePage from "./pages/singlePage/singlePage";
 import UserMovies from "./pages/userMovies/userMovies.jsx";
+import Page404 from "./pages/404/404.jsx";
 import Modal from "./components/modal/modal";
 import Auth from "./components/auth/auth.jsx";
 import ModalFilters from "./components/modalFilters/modalFilters";
@@ -126,6 +127,8 @@ function App() {
                             path="/watched"
                             element={<UserMovies {...propsWatchedMovies} />}
                         />
+                        <Route path="/404" element={<Page404 />} />
+                        <Route path="*" element={<Page404 />} />
                     </Routes>
                     <Footer />
                 </div>

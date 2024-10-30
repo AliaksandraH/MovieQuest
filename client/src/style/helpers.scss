@@ -26,6 +26,11 @@
     height: 100%;
 }
 
+%full-screen {
+    width: 100%;
+    height: calc(100vh - 55px - 100px);
+}
+
 %red-button {
     width: 100%;
     background-color: $main-color;
@@ -40,6 +45,33 @@
     }
     img {
         width: 20px;
+    }
+}
+
+.full-screen_with-background {
+    @extend %full-screen;
+    position: relative;
+    &_background {
+        object-fit: cover;
+        @extend %wh-100;
+        -webkit-mask-image: linear-gradient(
+            rgba(0, 0, 0, 0),
+            rgba(0, 0, 0, 1) 40%,
+            rgba(0, 0, 0, 1) 60%,
+            rgba(0, 0, 0, 0)
+        );
+        mask-image: linear-gradient(
+            rgba(0, 0, 0, 0),
+            rgba(0, 0, 0, 1) 40%,
+            rgba(0, 0, 0, 1) 60%,
+            rgba(0, 0, 0, 0)
+        );
+    }
+    &_information {
+        @extend %wh-100;
+        position: absolute;
+        top: 0;
+        left: 0;
     }
 }
 

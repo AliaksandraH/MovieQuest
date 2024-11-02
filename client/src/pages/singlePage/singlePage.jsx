@@ -11,6 +11,7 @@ import StarRatings from "react-star-ratings";
 import Modal from "../../components/modal/modal";
 import ModalRating from "../../components/modalRating/modalRating";
 import ModalTrailer from "../../components/modalTrailer/modalTrailer";
+import ModalSeasons from "../../components/modalSeasons/modalSeasons";
 import Spinner from "../../components/spinner/spinner";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
@@ -43,11 +44,7 @@ const statusColors = {
     Default: "rgba(39, 39, 39, 0.4)",
 };
 
-const SinglePage = ({
-    openModalSeasons,
-    openModalAuth,
-    setSeasonsInformation,
-}) => {
+const SinglePage = ({ openModalAuth }) => {
     const { id, type } = useParams();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
@@ -56,6 +53,7 @@ const SinglePage = ({
     const userId = useSelector((state) => state.userId);
     const [modalRating, setModalRating] = useState(false);
     const [modalTrailer, setModalTrailer] = useState(false);
+    const [modalSeasons, setModalSeasons] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
@@ -166,11 +164,6 @@ const SinglePage = ({
         }
     };
 
-    // const showModal = () => {
-    //     setSeasonsInformation(information.seasons);
-    //     openModalSeasons();
-    // };
-
     const addToList = async (url, loading) => {
         try {
             if (!userId) {
@@ -267,6 +260,16 @@ const SinglePage = ({
         setModalTrailer(false);
     };
 
+    // const [seasonsInformation, setSeasonsInformation] = useState(false);
+    // const modalSeasonsProps = {
+    //     seasonsInformation: seasonsInformation,
+    // };
+    // const showModal = () => {
+    //     setSeasonsInformation(information.seasons);
+    //     setModalSeasons(true);
+    // };
+    // const closeModal = () => setModalSeasons(false);
+
     return (
         <div className="single-page">
             {modalRating && (
@@ -285,6 +288,14 @@ const SinglePage = ({
                     closeModal={closeModalTrailer}
                 />
             )}
+            {/* {modalSeasons && (
+                <Modal
+                    Component={ModalSeasons}
+                    componentProps={modalSeasonsProps}
+                    nameModal="seasons"
+                    closeModal={closeModal}
+                />
+            )} */}
             <img
                 src={
                     information.backdrop_path

@@ -15,6 +15,8 @@ import {
     setCurrentNumPage,
 } from "../../actions";
 import { api } from "../../helpers/constants";
+import Modal from "../../components/modal/modal";
+import ModalFilters from "../../components/modalFilters/modalFilters";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Calendar from "../../components/calendar/calendar";
 import Spinner from "../../components/spinner/spinner";
@@ -61,7 +63,7 @@ const selectRequiredState = createSelector(
     })
 );
 
-const Home = ({ openModalFilters }) => {
+const Home = () => {
     const imgPath = "https://image.tmdb.org/t/p/original";
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
@@ -81,9 +83,18 @@ const Home = ({ openModalFilters }) => {
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [modalFilters, setModalFilters] = useState(false);
 
     const prevFilters = useRef(assignedFilters);
     const scrollRef = useRef(null);
+
+    const openModalFilters = () => setModalFilters(true);
+    const closeModal = () => setModalFilters(false);
+
+    const modalFiltersProps = {
+        closeModalFilters: closeModal,
+        currentFilters: assignedFilters,
+    };
 
     const currentFilters = useMemo(() => {
         return assignedFilters;
@@ -347,100 +358,119 @@ const Home = ({ openModalFilters }) => {
     };
 
     return (
-        <div className="home">
-            <div className="home_header">
-                <img
-                    className="home_header_background"
-                    src={backgroundImg || NoBackground}
+        <>
+            {modalFilters && (
+                <Modal
+                    Component={ModalFilters}
+                    componentProps={modalFiltersProps}
+                    nameModal="filters"
+                    closeModal={closeModal}
                 />
-                <div className="home_header_information">
-                    <div className="welcome-message">
-                        <p className="bold-text">{t("welcomeParagraph1")}</p>
-                        <p>{t("welcomeParagraph2")}</p>
-                        <p>{t("welcomeParagraph3")}</p>
-                        <p>{t("welcomeParagraph4")}</p>
-                        <p className="bold-text">{t("welcomeParagraph5")}</p>
-                        <p>{t("welcomeParagraph6")}</p>
-                    </div>
-                    <Calendar />
-                </div>
-            </div>
-            <div className="main">
-                <hr />
-                <div className="main_filters">
-                    <div>
-                        <button
-                            className={
-                                type === "movie" ? "active-button" : null
-                            }
-                            onClick={() => {
-                                changeType("movie");
-                            }}
-                        >
-                            {t("movies")}
-                        </button>
-                        <button
-                            className={type === "tv" ? "active-button" : null}
-                            onClick={() => {
-                                changeType("tv");
-                            }}
-                        >
-                            {t("tvSeries")}
-                        </button>
-                        <button
-                            className={
-                                type === "filters" ? "active-button" : null
-                            }
-                            onClick={() => {
-                                changeType("filters");
-                            }}
-                        >
-                            {t("showsByFilters")}
-                        </button>
-                    </div>
-                    {countries.length > 0 &&
-                        genres.movie.length > 0 &&
-                        genres.tv.length > 0 &&
-                        certifications.movie.length > 0 &&
-                        certifications.tv.length > 0 && (
-                            <button onClick={openModalFilters}>
-                                {t("filters")}
-                            </button>
-                        )}
-                </div>
-                <div ref={scrollRef} className="main_movies">
-                    {!loading &&
-                        movies &&
-                        movies.map((movie) => (
-                            <MovieContainer
-                                key={movie.id}
-                                movieInformation={movie}
-                                type={
-                                    type === "filters"
-                                        ? assignedFilters.type
-                                        : type
-                                }
-                            />
-                        ))}
-                </div>
-                <div className="pages">
-                    {loading && <Spinner />}
-                    {movies && movies.length > 0 && totalPages && !loading && (
-                        <div className="pages_pagination">
-                            <ResponsivePagination
-                                current={numPage}
-                                total={totalPages}
-                                onPageChange={(number) => {
-                                    nextPage(number);
-                                }}
-                            />
+            )}
+            <div className="home">
+                <div className="home_header">
+                    <img
+                        className="home_header_background"
+                        src={backgroundImg || NoBackground}
+                    />
+                    <div className="home_header_information">
+                        <div className="welcome-message">
+                            <p className="bold-text">
+                                {t("welcomeParagraph1")}
+                            </p>
+                            <p>{t("welcomeParagraph2")}</p>
+                            <p>{t("welcomeParagraph3")}</p>
+                            <p>{t("welcomeParagraph4")}</p>
+                            <p className="bold-text">
+                                {t("welcomeParagraph5")}
+                            </p>
+                            <p>{t("welcomeParagraph6")}</p>
                         </div>
-                    )}
-                    {((movies && movies.length <= 0) || !movies) &&
-                        !loading && <p>{t("noShows")}</p>}
+                        <Calendar />
+                    </div>
+                </div>
+                <div className="main">
+                    <hr />
+                    <div className="main_filters">
+                        <div>
+                            <button
+                                className={
+                                    type === "movie" ? "active-button" : null
+                                }
+                                onClick={() => {
+                                    changeType("movie");
+                                }}
+                            >
+                                {t("movies")}
+                            </button>
+                            <button
+                                className={
+                                    type === "tv" ? "active-button" : null
+                                }
+                                onClick={() => {
+                                    changeType("tv");
+                                }}
+                            >
+                                {t("tvSeries")}
+                            </button>
+                            <button
+                                className={
+                                    type === "filters" ? "active-button" : null
+                                }
+                                onClick={() => {
+                                    changeType("filters");
+                                }}
+                            >
+                                {t("showsByFilters")}
+                            </button>
+                        </div>
+                        {countries.length > 0 &&
+                            genres.movie.length > 0 &&
+                            genres.tv.length > 0 &&
+                            certifications.movie.length > 0 &&
+                            certifications.tv.length > 0 && (
+                                <button onClick={openModalFilters}>
+                                    {t("filters")}
+                                </button>
+                            )}
+                    </div>
+                    <div ref={scrollRef} className="main_movies">
+                        {!loading &&
+                            movies &&
+                            movies.map((movie) => (
+                                <MovieContainer
+                                    key={movie.id}
+                                    movieInformation={movie}
+                                    type={
+                                        type === "filters"
+                                            ? assignedFilters.type
+                                            : type
+                                    }
+                                />
+                            ))}
+                    </div>
+                    <div className="pages">
+                        {loading && <Spinner />}
+                        {movies &&
+                            movies.length > 0 &&
+                            totalPages &&
+                            !loading && (
+                                <div className="pages_pagination">
+                                    <ResponsivePagination
+                                        current={numPage}
+                                        total={totalPages}
+                                        onPageChange={(number) => {
+                                            nextPage(number);
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        {((movies && movies.length <= 0) || !movies) &&
+                            !loading && <p>{t("noShows")}</p>}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -8,7 +8,7 @@ const Page404 = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="full-screen_with-background">
+        <div className="full-screen_with-background page404">
             <img
                 src={NoBackground}
                 className="full-screen_with-background_background"

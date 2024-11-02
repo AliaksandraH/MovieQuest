@@ -1,8 +1,9 @@
 @import "../../style/helpers.scss";
 @import "../../style/variables.scss";
 
-.page404 {
-    @extend %full-screen;
+.pageVPN {
+    width: 100%;
+    height: 100vh;
     &_information {
         @extend %display-column-CC;
         padding: 15px;
@@ -37,7 +38,7 @@
 }
 
 @media only screen and (max-width: 810px) {
-    .page404_information {
+    .pageVPN_information {
         row-gap: 10px;
         .error-text {
             img {

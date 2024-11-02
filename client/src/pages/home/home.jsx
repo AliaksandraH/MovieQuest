@@ -119,16 +119,12 @@ const Home = ({ openModalFilters }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const moviesData = await getMovies(type, numPage);
-                setMovies(moviesData);
-                dispatch(setFiltersCertification("All"));
-                getGenres();
-                getCountries();
-                getCertifications();
-            } catch (error) {
-                console.log(error);
-            }
+            const moviesData = await getMovies(type, numPage);
+            setMovies(moviesData);
+            dispatch(setFiltersCertification("All"));
+            getGenres();
+            getCountries();
+            getCertifications();
         };
         fetchData();
     }, [currentLanguage]);
@@ -169,7 +165,6 @@ const Home = ({ openModalFilters }) => {
                 transformInformationMovies(movie, userMovies)
             );
         } catch (error) {
-            console.log(error);
         } finally {
             setLoading(false);
         }
@@ -187,7 +182,6 @@ const Home = ({ openModalFilters }) => {
                 return [];
             }
         } catch (error) {
-            console.log(error);
             return [];
         }
     };
@@ -221,15 +215,11 @@ const Home = ({ openModalFilters }) => {
             url.searchParams.append(key, params[key])
         );
 
-        try {
-            const data = await request(url);
-            setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
-            return await data.results.map((movie) =>
-                transformInformationMovies(movie, userMovies)
-            );
-        } catch (error) {
-            console.log(error);
-        }
+        const data = await request(url);
+        setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
+        return await data.results.map((movie) =>
+            transformInformationMovies(movie, userMovies)
+        );
     };
 
     const transformInformationMovies = (movie, userMovies) => {
@@ -252,55 +242,43 @@ const Home = ({ openModalFilters }) => {
     };
 
     const getGenres = async () => {
-        try {
-            const movieGenres = await request(
-                `https://api.themoviedb.org/3/genre/movie/list?language=${currentLanguage}&api_key=${_key}`
-            );
-            const tvGenres = await request(
-                `https://api.themoviedb.org/3/genre/tv/list?language=${currentLanguage}&api_key=${_key}`
-            );
-            dispatch(setGenres(movieGenres.genres, tvGenres.genres));
-        } catch (error) {
-            console.log(error);
-        }
+        const movieGenres = await request(
+            `https://api.themoviedb.org/3/genre/movie/list?language=${currentLanguage}&api_key=${_key}`
+        );
+        const tvGenres = await request(
+            `https://api.themoviedb.org/3/genre/tv/list?language=${currentLanguage}&api_key=${_key}`
+        );
+        dispatch(setGenres(movieGenres?.genres || [], tvGenres?.genres || []));
     };
 
     const getCountries = async () => {
-        try {
-            const movieCountries = await request(
-                `https://api.themoviedb.org/3/configuration/countries?language=${currentLanguage}&api_key=${_key}`
-            );
-            dispatch(setCountries(movieCountries));
-        } catch (error) {
-            console.log(error);
-        }
+        const movieCountries = await request(
+            `https://api.themoviedb.org/3/configuration/countries?language=${currentLanguage}&api_key=${_key}`
+        );
+        dispatch(setCountries(movieCountries || []));
     };
 
     const getCertifications = async () => {
-        try {
-            const certification = currentLanguage === "en" ? "US" : "RU";
-
-            const movieCertifications = await request(
-                `https://api.themoviedb.org/3/certification/movie/list?api_key=${_key}`
-            );
-            const tvCertifications = await request(
-                `https://api.themoviedb.org/3/certification/tv/list?api_key=${_key}`
-            );
-            dispatch(
-                setCertifications(
-                    [
-                        { certification: "All" },
-                        ...tvCertifications.certifications[certification],
-                    ],
-                    [
-                        { certification: "All" },
-                        ...movieCertifications.certifications[certification],
-                    ]
-                )
-            );
-        } catch (error) {
-            console.log(error);
-        }
+        const certification = currentLanguage === "en" ? "US" : "RU";
+        const movieCertifications = await request(
+            `https://api.themoviedb.org/3/certification/movie/list?api_key=${_key}`
+        );
+        const tvCertifications = await request(
+            `https://api.themoviedb.org/3/certification/tv/list?api_key=${_key}`
+        );
+        dispatch(
+            setCertifications(
+                [
+                    { certification: "All" },
+                    ...(tvCertifications?.certifications[certification] || []),
+                ],
+                [
+                    { certification: "All" },
+                    ...(movieCertifications?.certifications[certification] ||
+                        []),
+                ]
+            )
+        );
     };
 
     const updateMovies = async (newType, newPage) => {

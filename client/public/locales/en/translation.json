@@ -89,6 +89,10 @@
       "Contact us if the problem persists."
     ],
     "error404Apology": "We apologize for the inconvenience, and thank you for your understanding!",
+    "enableVPN": "Please enable your VPN to continue!",
+    "vpnAccessMessages": ["To access this page, you need to activate a virtual private network (VPN).",
+      " This will ensure the security of your connection and help avoid blocks."],
+    "pleaseEnableVPN": "Please turn on your VPN and try again!",
 
     "A user with such an email already exists.": "A user with such an email already exists.",
     "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",

@@ -49,7 +49,6 @@
 }
 
 .full-screen_with-background {
-    @extend %full-screen;
     position: relative;
     &_background {
         object-fit: cover;

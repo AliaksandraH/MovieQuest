@@ -1,0 +1,56 @@
+@import "../../style/helpers.scss";
+@import "../../style/variables.scss";
+
+.pageVPN {
+    width: 100%;
+    height: 100vh;
+    &_information {
+        @extend %display-column-CC;
+        padding: 15px;
+        row-gap: 15px;
+        .error-text {
+            @extend %display-row-CC;
+            text-align: center;
+            img {
+                width: 70px;
+            }
+            span {
+                font-size: 40px;
+                color: $main-color;
+            }
+        }
+        &_additional {
+            @extend %display-column-CC;
+            row-gap: 5px;
+            font-size: 17px;
+            text-align: center;
+            p {
+                color: $dark-grey;
+            }
+            span {
+                font-weight: bold;
+            }
+            .text-bold {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 810px) {
+    .pageVPN_information {
+        row-gap: 10px;
+        .error-text {
+            img {
+                width: 60px;
+            }
+            span {
+                font-size: 35px;
+            }
+        }
+        &_additional {
+            row-gap: 3px;
+            font-size: 15px;
+        }
+    }
+}

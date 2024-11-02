@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useHttp } from "../../hooks/http.hook";
@@ -10,6 +11,7 @@ import StarRatings from "react-star-ratings";
 import Modal from "../../components/modal/modal";
 import ModalRating from "../../components/modalRating/modalRating";
 import ModalTrailer from "../../components/modalTrailer/modalTrailer";
+import ModalSeasons from "../../components/modalSeasons/modalSeasons";
 import Spinner from "../../components/spinner/spinner";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
@@ -42,18 +44,16 @@ const statusColors = {
     Default: "rgba(39, 39, 39, 0.4)",
 };
 
-const SinglePage = ({
-    openModalSeasons,
-    openModalAuth,
-    setSeasonsInformation,
-}) => {
+const SinglePage = ({ openModalAuth }) => {
     const { id, type } = useParams();
+    const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
     const { request } = useHttp();
     const userId = useSelector((state) => state.userId);
     const [modalRating, setModalRating] = useState(false);
     const [modalTrailer, setModalTrailer] = useState(false);
+    const [modalSeasons, setModalSeasons] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
@@ -67,7 +67,7 @@ const SinglePage = ({
         starDimension: "25px",
         starSpacing: "1px",
         numberOfStars: 5,
-        rating: information.vote_average / 2,
+        rating: information.vote_average || 0 / 2,
         isSelectable: false,
         starRatedColor: "#9f0013",
         starEmptyColor: "rgb(124, 124, 124)",
@@ -100,6 +100,12 @@ const SinglePage = ({
             const data = await request(
                 `https://api.themoviedb.org/3/${type}/${id}?language=${currentLanguage}&api_key=${_key}`
             );
+            if (
+                data.status_message ===
+                "The resource you requested could not be found."
+            ) {
+                navigate("/404");
+            }
             setInformation(data);
             const needInformation =
                 type === "movie" ? movieInformation : tvInformation;
@@ -107,6 +113,7 @@ const SinglePage = ({
             getTypesMovie(id);
         } catch (error) {
             console.log(error);
+            navigate("/404");
         } finally {
             setLoadingInformation(false);
         }
@@ -156,11 +163,6 @@ const SinglePage = ({
             setLoadingWatched(false);
         }
     };
-
-    // const showModal = () => {
-    //     setSeasonsInformation(information.seasons);
-    //     openModalSeasons();
-    // };
 
     const addToList = async (url, loading) => {
         try {
@@ -258,6 +260,16 @@ const SinglePage = ({
         setModalTrailer(false);
     };
 
+    // const [seasonsInformation, setSeasonsInformation] = useState(false);
+    // const modalSeasonsProps = {
+    //     seasonsInformation: seasonsInformation,
+    // };
+    // const showModal = () => {
+    //     setSeasonsInformation(information.seasons);
+    //     setModalSeasons(true);
+    // };
+    // const closeModal = () => setModalSeasons(false);
+
     return (
         <div className="single-page">
             {modalRating && (
@@ -276,6 +288,14 @@ const SinglePage = ({
                     closeModal={closeModalTrailer}
                 />
             )}
+            {/* {modalSeasons && (
+                <Modal
+                    Component={ModalSeasons}
+                    componentProps={modalSeasonsProps}
+                    nameModal="seasons"
+                    closeModal={closeModal}
+                />
+            )} */}
             <img
                 src={
                     information.backdrop_path

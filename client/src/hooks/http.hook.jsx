@@ -23,7 +23,7 @@ export const useHttp = () => {
 
                 return await response.json();
             } catch (error) {
-                console.log("--- error ---", error, url);
+                console.log(`--- ERROR ---\n${url}\n${error}`);
             }
         },
         []

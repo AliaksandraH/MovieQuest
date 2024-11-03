@@ -9,7 +9,11 @@ import SliderDate from "../sliderDate/sliderDate";
 import SelectDropdown from "../selectDropdown/selectDropdown";
 import "./modalFilters.scss";
 
-const ModalFilters = ({ closeModalFilters, currentFilters }) => {
+const ModalFilters = ({
+    closeModalFilters,
+    currentFilters,
+    setButtonTypeFilters,
+}) => {
     const { type, rating, certification } = currentFilters;
     const dispatch = useDispatch();
     const countries = useSelector((state) => state.countries);
@@ -79,6 +83,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                 checkedCertification
             )
         );
+        setButtonTypeFilters(true);
         closeModalFilters();
     };
 

@@ -84,6 +84,7 @@ const Home = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     const [modalFilters, setModalFilters] = useState(false);
+    const [buttonTypeFilters, setButtonTypeFilters] = useState(false);
 
     const prevFilters = useRef(assignedFilters);
     const scrollRef = useRef(null);
@@ -94,6 +95,7 @@ const Home = () => {
     const modalFiltersProps = {
         closeModalFilters: closeModal,
         currentFilters: assignedFilters,
+        setButtonTypeFilters: setButtonTypeFilters,
     };
 
     const currentFilters = useMemo(() => {
@@ -413,16 +415,20 @@ const Home = () => {
                             >
                                 {t("tvSeries")}
                             </button>
-                            <button
-                                className={
-                                    type === "filters" ? "active-button" : null
-                                }
-                                onClick={() => {
-                                    changeType("filters");
-                                }}
-                            >
-                                {t("showsByFilters")}
-                            </button>
+                            {buttonTypeFilters && (
+                                <button
+                                    className={
+                                        type === "filters"
+                                            ? "active-button"
+                                            : null
+                                    }
+                                    onClick={() => {
+                                        changeType("filters");
+                                    }}
+                                >
+                                    {t("showsByFilters")}
+                                </button>
+                            )}
                         </div>
                         {countries.length > 0 &&
                             genres.movie.length > 0 &&

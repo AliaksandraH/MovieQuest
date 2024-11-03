@@ -46,7 +46,7 @@
     width: 100%;
     background: rgba(39, 39, 39, 0.5);
     padding: 10px 30px;
-    position: fixed;
+    position: absolute;
     &_links {
         @extend %display-row;
         column-gap: 10px;

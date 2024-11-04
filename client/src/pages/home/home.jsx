@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState, useRef } from "react";
-import { useHttp } from "../../hooks/http.hook";
+import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useHttp } from "../../hooks/http.hook";
 import { useTranslation } from "react-i18next";
 import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/bootstrap.css";
-import { createSelector } from "reselect";
 import { isEqual } from "lodash";
 import {
     setCurrentType,
@@ -26,171 +25,92 @@ import "./home.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
 
-const selectCurrentType = (state) => state.currentType;
-const selectCurrentNumPage = (state) => state.currentNumPage;
-const selectAssignedFilters = (state) => state.assignedFilters;
-const selectCountries = (state) => state.countries;
-const selectGenres = (state) => state.genres;
-const selectCertifications = (state) => state.certifications;
-const selectMouseYposition = (state) => state.mouseYposition;
-const selectVisibilityButtonShowByFilters = (state) =>
-    state.visibilityButtonShowByFilters;
-
-const selectRequiredState = createSelector(
-    [
-        selectCurrentType,
-        selectCurrentNumPage,
-        selectAssignedFilters,
-        selectCountries,
-        selectGenres,
-        selectCertifications,
-        selectMouseYposition,
-        selectVisibilityButtonShowByFilters,
-    ],
-    (
-        currentType,
-        currentNumPage,
-        assignedFilters,
-        countries,
-        genres,
-        certifications,
-        mouseYposition,
-        visibilityButtonShowByFilters
-    ) => ({
-        currentType,
-        currentNumPage,
-        assignedFilters,
-        countries,
-        genres,
-        certifications,
-        mouseYposition,
-        visibilityButtonShowByFilters,
-    })
-);
+const imgPath = "https://image.tmdb.org/t/p/original";
 
 const Home = () => {
-    const imgPath = "https://image.tmdb.org/t/p/original";
+    const { request } = useHttp();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
-    const { request } = useHttp();
+
     const dispatch = useDispatch();
-    const {
-        currentType: type,
-        currentNumPage: numPage,
-        assignedFilters,
-        countries,
-        genres,
-        certifications,
-        mouseYposition,
-        visibilityButtonShowByFilters,
-    } = useSelector(selectRequiredState);
     const userId = useSelector((state) => state.userId);
+    const type = useSelector((state) => state.currentType);
+    const numPage = useSelector((state) => state.currentNumPage);
+    const assignedFilters = useSelector((state) => state.assignedFilters);
+    const countries = useSelector((state) => state.countries);
+    const genres = useSelector((state) => state.genres);
+    const certifications = useSelector((state) => state.certifications);
+    const mouseYposition = useSelector((state) => state.mouseYposition);
+    const visibilityButtonShowByFilters = useSelector(
+        (state) => state.visibilityButtonShowByFilters
+    );
+
+    const prevFilters = useRef(assignedFilters);
+    const prevType = useRef(type);
+    const prevUserId = useRef(userId);
+    const prevCurrentLanguage = useRef(currentLanguage);
+    const scrollRef = useRef(null);
+
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     const [modalFilters, setModalFilters] = useState(false);
 
-    const prevFilters = useRef(assignedFilters);
-    const prevType = useRef(type);
-    const scrollRef = useRef(null);
-
-    const openModalFilters = () => setModalFilters(true);
-    const closeModal = () => setModalFilters(false);
-
-    const modalFiltersProps = {
-        closeModalFilters: closeModal,
-        currentFilters: assignedFilters,
-    };
-
-    const currentFilters = useMemo(() => {
-        return assignedFilters;
-    }, [assignedFilters]);
-
     useEffect(() => {
         const fetchData = async () => {
             if (movies.length < 1) {
-                try {
-                    const moviesData = await getMovies(type, numPage);
-                    setMovies(moviesData);
-                    setBackground(moviesData);
-                    getGenres();
-                    getCountries();
-                    getCertifications();
-                    if (mouseYposition) {
-                        window.scrollTo({
-                            top: mouseYposition - 55,
-                        });
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
+                const moviesData = await getMovies(type, numPage);
+                setMovies(moviesData);
+                setBackground(moviesData);
+                dataForFilters();
+            }
+            if (mouseYposition) {
+                window.scrollTo({
+                    top: mouseYposition - 55,
+                });
             }
         };
 
         fetchData();
-
-        return () => {
-            setBackground(null);
-        };
-    }, [userId]);
+    }, []);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const moviesData = await getMovies(type, numPage);
-            setMovies(moviesData);
-            dispatch(setFiltersCertification("All"));
-            getGenres();
-            getCountries();
-            getCertifications();
-        };
-        fetchData();
+        if (prevCurrentLanguage.current === currentLanguage) return;
+        setCurrentShows(type, numPage);
+        dispatch(setFiltersCertification("All"));
+        dataForFilters();
+        prevCurrentLanguage.current = currentLanguage;
     }, [currentLanguage]);
 
     useEffect(() => {
+        if (userId === prevUserId.current) return;
+        setCurrentShows(type, numPage);
+        prevUserId.current = userId;
+    }, [userId]);
+
+    useEffect(() => {
+        if (type === prevType.current) return;
+        changeType(type);
+        prevType.current = type;
+    }, [type]);
+
+    useEffect(() => {
         if (type === "filters") {
-            if (!isEqual(currentFilters, prevFilters.current)) {
+            if (!isEqual(assignedFilters, prevFilters.current)) {
                 const fetchData = async () => {
-                    const data = await getMovies("filters", 1);
-                    dispatch(setCurrentNumPage(1));
-                    setMovies(data);
+                    changeType("filters");
                 };
                 fetchData();
-                prevFilters.current = currentFilters;
+                prevFilters.current = assignedFilters;
             } else {
                 const fetchData = async () => {
-                    const data = await getMovies("filters", numPage);
-                    setMovies(data);
+                    setCurrentShows("filters", numPage);
                 };
                 fetchData();
             }
         }
-    }, [currentFilters]);
-
-    useEffect(() => {
-        if (type !== prevType.current) {
-            changeType(type);
-            prevType.current = type;
-        }
-    }, [type]);
-
-    const getMovies = async (type, numPage) => {
-        try {
-            setLoading(true);
-            const userMovies = await getUserMovies();
-            if (type === "filters") return getFiltersShows(numPage, userMovies);
-            const data = await request(
-                `https://api.themoviedb.org/3/trending/${type}/week?language=${currentLanguage}&api_key=${_key}&page=${numPage}`
-            );
-            setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
-            return await data.results.map((movie) =>
-                transformInformationMovies(movie, userMovies)
-            );
-        } catch (error) {
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [assignedFilters]);
 
     const getUserMovies = async () => {
         try {
@@ -205,6 +125,28 @@ const Home = () => {
             }
         } catch (error) {
             return [];
+        }
+    };
+
+    const setCurrentShows = async (type, numPage) => {
+        const data = await getMovies(type, numPage);
+        setMovies(data);
+    };
+
+    const getMovies = async (type, numPage) => {
+        try {
+            setLoading(true);
+            const userMovies = await getUserMovies();
+            if (type === "filters") return getFiltersShows(numPage, userMovies);
+            const data = await request(
+                `https://api.themoviedb.org/3/trending/${type}/week?language=${currentLanguage}&api_key=${_key}&page=${numPage}`
+            );
+            setTotalPages(data.total_pages > 500 ? 500 : data.total_pages);
+            return await data.results.map((movie) =>
+                transformInformationMovies(movie, userMovies)
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -261,6 +203,12 @@ const Home = () => {
             watched: exists ? exists.watched : false,
             saved: exists ? exists.saved : false,
         };
+    };
+
+    const dataForFilters = () => {
+        getGenres();
+        getCountries();
+        getCertifications();
     };
 
     const getGenres = async () => {
@@ -339,14 +287,20 @@ const Home = () => {
     const nextPage = async (number) => {
         scroll(); // TODO
         dispatch(setCurrentNumPage(number));
-        const newData = await getMovies(type, number);
-        setMovies(newData);
+        setCurrentShows(type, number);
     };
 
     const changeType = async (type) => {
         dispatch(setCurrentNumPage(1));
-        const newData = await getMovies(type, 1);
-        setMovies(newData);
+        setCurrentShows(type, 1);
+    };
+
+    const openModalFilters = () => setModalFilters(true);
+    const closeModal = () => setModalFilters(false);
+
+    const modalFiltersProps = {
+        closeModalFilters: closeModal,
+        currentFilters: assignedFilters,
     };
 
     const scroll = () => {

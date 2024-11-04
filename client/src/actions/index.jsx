@@ -61,6 +61,12 @@ export const setFilters = (
     };
 };
 
+export const resetFilters = () => {
+    return {
+        type: "RESET_FILTERS",
+    };
+};
+
 export const setFiltersCertification = (certification) => {
     return {
         type: "CHANGE_FILTERS_CERTIFICATION",

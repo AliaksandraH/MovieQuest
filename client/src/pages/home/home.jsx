@@ -33,6 +33,8 @@ const selectCountries = (state) => state.countries;
 const selectGenres = (state) => state.genres;
 const selectCertifications = (state) => state.certifications;
 const selectMouseYposition = (state) => state.mouseYposition;
+const selectVisibilityButtonShowByFilters = (state) =>
+    state.visibilityButtonShowByFilters;
 
 const selectRequiredState = createSelector(
     [
@@ -43,6 +45,7 @@ const selectRequiredState = createSelector(
         selectGenres,
         selectCertifications,
         selectMouseYposition,
+        selectVisibilityButtonShowByFilters,
     ],
     (
         currentType,
@@ -51,7 +54,8 @@ const selectRequiredState = createSelector(
         countries,
         genres,
         certifications,
-        mouseYposition
+        mouseYposition,
+        visibilityButtonShowByFilters
     ) => ({
         currentType,
         currentNumPage,
@@ -60,6 +64,7 @@ const selectRequiredState = createSelector(
         genres,
         certifications,
         mouseYposition,
+        visibilityButtonShowByFilters,
     })
 );
 
@@ -77,6 +82,7 @@ const Home = () => {
         genres,
         certifications,
         mouseYposition,
+        visibilityButtonShowByFilters,
     } = useSelector(selectRequiredState);
     const userId = useSelector((state) => state.userId);
     const [backgroundImg, setBackgroundImg] = useState(null);
@@ -84,9 +90,9 @@ const Home = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     const [modalFilters, setModalFilters] = useState(false);
-    const [buttonTypeFilters, setButtonTypeFilters] = useState(false);
 
     const prevFilters = useRef(assignedFilters);
+    const prevType = useRef(type);
     const scrollRef = useRef(null);
 
     const openModalFilters = () => setModalFilters(true);
@@ -95,7 +101,6 @@ const Home = () => {
     const modalFiltersProps = {
         closeModalFilters: closeModal,
         currentFilters: assignedFilters,
-        setButtonTypeFilters: setButtonTypeFilters,
     };
 
     const currentFilters = useMemo(() => {
@@ -143,19 +148,16 @@ const Home = () => {
     }, [currentLanguage]);
 
     useEffect(() => {
-        if (!isEqual(currentFilters, prevFilters.current)) {
-            if (type === "filters") {
+        if (type === "filters") {
+            if (!isEqual(currentFilters, prevFilters.current)) {
                 const fetchData = async () => {
                     const data = await getMovies("filters", 1);
                     dispatch(setCurrentNumPage(1));
                     setMovies(data);
                 };
                 fetchData();
-            }
-            prevFilters.current = currentFilters;
-            return;
-        } else {
-            if (type === "filters") {
+                prevFilters.current = currentFilters;
+            } else {
                 const fetchData = async () => {
                     const data = await getMovies("filters", numPage);
                     setMovies(data);
@@ -164,6 +166,13 @@ const Home = () => {
             }
         }
     }, [currentFilters]);
+
+    useEffect(() => {
+        if (type !== prevType.current) {
+            changeType(type);
+            prevType.current = type;
+        }
+    }, [type]);
 
     const getMovies = async (type, numPage) => {
         try {
@@ -294,17 +303,6 @@ const Home = () => {
         );
     };
 
-    const updateMovies = async (newType, newPage) => {
-        if (newPage !== numPage && newType == type) {
-            const newData = await getMovies(newType, newPage);
-            setMovies(newData);
-        } else if (newType !== type) {
-            const newData = await getMovies(newType, newPage);
-            dispatch(setCurrentType(newType));
-            setMovies(newData);
-        }
-    };
-
     const setBackground = (movies) => {
         let interval = null;
         if (!movies) return clearInterval(interval);
@@ -338,15 +336,17 @@ const Home = () => {
         setBackgroundImg(`${imgPath}${img}`);
     };
 
-    const nextPage = (number) => {
-        scroll();
+    const nextPage = async (number) => {
+        scroll(); // TODO
         dispatch(setCurrentNumPage(number));
-        updateMovies(type, number);
+        const newData = await getMovies(type, number);
+        setMovies(newData);
     };
 
-    const changeType = (type) => {
+    const changeType = async (type) => {
         dispatch(setCurrentNumPage(1));
-        updateMovies(type, 1);
+        const newData = await getMovies(type, 1);
+        setMovies(newData);
     };
 
     const scroll = () => {
@@ -400,7 +400,7 @@ const Home = () => {
                                     type === "movie" ? "active-button" : null
                                 }
                                 onClick={() => {
-                                    changeType("movie");
+                                    dispatch(setCurrentType("movie"));
                                 }}
                             >
                                 {t("movies")}
@@ -410,12 +410,12 @@ const Home = () => {
                                     type === "tv" ? "active-button" : null
                                 }
                                 onClick={() => {
-                                    changeType("tv");
+                                    dispatch(setCurrentType("tv"));
                                 }}
                             >
                                 {t("tvSeries")}
                             </button>
-                            {buttonTypeFilters && (
+                            {visibilityButtonShowByFilters && (
                                 <button
                                     className={
                                         type === "filters"
@@ -423,7 +423,7 @@ const Home = () => {
                                             : null
                                     }
                                     onClick={() => {
-                                        changeType("filters");
+                                        dispatch(setCurrentType("filters"));
                                     }}
                                 >
                                     {t("showsByFilters")}

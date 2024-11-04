@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { setFilters } from "../../actions";
+import { setFilters, resetFilters } from "../../actions";
 import StarRatings from "react-star-ratings";
 import Genres from "./genres/genres";
 import Certifications from "./certifications/certifications";
@@ -9,11 +9,7 @@ import SliderDate from "../sliderDate/sliderDate";
 import SelectDropdown from "../selectDropdown/selectDropdown";
 import "./modalFilters.scss";
 
-const ModalFilters = ({
-    closeModalFilters,
-    currentFilters,
-    setButtonTypeFilters,
-}) => {
+const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     const { type, rating, certification } = currentFilters;
     const dispatch = useDispatch();
     const countries = useSelector((state) => state.countries);
@@ -83,7 +79,11 @@ const ModalFilters = ({
                 checkedCertification
             )
         );
-        setButtonTypeFilters(true);
+        closeModalFilters();
+    };
+
+    const reset = () => {
+        dispatch(resetFilters());
         closeModalFilters();
     };
 
@@ -125,8 +125,11 @@ const ModalFilters = ({
                 checkedCertification={checkedCertification}
                 setCheckedCertification={setCheckedCertification}
             />
-            <div className="buttons-wide button_sticky" onClick={getShows}>
-                <button>{t("save")}</button>
+            <div className="buttons-wide button_sticky">
+                <button onClick={reset}>{t("resetFilters")}</button>
+                <button className="button_border" onClick={getShows}>
+                    {t("save")}
+                </button>
             </div>
         </div>
     );

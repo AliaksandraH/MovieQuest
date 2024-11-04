@@ -7,6 +7,7 @@ const initialState = {
     genres: { movie: [], ty: [] },
     countries: [],
     certifications: { movie: [], ty: [] },
+    visibilityButtonShowByFilters: false,
     assignedFilters: {
         type: "movie",
         rating: 0,
@@ -65,6 +66,17 @@ const reducer = (state = initialState, action) => {
                     certification: action.certification,
                 },
                 currentType: "filters",
+                visibilityButtonShowByFilters: true,
+            };
+        case "RESET_FILTERS":
+            return {
+                ...state,
+                assignedFilters: initialState.assignedFilters,
+                currentType:
+                    state.currentType === "filters"
+                        ? "movie"
+                        : state.currentType,
+                visibilityButtonShowByFilters: false,
             };
         case "CHANGE_FILTERS_CERTIFICATION":
             return {

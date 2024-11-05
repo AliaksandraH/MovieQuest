@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useHttp } from "../../hooks/http.hook";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/constants";
+import { setCurrentTypeForUserMovies } from "../../actions";
 import MovieContainer from "../../components/movieContainer/movieContainer";
 import Spinner from "../../components/spinner/spinner";
 import "./userMovies.scss";
@@ -11,24 +12,38 @@ import "./userMovies.scss";
 const _key = process.env.REACT_APP_API_TMDB_KEY;
 
 const UserMovies = ({ title, url, sort }) => {
+    const { request } = useHttp();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
-    const { request } = useHttp();
-    const userId = useSelector((state) => state.userId);
 
-    const [type, setType] = useState("all");
+    const dispatch = useDispatch();
+    const userId = useSelector((state) => state.userId);
+    const type = useSelector((state) => state.currentTypeForUserMovies);
+
+    const prevURL = useRef(url);
+    const prevUserId = useRef(userId);
+
     const [movies, setMovies] = useState([]);
     const [moviesInformation, setMoviesInformation] = useState([]);
     const [currentMovies, setCurrentMovies] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        if (userId === prevUserId.current) return;
+        dispatch(setCurrentTypeForUserMovies("all"));
         getMovies();
-    }, []);
+        prevUserId.current = userId;
+    }, [userId]);
 
     useEffect(() => {
+        if (url === prevURL.current) {
+            getMovies();
+            return;
+        }
+        dispatch(setCurrentTypeForUserMovies("all"));
         getMovies();
-    }, [userId, url]);
+        prevURL.current = url;
+    }, [url]);
 
     useEffect(() => {
         getMoviesInformation(movies);
@@ -46,13 +61,6 @@ const UserMovies = ({ title, url, sort }) => {
         const sortedMovies = sortMovies(filteredMovies, sort);
         setCurrentMovies(sortedMovies);
     }, [type, moviesInformation]);
-
-    const sortMovies = (movies, sort) => {
-        if (sort) {
-            return [...movies].sort((a, b) => b.userRating - a.userRating);
-        }
-        return [...movies];
-    };
 
     const getMovies = async () => {
         try {
@@ -114,6 +122,13 @@ const UserMovies = ({ title, url, sort }) => {
         };
     };
 
+    const sortMovies = (movies, sort) => {
+        if (sort) {
+            return [...movies].sort((a, b) => b.userRating - a.userRating);
+        }
+        return [...movies];
+    };
+
     return (
         <div className="saved-page">
             <div className="saved-page_header">
@@ -127,7 +142,7 @@ const UserMovies = ({ title, url, sort }) => {
                         <button
                             className={type === "all" ? "active-button" : null}
                             onClick={() => {
-                                setType("all");
+                                dispatch(setCurrentTypeForUserMovies("all"));
                             }}
                         >
                             {t("all")}
@@ -137,7 +152,7 @@ const UserMovies = ({ title, url, sort }) => {
                                 type === "movie" ? "active-button" : null
                             }
                             onClick={() => {
-                                setType("movie");
+                                dispatch(setCurrentTypeForUserMovies("movie"));
                             }}
                         >
                             {t("movies")}
@@ -145,7 +160,7 @@ const UserMovies = ({ title, url, sort }) => {
                         <button
                             className={type === "tv" ? "active-button" : null}
                             onClick={() => {
-                                setType("tv");
+                                dispatch(setCurrentTypeForUserMovies("tv"));
                             }}
                         >
                             {t("tvSeries")}

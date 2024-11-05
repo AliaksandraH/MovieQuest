@@ -7,9 +7,6 @@ import "react-responsive-pagination/themes/bootstrap.css";
 import { isEqual } from "lodash";
 import {
     setCurrentType,
-    setGenres,
-    setCountries,
-    setCertifications,
     setFiltersCertification,
     setCurrentNumPage,
 } from "../../actions";
@@ -37,9 +34,6 @@ const Home = () => {
     const type = useSelector((state) => state.currentType);
     const numPage = useSelector((state) => state.currentNumPage);
     const assignedFilters = useSelector((state) => state.assignedFilters);
-    const countries = useSelector((state) => state.countries);
-    const genres = useSelector((state) => state.genres);
-    const certifications = useSelector((state) => state.certifications);
     const mouseYposition = useSelector((state) => state.mouseYposition);
     const visibilityButtonShowByFilters = useSelector(
         (state) => state.visibilityButtonShowByFilters
@@ -63,7 +57,6 @@ const Home = () => {
                 const moviesData = await getMovies(type, numPage);
                 setMovies(moviesData);
                 setBackground(moviesData);
-                dataForFilters();
             }
             if (mouseYposition) {
                 window.scrollTo({
@@ -79,7 +72,6 @@ const Home = () => {
         if (prevCurrentLanguage.current === currentLanguage) return;
         setCurrentShows(type, numPage);
         dispatch(setFiltersCertification("All"));
-        dataForFilters();
         prevCurrentLanguage.current = currentLanguage;
     }, [currentLanguage]);
 
@@ -203,52 +195,6 @@ const Home = () => {
             watched: exists ? exists.watched : false,
             saved: exists ? exists.saved : false,
         };
-    };
-
-    const dataForFilters = () => {
-        getGenres();
-        getCountries();
-        getCertifications();
-    };
-
-    const getGenres = async () => {
-        const movieGenres = await request(
-            `https://api.themoviedb.org/3/genre/movie/list?language=${currentLanguage}&api_key=${_key}`
-        );
-        const tvGenres = await request(
-            `https://api.themoviedb.org/3/genre/tv/list?language=${currentLanguage}&api_key=${_key}`
-        );
-        dispatch(setGenres(movieGenres?.genres || [], tvGenres?.genres || []));
-    };
-
-    const getCountries = async () => {
-        const movieCountries = await request(
-            `https://api.themoviedb.org/3/configuration/countries?language=${currentLanguage}&api_key=${_key}`
-        );
-        dispatch(setCountries(movieCountries || []));
-    };
-
-    const getCertifications = async () => {
-        const certification = currentLanguage === "en" ? "US" : "RU";
-        const movieCertifications = await request(
-            `https://api.themoviedb.org/3/certification/movie/list?api_key=${_key}`
-        );
-        const tvCertifications = await request(
-            `https://api.themoviedb.org/3/certification/tv/list?api_key=${_key}`
-        );
-        dispatch(
-            setCertifications(
-                [
-                    { certification: "All" },
-                    ...(tvCertifications?.certifications[certification] || []),
-                ],
-                [
-                    { certification: "All" },
-                    ...(movieCertifications?.certifications[certification] ||
-                        []),
-                ]
-            )
-        );
     };
 
     const setBackground = (movies) => {
@@ -384,15 +330,9 @@ const Home = () => {
                                 </button>
                             )}
                         </div>
-                        {countries.length > 0 &&
-                            genres.movie.length > 0 &&
-                            genres.tv.length > 0 &&
-                            certifications.movie.length > 0 &&
-                            certifications.tv.length > 0 && (
-                                <button onClick={openModalFilters}>
-                                    {t("filters")}
-                                </button>
-                            )}
+                        <button onClick={openModalFilters}>
+                            {t("filters")}
+                        </button>
                     </div>
                     <div ref={scrollRef} className="main_movies">
                         {!loading &&

@@ -11,7 +11,7 @@ import StarRatings from "react-star-ratings";
 import Modal from "../../components/modal/modal";
 import ModalRating from "../../components/modalRating/modalRating";
 import ModalTrailer from "../../components/modalTrailer/modalTrailer";
-import ModalSeasons from "../../components/modalSeasons/modalSeasons";
+// import ModalSeasons from "../../components/modalSeasons/modalSeasons";
 import Spinner from "../../components/spinner/spinner";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
@@ -47,13 +47,15 @@ const statusColors = {
 const SinglePage = ({ openModalAuth }) => {
     const { id, type } = useParams();
     const navigate = useNavigate();
+    const { request } = useHttp();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
-    const { request } = useHttp();
+
     const userId = useSelector((state) => state.userId);
+
     const [modalRating, setModalRating] = useState(false);
     const [modalTrailer, setModalTrailer] = useState(false);
-    const [modalSeasons, setModalSeasons] = useState(false);
+    // const [modalSeasons, setModalSeasons] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });

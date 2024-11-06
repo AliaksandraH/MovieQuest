@@ -19,9 +19,11 @@ const UserMovies = ({ title, url, sort }) => {
     const dispatch = useDispatch();
     const userId = useSelector((state) => state.userId);
     const type = useSelector((state) => state.currentTypeForUserMovies);
+    const mouseYposition = useSelector((state) => state.mouseYposition);
 
     const prevURL = useRef(url);
     const prevUserId = useRef(userId);
+    const prevCurrentLanguage = useRef(currentLanguage);
 
     const [movies, setMovies] = useState([]);
     const [moviesInformation, setMoviesInformation] = useState([]);
@@ -46,8 +48,10 @@ const UserMovies = ({ title, url, sort }) => {
     }, [url]);
 
     useEffect(() => {
+        if (prevCurrentLanguage.current === currentLanguage) return;
         getMoviesInformation(movies);
-    }, [movies, currentLanguage]);
+        prevCurrentLanguage.current = currentLanguage;
+    }, [currentLanguage]);
 
     useEffect(() => {
         let filteredMovies = [];
@@ -62,6 +66,14 @@ const UserMovies = ({ title, url, sort }) => {
         setCurrentMovies(sortedMovies);
     }, [type, moviesInformation]);
 
+    useEffect(() => {
+        if (!currentMovies.length) return;
+        window.scrollTo({
+            top: mouseYposition - (window.innerWidth <= 600 ? 100 : 60),
+            behavior: "smooth",
+        });
+    }, [currentMovies, mouseYposition]);
+
     const getMovies = async () => {
         try {
             setLoading(true);
@@ -74,6 +86,7 @@ const UserMovies = ({ title, url, sort }) => {
             });
             if (data.message === "OK") {
                 setMovies(data.movies || []);
+                getMoviesInformation(data.movies);
             } else {
                 toast.error(t("error"));
             }

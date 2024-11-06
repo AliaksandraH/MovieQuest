@@ -39,17 +39,18 @@ const Home = () => {
         (state) => state.visibilityButtonShowByFilters
     );
 
-    const prevFilters = useRef(assignedFilters);
-    const prevType = useRef(type);
-    const prevUserId = useRef(userId);
-    const prevCurrentLanguage = useRef(currentLanguage);
-    const scrollRef = useRef(null);
-
     const [backgroundImg, setBackgroundImg] = useState(null);
     const [movies, setMovies] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     const [modalFilters, setModalFilters] = useState(false);
+
+    const prevFilters = useRef(assignedFilters);
+    const prevType = useRef(type);
+    const prevNumPage = useRef(numPage);
+    const prevUserId = useRef(userId);
+    const prevCurrentLanguage = useRef(currentLanguage);
+    const scrollRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,13 +59,7 @@ const Home = () => {
                 setMovies(moviesData);
                 setBackground(moviesData);
             }
-            if (mouseYposition) {
-                window.scrollTo({
-                    top: mouseYposition - 55,
-                });
-            }
         };
-
         fetchData();
     }, []);
 
@@ -103,6 +98,18 @@ const Home = () => {
             }
         }
     }, [assignedFilters]);
+
+    useEffect(() => {
+        if (!movies.length) return;
+        if (numPage === prevNumPage.current) {
+            window.scrollTo({
+                top: mouseYposition - (window.innerWidth <= 600 ? 100 : 60),
+                behavior: "smooth",
+            });
+            return;
+        }
+        scroll();
+    }, [movies, mouseYposition, numPage]);
 
     const getUserMovies = async () => {
         try {
@@ -231,7 +238,6 @@ const Home = () => {
     };
 
     const nextPage = async (number) => {
-        scroll(); // TODO
         dispatch(setCurrentNumPage(number));
         setCurrentShows(type, number);
     };
@@ -253,8 +259,9 @@ const Home = () => {
         const scrollOptions = { behavior: "smooth" };
         const elementTop =
             scrollRef.current.getBoundingClientRect().top + window.scrollY;
+        const offset = window.innerWidth <= 600 ? 80 : 40;
         window.scrollTo({
-            top: elementTop - 20,
+            top: elementTop - offset,
             ...scrollOptions,
         });
     };

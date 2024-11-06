@@ -125,10 +125,10 @@ const UserMovies = ({ title, url, sort }) => {
     const transformInformationMovies = (movie) => {
         return {
             id: movie.id,
-            title: movie.title ? movie.title : movie.name,
-            poster_path: movie.poster_path ? movie.poster_path : null,
-            rating: movie.vote_average,
-            backdrop_path: movie.backdrop_path ? movie.backdrop_path : null,
+            title: movie.title || movie.name,
+            poster_path: movie.poster_path || null,
+            rating: movie.vote_average || 0,
+            backdrop_path: movie.backdrop_path || null,
             wasViewed: false,
             type: movie.type,
             userRating: movie.userRating,

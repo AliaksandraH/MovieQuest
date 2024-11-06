@@ -178,7 +178,7 @@ const SinglePage = ({ openModalAuth }) => {
                     type,
                 });
                 if (data.message === "OK") {
-                    toast.success(t("addedToListSuccess"));
+                    // toast.success(t("addedToListSuccess"));
                     setTypes(data.types);
                     if (url === "addWatchedMovie") {
                         openModalRating();
@@ -206,7 +206,7 @@ const SinglePage = ({ openModalAuth }) => {
                     type,
                 });
                 if (data.message === "OK") {
-                    toast.success(t("removedFromListSuccess"));
+                    // toast.success(t("removedFromListSuccess"));
                     setTypes(data.types);
                 } else {
                     toast.error(t("error"));

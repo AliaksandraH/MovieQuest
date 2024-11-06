@@ -50,7 +50,7 @@ const Auth = ({ closeModalAuth }) => {
             setLoading(true);
             const data = await request(api.login, "POST", userSignIn);
             if (data.message === "OK") {
-                toast.success(t("loginSuccess"));
+                // toast.success(t("loginSuccess"));
                 setUserSignIn({ email: "", password: "" });
                 localStorage.setItem("userId", data.userId);
                 dispatch(setUserId(data.userId));

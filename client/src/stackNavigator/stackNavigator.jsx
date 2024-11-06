@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setMouseYposition } from "../actions";
 import Header from "../components/header/header";
 import Footer from "../components/footer/footer";
 import Home from "../pages/home/home";
@@ -9,6 +11,9 @@ import Page404 from "../pages/404/404";
 
 const StackNavigator = ({ openModalAuth, checkVPN }) => {
     const location = useLocation();
+    const dispatch = useDispatch();
+
+    const prevLocation = useRef(location.pathname);
 
     const propsSavedMovies = {
         title: "savedMoviesAndShows",
@@ -24,6 +29,18 @@ const StackNavigator = ({ openModalAuth, checkVPN }) => {
     useEffect(() => {
         checkVPN();
     }, [location, checkVPN]);
+
+    useEffect(() => {
+        const path = location.pathname.split("/")[1];
+        if (
+            path === "tv" ||
+            path === "movie" ||
+            prevLocation.current === location.pathname
+        )
+            return;
+        dispatch(setMouseYposition(0));
+        prevLocation.current = location.pathname;
+    }, [location]);
 
     return (
         <>

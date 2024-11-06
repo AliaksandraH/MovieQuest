@@ -1,21 +1,26 @@
 import { useEffect, useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHttp } from "../../hooks/http.hook";
+import { setMouseYposition } from "../../actions";
 import Search from "../../assets/icons8-magnifier-64.png";
 import "./searchContainer.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
 
 const SearchContainer = () => {
+    const { request } = useHttp();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
+
+    const searchRef = useRef();
+
+    const dispatch = useDispatch();
     const [text, setText] = useState("");
     const [debouncedValue, setDebouncedValue] = useState(text);
     const [results, setResults] = useState({ movie: [], tv: [] });
     const [isVisible, setIsVisible] = useState(false);
-    const { request } = useHttp();
-    const searchRef = useRef();
 
     useEffect(() => {
         if (!text.trim()) {
@@ -92,7 +97,10 @@ const SearchContainer = () => {
                     to={`/${el.type}/${el.id}`}
                     className="search_result"
                     key={el.id}
-                    onClick={() => setIsVisible(false)}
+                    onClick={() => {
+                        dispatch(setMouseYposition(0));
+                        setIsVisible(false);
+                    }}
                 >
                     {year ? (
                         <p>

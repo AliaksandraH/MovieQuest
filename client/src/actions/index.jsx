@@ -12,6 +12,13 @@ export const setCurrentType = (type) => {
     };
 };
 
+export const setCurrentTypeForUserMovies = (type) => {
+    return {
+        type: "CHANGE_CURRENT_TYPE_FOR_USER_MOVIES",
+        payload: type,
+    };
+};
+
 export const setCurrentNumPage = (page) => {
     return {
         type: "CHANGE_CURRENT_NUM_PAGE",
@@ -58,6 +65,12 @@ export const setFilters = (
         genres: genres,
         countries: countries,
         certification: certification,
+    };
+};
+
+export const resetFilters = () => {
+    return {
+        type: "RESET_FILTERS",
     };
 };
 

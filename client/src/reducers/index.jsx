@@ -3,10 +3,12 @@ import { minDate, maxDate } from "../helpers/constants.js";
 const initialState = {
     userId: null,
     currentType: "movie",
+    currentTypeForUserMovies: "all",
     currentNumPage: 1,
     genres: { movie: [], ty: [] },
     countries: [],
     certifications: { movie: [], ty: [] },
+    visibilityButtonShowByFilters: false,
     assignedFilters: {
         type: "movie",
         rating: 0,
@@ -29,6 +31,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentType: action.payload,
+            };
+        case "CHANGE_CURRENT_TYPE_FOR_USER_MOVIES":
+            return {
+                ...state,
+                currentTypeForUserMovies: action.payload,
             };
         case "CHANGE_CURRENT_NUM_PAGE":
             return {
@@ -65,6 +72,17 @@ const reducer = (state = initialState, action) => {
                     certification: action.certification,
                 },
                 currentType: "filters",
+                visibilityButtonShowByFilters: true,
+            };
+        case "RESET_FILTERS":
+            return {
+                ...state,
+                assignedFilters: initialState.assignedFilters,
+                currentType:
+                    state.currentType === "filters"
+                        ? "movie"
+                        : state.currentType,
+                visibilityButtonShowByFilters: false,
             };
         case "CHANGE_FILTERS_CERTIFICATION":
             return {

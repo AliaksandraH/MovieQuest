@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -11,7 +11,7 @@ import StarRatings from "react-star-ratings";
 import Modal from "../../components/modal/modal";
 import ModalRating from "../../components/modalRating/modalRating";
 import ModalTrailer from "../../components/modalTrailer/modalTrailer";
-import ModalSeasons from "../../components/modalSeasons/modalSeasons";
+// import ModalSeasons from "../../components/modalSeasons/modalSeasons";
 import Spinner from "../../components/spinner/spinner";
 import NoPoster from "../../assets/no-poster.png";
 import NoBackground from "../../assets/no-background.png";
@@ -19,6 +19,7 @@ import Play from "../../assets/icons8-play-100.png";
 import "./singlePage.scss";
 
 const _key = process.env.REACT_APP_API_TMDB_KEY;
+
 const imgPath = "https://image.tmdb.org/t/p/original";
 const movieInformation = [
     "original_title",
@@ -47,13 +48,15 @@ const statusColors = {
 const SinglePage = ({ openModalAuth }) => {
     const { id, type } = useParams();
     const navigate = useNavigate();
+    const { request } = useHttp();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
-    const { request } = useHttp();
+
     const userId = useSelector((state) => state.userId);
+
     const [modalRating, setModalRating] = useState(false);
     const [modalTrailer, setModalTrailer] = useState(false);
-    const [modalSeasons, setModalSeasons] = useState(false);
+    // const [modalSeasons, setModalSeasons] = useState(false);
     const [trailerUrl, setTrailerUrl] = useState("");
     const [information, setInformation] = useState({});
     const [types, setTypes] = useState({ saved: false, watched: false });
@@ -62,6 +65,10 @@ const SinglePage = ({ openModalAuth }) => {
     const [loadingSaved, setLoadingSaved] = useState(false);
     const [loadingWatched, setLoadingWatched] = useState(false);
     const [loadingTrailer, setLoadingTrailer] = useState(false);
+
+    const prevUserId = useRef(userId);
+    const prevCurrentLanguage = useRef(currentLanguage);
+    const prevId = useRef(id);
 
     const styleRatingStars = {
         starDimension: "25px",
@@ -79,11 +86,21 @@ const SinglePage = ({ openModalAuth }) => {
     }, []);
 
     useEffect(() => {
+        if (prevId.current === id) return;
         getInformation(id);
-    }, [id, currentLanguage]);
+        prevId.current = id;
+    }, [id]);
 
     useEffect(() => {
+        if (prevCurrentLanguage.current === currentLanguage) return;
+        getInformation(id);
+        prevCurrentLanguage.current = currentLanguage;
+    }, [currentLanguage]);
+
+    useEffect(() => {
+        if (userId === prevUserId.current) return;
         getTypesMovie(id);
+        prevUserId.current = userId;
     }, [userId]);
 
     const openModalRating = () => setModalRating(true);
@@ -176,7 +193,7 @@ const SinglePage = ({ openModalAuth }) => {
                     type,
                 });
                 if (data.message === "OK") {
-                    toast.success(t("addedToListSuccess"));
+                    // toast.success(t("addedToListSuccess"));
                     setTypes(data.types);
                     if (url === "addWatchedMovie") {
                         openModalRating();
@@ -204,7 +221,7 @@ const SinglePage = ({ openModalAuth }) => {
                     type,
                 });
                 if (data.message === "OK") {
-                    toast.success(t("removedFromListSuccess"));
+                    // toast.success(t("removedFromListSuccess"));
                     setTypes(data.types);
                 } else {
                     toast.error(t("error"));

@@ -1,5 +1,7 @@
+import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHttp } from "../../hooks/http.hook";
 import { toast } from "react-toastify";
@@ -12,6 +14,8 @@ import "./userMovies.scss";
 const _key = process.env.REACT_APP_API_TMDB_KEY;
 
 const UserMovies = ({ title, url, sort }) => {
+    const { searchText } = useParams();
+    const navigate = useNavigate();
     const { request } = useHttp();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
@@ -24,32 +28,51 @@ const UserMovies = ({ title, url, sort }) => {
     const prevURL = useRef(url);
     const prevUserId = useRef(userId);
     const prevCurrentLanguage = useRef(currentLanguage);
+    const prevSearchText = useRef(searchText);
 
-    const [movies, setMovies] = useState([]);
     const [moviesInformation, setMoviesInformation] = useState([]);
     const [currentMovies, setCurrentMovies] = useState([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        if (searchText) return;
+        if (!userId) {
+            setMoviesInformation([]);
+            setCurrentMovies([]);
+            navigate("/");
+            return;
+        }
         if (userId === prevUserId.current) return;
         dispatch(setCurrentTypeForUserMovies("all"));
-        getMovies();
+        getShows();
         prevUserId.current = userId;
     }, [userId]);
 
     useEffect(() => {
+        if (!url) return;
         if (url === prevURL.current) {
-            getMovies();
+            getShows();
             return;
         }
         dispatch(setCurrentTypeForUserMovies("all"));
-        getMovies();
+        getShows();
         prevURL.current = url;
     }, [url]);
 
     useEffect(() => {
+        if (!searchText) return;
+        if (searchText === prevSearchText.current) {
+            getShows();
+            return;
+        }
+        dispatch(setCurrentTypeForUserMovies("all"));
+        getShows();
+        prevSearchText.current = searchText;
+    }, [searchText]);
+
+    useEffect(() => {
         if (prevCurrentLanguage.current === currentLanguage) return;
-        getMoviesInformation(movies);
+        getShows();
         prevCurrentLanguage.current = currentLanguage;
     }, [currentLanguage]);
 
@@ -74,21 +97,20 @@ const UserMovies = ({ title, url, sort }) => {
         });
     }, [currentMovies, mouseYposition]);
 
-    const getMovies = async () => {
+    const getShows = async () => {
         try {
             setLoading(true);
-            setMovies([]);
-            setMoviesInformation([]);
-            setCurrentMovies([]);
-            if (!userId) return;
-            const data = await request(api[url], "GET", {
-                userId,
-            });
-            if (data.message === "OK") {
-                setMovies(data.movies || []);
-                getMoviesInformation(data.movies);
-            } else {
-                toast.error(t("error"));
+            if (url && userId) {
+                const data = await request(api[url], "GET", {
+                    userId,
+                });
+                if (data.message === "OK") {
+                    getShowsInformationTMDB(data.movies || []);
+                } else {
+                    throw new Error();
+                }
+            } else if (searchText) {
+                getShowsBySearchText(searchText);
             }
         } catch (error) {
             toast.error(t("error"));
@@ -97,10 +119,9 @@ const UserMovies = ({ title, url, sort }) => {
         }
     };
 
-    const getMoviesInformation = async (movies) => {
+    const getShowsInformationTMDB = async (movies) => {
         if (movies.length <= 0) return;
         try {
-            setLoading(true);
             const data = movies.map((movie) =>
                 request(
                     `https://api.themoviedb.org/3/${movie.type}/${movie.movieId}?language=${currentLanguage}&api_key=${_key}`
@@ -111,18 +132,37 @@ const UserMovies = ({ title, url, sort }) => {
                 }))
             );
             const dataResponses = await Promise.all(data);
-            const transformedData = dataResponses.map(
-                transformInformationMovies
+            const transformedData = dataResponses.map((el) =>
+                transformInformationMovies(el)
             );
             setMoviesInformation(transformedData);
         } catch (error) {
-            toast.error(t("error"));
-        } finally {
-            setLoading(false);
+            console.log(error);
         }
     };
 
-    const transformInformationMovies = (movie) => {
+    const getShowsBySearchText = async (text) => {
+        try {
+            if (!text.trim()) return;
+            const resultMovie = await request(
+                `https://api.themoviedb.org/3/search/movie?language=${currentLanguage}&query=${text}&api_key=${_key}`
+            );
+            const resultTv = await request(
+                `https://api.themoviedb.org/3/search/tv?language=${currentLanguage}&query=${text}&api_key=${_key}`
+            );
+            const transformMovie = resultMovie.results.map((el) =>
+                transformInformationMovies(el, "movie")
+            );
+            const transformTv = resultTv.results.map((el) =>
+                transformInformationMovies(el, "tv")
+            );
+            setMoviesInformation([...transformMovie, ...transformTv]);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const transformInformationMovies = (movie, type = null) => {
         return {
             id: movie.id,
             title: movie.title || movie.name,
@@ -130,7 +170,7 @@ const UserMovies = ({ title, url, sort }) => {
             rating: movie.vote_average || 0,
             backdrop_path: movie.backdrop_path || null,
             wasViewed: false,
-            type: movie.type,
+            type: type || movie.type,
             userRating: movie.userRating,
         };
     };

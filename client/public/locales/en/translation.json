@@ -94,6 +94,7 @@
       " This will ensure the security of your connection and help avoid blocks."],
     "pleaseEnableVPN": "Please turn on your VPN and try again!",
     "resetFilters": "Reset Filters",
+    "searchResults": "Search Results",
 
     "A user with such an email already exists.": "A user with such an email already exists.",
     "Username must be between 1 and 30 characters long." : "Username must be between 1 and 30 characters long.",

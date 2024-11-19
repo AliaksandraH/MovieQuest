@@ -25,6 +25,11 @@ const StackNavigator = ({ openModalAuth, checkVPN }) => {
         url: "getUserWatchedMovies",
         sort: true,
     };
+    const propsSearchMovies = {
+        title: "searchResults",
+        url: null,
+        sort: false,
+    };
 
     useEffect(() => {
         checkVPN();
@@ -58,6 +63,10 @@ const StackNavigator = ({ openModalAuth, checkVPN }) => {
                 <Route
                     path="/watched"
                     element={<UserMovies {...propsWatchedMovies} />}
+                />
+                <Route
+                    path="/search/:searchText"
+                    element={<UserMovies {...propsSearchMovies} />}
                 />
                 <Route path="/404" element={<Page404 />} />
                 <Route path="*" element={<Page404 />} />

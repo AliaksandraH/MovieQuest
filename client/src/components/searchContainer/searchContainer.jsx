@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHttp } from "../../hooks/http.hook";
 import { setMouseYposition } from "../../actions";
@@ -11,6 +11,7 @@ const _key = process.env.REACT_APP_API_TMDB_KEY;
 
 const SearchContainer = () => {
     const { request } = useHttp();
+    const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const currentLanguage = i18n.language;
 
@@ -58,6 +59,7 @@ const SearchContainer = () => {
 
     const getShowsByText = async () => {
         try {
+            if (!text.trim()) return;
             const resultMovie = await request(
                 `https://api.themoviedb.org/3/search/movie?language=${currentLanguage}&query=${text}&api_key=${_key}`
             );
@@ -115,6 +117,18 @@ const SearchContainer = () => {
         });
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            goToPage();
+        }
+    };
+
+    const goToPage = () => {
+        if (!text.trim()) return;
+        setIsVisible(false);
+        navigate(`/search/${text.trim()}`);
+    };
+
     return (
         <div className="search" ref={searchRef}>
             <div className="search_container">
@@ -125,8 +139,9 @@ const SearchContainer = () => {
                     onChange={(event) => {
                         setText(event.target.value);
                     }}
+                    onKeyDown={handleKeyDown}
                 />
-                <img src={Search} onClick={getShowsByText} />
+                <img src={Search} onClick={goToPage} />
             </div>
             {isVisible && (
                 <div className="search_results-container">

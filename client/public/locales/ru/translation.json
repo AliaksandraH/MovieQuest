@@ -94,6 +94,7 @@
         "Это обеспечит безопасность вашего соединения и поможет избежать блокировок."],
     "pleaseEnableVPN": "Пожалуйста, включите VPN и попробуйте снова!",
     "resetFilters": "Сбросить Фильтры",
+    "searchResults": "Результаты поиска",
 
     "A user with such an email already exists.": "Пользователь с таким Email уже существует.",
     "Username must be between 1 and 30 characters long." : "Имя должно содержать от 1 до 30 символов.",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -30,8 +30,26 @@ const Header = ({ openModalAuth }) => {
     const userId = useSelector((state) => state.userId);
     const [panelVisibility, setPanelVisibility] = useState(false);
 
+    const panelRef = useRef();
+
+    useEffect(() => {
+        if (panelVisibility) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }
+    }, [panelVisibility]);
+
+    const handleClickOutside = (event) => {
+        if (panelRef.current && !panelRef.current.contains(event.target)) {
+            setPanelVisibility(false);
+        }
+    };
+
     const changeLanguage = (newValue) => {
         i18n.changeLanguage(newValue);
+        setPanelVisibility(false);
     };
 
     const initialSelectedIndex = options.findIndex(
@@ -41,11 +59,12 @@ const Header = ({ openModalAuth }) => {
     const signOut = () => {
         localStorage.removeItem("userId");
         dispatch(setUserId(null));
+        setPanelVisibility(false);
         toast.success(t("logoutSuccess"));
     };
 
     return (
-        <div className="header">
+        <div className="header" ref={panelRef}>
             <div className="main-panel">
                 <Link
                     to="/"
@@ -102,7 +121,9 @@ const Header = ({ openModalAuth }) => {
                         ) : (
                             <button
                                 className="additional-panel_button_sign-in"
-                                onClick={() => openModalAuth()}
+                                onClick={() => {
+                                    setPanelVisibility(false), openModalAuth();
+                                }}
                             >
                                 {t("signIn")}
                             </button>

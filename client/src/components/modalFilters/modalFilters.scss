@@ -27,11 +27,25 @@
 }
 
 .filter_container {
-    @extend %display-row;
     width: 100%;
     padding: 0 20px;
+    @extend %display-row;
+    &_col {
+        @extend %display-column-CC;
+        row-gap: 10px;
+    }
+    .drop-down_list {
+        @extend %display-row;
+        width: 100%;
+        column-gap: 20px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        img {
+            width: 25px;
+        }
+    }
     .label {
-        color: $main-color;
+        color: $main-color-light;
     }
     .input-label {
         color: $white;
@@ -60,7 +74,7 @@
     width: 100%;
     padding: 0 20px 7px 20px;
     .label {
-        color: $main-color;
+        color: $main-color-light;
         margin-bottom: 10px;
     }
     .container-select {

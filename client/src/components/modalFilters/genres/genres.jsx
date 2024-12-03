@@ -1,10 +1,21 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import ArrowDown from "../../../assets/icons8-arrow-down.png";
+import ArrowUp from "../../../assets/icons8-arrow-up.png";
 import "../modalFilters.scss";
 
-const Genres = ({ type, checkedGenres, setCheckedGenres }) => {
-    const genres = useSelector((state) => state.genres);
+const Genres = ({
+    type,
+    checkedGenres,
+    setCheckedGenres,
+    title = "genres",
+    isSelectList = false,
+}) => {
     const { t } = useTranslation();
+    const genres = useSelector((state) => state.genres);
+
+    const [showList, setShowList] = useState(!isSelectList);
 
     const changeGenres = (event) => {
         const value = event.target.value;
@@ -37,9 +48,23 @@ const Genres = ({ type, checkedGenres, setCheckedGenres }) => {
     };
 
     return (
-        <div className="filter_container">
-            <span className="label">{t("genres")}:</span>
-            <div className="filter_container_values">{createStyleGenres()}</div>
+        <div className="filter_container filter_container_col">
+            {isSelectList ? (
+                <div
+                    className="drop-down_list"
+                    onClick={() => setShowList((state) => !state)}
+                >
+                    <span className="label">{t(title)}:</span>
+                    <img src={showList ? ArrowUp : ArrowDown} alt="arrow" />
+                </div>
+            ) : (
+                <span className="label">{t(title)}:</span>
+            )}
+            {showList && (
+                <div className="filter_container_values">
+                    {createStyleGenres()}
+                </div>
+            )}
         </div>
     );
 };

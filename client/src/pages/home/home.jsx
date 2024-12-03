@@ -150,13 +150,21 @@ const Home = () => {
     };
 
     const getFiltersShows = async (numPage, userMovies) => {
-        const { type, rating, date, genres, countries, certification } =
-            assignedFilters;
+        const {
+            type,
+            rating,
+            date,
+            genres,
+            unnecessaryGenres,
+            countries,
+            certification,
+        } = assignedFilters;
         const url = new URL(`https://api.themoviedb.org/3/discover/${type}`);
         const params = {
             api_key: _key,
             with_origin_country: countries.join("|"),
             with_genres: genres.join("|"),
+            without_genres: unnecessaryGenres.join(","),
             "vote_average.gte": rating * 2,
             certification_country: currentLanguage === "en" ? "US" : "RU",
             certification: certification !== "All" ? certification : "",

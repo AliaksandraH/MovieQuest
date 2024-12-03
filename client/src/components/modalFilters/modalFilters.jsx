@@ -35,6 +35,9 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     const [checkedType, setCheckedType] = useState(type);
     const [minRating, setMinRating] = useState(rating);
     const [checkedGenres, setCheckedGenres] = useState(currentFilters.genres);
+    const [checkedUnnecessaryGenres, setCheckedUnnecessaryGenres] = useState(
+        currentFilters.unnecessaryGenres
+    );
     const [checkedСountries, setCheckedСountries] = useState(
         currentFilters.countries
     );
@@ -67,6 +70,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                 minRating,
                 { minDate: date.minDate, maxDate: date.maxDate },
                 checkedGenres,
+                checkedUnnecessaryGenres,
                 checkedСountries,
                 checkedCertification
             )
@@ -82,6 +86,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
     const changeType = (event) => {
         setCheckedCertification("All");
         setCheckedGenres([]);
+        setCheckedUnnecessaryGenres([]);
         setCheckedType(event.target.value);
     };
 
@@ -156,7 +161,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
 
     return (
         <div className="modal-filters">
-            <div className="filter_container ">
+            <div className="filter_container">
                 <span className="label">{t("type")}:</span>
                 {createStyleTypes()}
             </div>
@@ -171,7 +176,7 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
             </div>
             <SliderDate date={date} setDate={setDate} />
             {countries.length > 0 && (
-                <div className="filter_container-countries ">
+                <div className="filter_container-countries">
                     <span className="label">{t("countries")}:</span>
                     <div className="container-select">
                         <SelectDropdown
@@ -189,6 +194,15 @@ const ModalFilters = ({ closeModalFilters, currentFilters }) => {
                     type={checkedType}
                     checkedGenres={checkedGenres}
                     setCheckedGenres={setCheckedGenres}
+                />
+            )}
+            {genres?.movie.length > 0 && genres?.tv.length > 0 && (
+                <Genres
+                    type={checkedType}
+                    checkedGenres={checkedUnnecessaryGenres}
+                    setCheckedGenres={setCheckedUnnecessaryGenres}
+                    title="excludeGenres"
+                    isSelectList={true}
                 />
             )}
             {certifications?.movie.length > 0 &&

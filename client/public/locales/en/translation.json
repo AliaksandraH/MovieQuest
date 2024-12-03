@@ -24,6 +24,7 @@
     "years" : "years",
     "countries" : "Countries",
     "genres" : "Genres",
+    "excludeGenres": "Exclude genres",
     "certifications" : "Certifications",
     "save" : "Save",
     "delete": "Delete",

@@ -33,7 +33,7 @@ const Certifications = ({
     };
 
     return (
-        <div className="filter_container ">
+        <div className="filter_container">
             <span className="label">{t("certifications")}:</span>
             <div className="filter_container_values">
                 {createStyleCertifications()}

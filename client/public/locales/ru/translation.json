@@ -24,6 +24,7 @@
     "years" : "года",
     "countries" : "Страны",
     "genres" : "Жанры",
+    "excludeGenres": "Исключить жанры",
     "certifications" : "Сертификаты",
     "save" : "Сохранить",
     "delete": "Удалить",

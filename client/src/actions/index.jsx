@@ -54,6 +54,7 @@ export const setFilters = (
     rating,
     date,
     genres,
+    unnecessaryGenres,
     countries,
     certification
 ) => {
@@ -63,6 +64,7 @@ export const setFilters = (
         rating: rating,
         date: date,
         genres: genres,
+        unnecessaryGenres: unnecessaryGenres,
         countries: countries,
         certification: certification,
     };
